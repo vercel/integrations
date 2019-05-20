@@ -49,6 +49,7 @@ module.exports = withUiHook(
   mongo.withClose(async ({ payload, zeitClient }) => {
     const {
       action,
+      clientState,
       installationUrl,
       projectId,
       query,
@@ -56,7 +57,7 @@ module.exports = withUiHook(
       team,
       user
     } = payload;
-    const from = parseInt(query.from, 10) || undefined;
+    const from = parseInt(clientState.from || query.from, 10) || undefined;
     const ownerId = (team || user).id;
 
     const dbPromise = mongo();
@@ -257,6 +258,7 @@ module.exports = withUiHook(
         `;
       })}
       ${nextUrl ? htm`<Link href=${nextUrl}>View Next →</Link>` : ""}
+      <Box display="none"><Input type="hidden" name="from" value=${from || ""} /></Box>
     </Page>
   `;
   })

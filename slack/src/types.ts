@@ -24,6 +24,7 @@ export interface IntegrationConfig {
 	teamId?: string | null;
 	zeitToken: string;
 	webhooks: {
+		configurationId: string;
 		slackAuthorization: SlackAuthorization;
 		zeitWebhook: Webhook;
 	}[];

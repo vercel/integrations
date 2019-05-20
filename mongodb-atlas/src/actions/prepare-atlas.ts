@@ -2,7 +2,7 @@ import { ViewInfo } from '../types';
 import uuid from 'uuid';
 
 export default async function prepareAtlas(viewInfo: ViewInfo) {
-  const { atlasClient, zeitClient, metadata } = viewInfo;
+  const { atlasClient, zeitClient, metadata, payload } = viewInfo;
 
   // Abort if it's already prepared
   if (metadata.atlasPrepared) {
@@ -28,8 +28,9 @@ export default async function prepareAtlas(viewInfo: ViewInfo) {
   }
 
   // set the db user information of metatdata
+  const zeitAccountId = payload.team ? payload.team.id : payload.user.id;
   const dbUser = {
-    username: 'zeit-now-admin',
+    username: `zeit-${zeitAccountId}`,
     password: uuid.v4()
   };
   metadata.dbUser = dbUser;

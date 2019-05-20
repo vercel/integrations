@@ -276,6 +276,9 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
   /* eslint-disable no-irregular-whitespace */ // Need non-breaking space here
   return html`
     <Page>
+			<Box marginBottom="10px" textAlign="right">
+				<ProjectSwitcher />
+			</Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Img src=${GCLOUD_LOGO} width="240" />
         <Box display="flex" alignItems="center">

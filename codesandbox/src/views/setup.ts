@@ -9,6 +9,7 @@ export default function setupView({ errors }: ViewOptions) {
 
   return htm`
     <Box>
+			<ProjectSwitcher />
 			<Fieldset>
 				<FsContent>
 					<FsTitle>Login with your CodeSandbox account</FsTitle>

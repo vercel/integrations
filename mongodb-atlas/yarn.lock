@@ -57,11 +57,12 @@
   resolved "https://registry.yarnpkg.com/@zeit/git-hooks/-/git-hooks-0.1.4.tgz#70583db5dd69726a62c7963520e67f2c3a33cc5f"
   integrity sha512-NvgZgoYJ/n27Ly7lKxKttMIKSS8P4dr1EURgTmqihHVdTAEqVtkAYPT5XykZIR+GKz8WRGyEQVJekwSgvjYQLg==
 
-"@zeit/integration-utils@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.1.0.tgz#8dde45fec7fd2b98c6c86e7e7cef1570b54c3eac"
-  integrity sha512-25Y1cP1fdu7bnlQ5/4c0jqFDWOnW4l5arlbKv247EX0vVR0ZQzC3oLGkqpqXBS63NcMZYksOWhs8ptFTMPC8jw==
+"@zeit/integration-utils@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.4.0.tgz#03a2efc28a6936e93151edb347af2ea0ba72cf20"
+  integrity sha512-JRKDJO/LSU40+//PcTPrE1cv0UXiST14bdEeyZhuLkHmlofc6U5g9776oFUcx0ixZytb6tRKaYBV0gxXa+Fqlg==
   dependencies:
+    htm "2.1.1"
     micro "9.3.4"
     node-fetch "2.5.0"
     uid-promise "1.1.0"
@@ -439,6 +440,11 @@ has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
   integrity sha1-tdRU3CGZriJWmfNGfloH87lVuv0=
+
+htm@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/htm/-/htm-2.1.1.tgz#5a53e5f2845c3181b1672f95c9bffaf3d621bb0e"
+  integrity sha512-jgvB9nvlOE5xpI1W+juW8DPCe+Pn7mRDNaE4EOQNFqROm0O3l5deOvefK8C8hUaL1OHIX45mDEBSj7BMt+22VQ==
 
 http-errors@1.6.2:
   version "1.6.2"

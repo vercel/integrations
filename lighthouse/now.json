@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "env": {
+    "API_SECRET": "@lhi-api-secret",
+    "CLIENT_ID": "@lhi-client-id",
+    "CLIENT_SECRET": "@lhi-client-secret",
+    "MONGO_DB": "@lhi-mongo-db",
+    "MONGO_URI": "@lhi-mongo-uri",
+    "HOST": "@lhi-host"
+  },
+  "builds": [
+    {
+      "src": "lighthouse/index.js",
+      "use": "@nkzawa/now-node-raw",
+      "config": {
+        "includeFiles": [
+          "lighthouse/node_modules/**"
+        ],
+        "maxLambdaSize": "100mb"
+      }
+    },
+    { "src": "*.js", "use": "@now/node" },
+    { "src": "update/*.js", "use": "@now/node" },
+    { "src": "*.html", "use": "@now/static" },
+    { "src": "assets/*", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/reports/(?<url>[^/]+)", "dest": "/report.js?url=$url" }
+  ]
+}

@@ -66,7 +66,8 @@ export default async function dashboardView(viewOptions: ViewOptions) {
 
   return htm`
     <Page>
-      <Box boxSizing="border-box" display="grid">
+			<ProjectSwitcher />
+      <Box marginTop="10px" boxSizing="border-box" display="grid">
         <Box
           display="grid"
           gridTemplateColumns="250px 220px 1fr"

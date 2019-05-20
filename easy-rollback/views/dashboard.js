@@ -1,6 +1,7 @@
 const { htm } = require('@zeit/integration-utils');
 const ms = require('ms');
 const Info = require('../components/info');
+const ProjectSwitcher = require('../components/project-switcher');
 
 const AliasList = ({aliases}) => htm`
 		<Box>
@@ -36,7 +37,7 @@ const Deployment = ({deployment, dontRollback}) => {
 	const url = `https://${deployment.url}`;
 
 	return htm`
-		<Box padding="10px 15px" marginBottom="10px" border="1px solid #f5f5f5" borderRadius="3px">
+		<Box padding="10px 15px" marginBottom="10px" backgroundColor="#FFF" border="1px solid #f5f5f5" borderRadius="3px">
 			<Box display="flex" justifyContent="space-between">
 				<Link href=${url} target="_blank">${url}</Link>
 				${dontRollback ? '' : htm`<Button small action=${`confirm/${deployment.id}`}>Rollback</Button>`}
@@ -76,6 +77,7 @@ module.exports = function dashboardView({payload, metadata}) {
 	if (!latestDeployment) {
 		return htm`
 			<Page>
+				<${ProjectSwitcher} //>
 				<${Info}>
 					No production alias found for this project.
 				<//>
@@ -85,6 +87,7 @@ module.exports = function dashboardView({payload, metadata}) {
 
 	return htm`
 		<Page>
+			<${ProjectSwitcher} //>
 			<Fieldset>
 				<FsContent>
 					<H1>Aliased Deployment</H1>

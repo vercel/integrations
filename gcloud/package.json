@@ -24,7 +24,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "@zeit/integration-utils": "^0.3.0",
+    "@zeit/integration-utils": "^0.4.0",
     "cookie": "^0.4.0",
     "googleapis": "^39.2.0",
     "micro": "^9.3.4",

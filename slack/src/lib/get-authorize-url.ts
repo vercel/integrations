@@ -10,12 +10,19 @@ const { HOOK_URL } = process.env;
  */
 export default function getAuthorizeUri({
 	scope = SCOPE.INCOMING_WEBHOOK,
+	configurationId,
 	ownerId,
 	next
 }: {
 	scope?: string;
+	configurationId: string;
 	ownerId: string;
 	next: string;
 }) {
-	return `${HOOK_URL}/authorize?${stringify({ next, ownerId, scope })}`;
+	return `${HOOK_URL}/authorize?${stringify({
+		next,
+		ownerId,
+		scope,
+		configurationId
+	})}`;
 }

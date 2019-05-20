@@ -1,7 +1,7 @@
 {
 	"name": "zeit-addon-github-connect",
 	"dependencies": {
-		"@zeit/integration-utils": "^0.2.0",
+		"@zeit/integration-utils": "latest",
 		"cookie": "^0.3.1",
 		"node-fetch": "^2.5.0"
 	}

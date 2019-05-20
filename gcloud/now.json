@@ -14,10 +14,5 @@
   ],
   "env": {
     "BASE_URL": "https://gcloud-integration.zeit.sh"
-  },
-  "build": {
-    "env": {
-      "NPM_TOKEN": "@npm-token"
-    }
   }
 }

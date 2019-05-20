@@ -27,6 +27,11 @@ export default async function getAccessToken(code: string) {
 		})
 	});
 
-	const json: Token = await res.json();
-	return json;
+	const json = await res.json();
+
+	if (json.error) {
+		return null;
+	}
+
+	return json as Token;
 }

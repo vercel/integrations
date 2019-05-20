@@ -11,7 +11,6 @@ module.exports = withUiHook(async ({payload}) => {
 	if (action === 'submit') {
 		store.secretId = clientState.secretId;
 		store.secretKey = clientState.secretKey;
-		await new Promise(r => setTimeout(r, 10000))
 	}
 
 	if (action === 'reset') {
@@ -23,11 +22,7 @@ module.exports = withUiHook(async ({payload}) => {
 		<Page>
 			<Container>
 				<Input label="Secret Id" name="secretId" value=${store.secretId} />
-				<Textarea label="The text area" name="text1" value=""/>
-				<Select label="This is the select box" name="select1">
-					<Option value="1" caption="v2" />
-					<Option value="2" caption="v3" />
-				</Select>
+				<Input label="Secret Key" name="secretKey" value=${store.secretKey} />
 			</Container>
 			<Container>
 				<Button action="submit">Submit</Button>

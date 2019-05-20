@@ -8,7 +8,7 @@
     "prettier": "prettier --write --single-quote './{src,test}/**/*.ts'"
   },
   "dependencies": {
-    "@zeit/integration-utils": "^0.1.0",
+    "@zeit/integration-utils": "^0.4.0",
     "digest-fetch": "^0.1.5",
     "node-fetch": "^2.4.1",
     "uuid": "^3.3.2"

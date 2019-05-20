@@ -8,17 +8,17 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@zeit/integration-utils": "0.2.0",
+    "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
-    "cookie": "0.3.1",
-    "mongodb": "3.2.4",
+    "cookie": "0.4.0",
+    "mongodb": "3.2.5",
     "ms": "2.1.1",
-    "node-fetch": "2.5.0",
+    "node-fetch": "2.6.0",
     "raw-body": "2.4.0"
   },
   "devDependencies": {
     "eslint": "5.16.0",
-    "eslint-config-prettier": "4.2.0",
+    "eslint-config-prettier": "4.3.0",
     "prettier": "1.17.1"
   }
 }

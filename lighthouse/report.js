@@ -17,7 +17,7 @@ module.exports = mongo.withClose(async (req, res) => {
     { url },
     {
       projection: {
-        "report.html": 1,
+        report: 1,
         lhError: 1
       }
     }
@@ -40,6 +40,7 @@ module.exports = mongo.withClose(async (req, res) => {
     return;
   }
 
+  res.setHeader("Content-Encoding", "gzip");
   res.setHeader("Content-Type", "text/html");
-  res.end(deploymentDoc.report.html);
+  res.end(deploymentDoc.report.buffer);
 });

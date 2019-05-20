@@ -38,8 +38,9 @@ const Score = ({ score, title }) => {
 
   return htm`
     <Box textAlign="center">
-      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${Math.floor(score *
-    100)}</Box>
+      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${Math.floor(
+    score * 100
+  )}</Box>
       <P>${title}</P>
     </Box>
   `;
@@ -258,7 +259,8 @@ module.exports = withUiHook(
         `;
       })}
       ${nextUrl ? htm`<Link href=${nextUrl}>View Next →</Link>` : ""}
-      <Box display="none"><Input type="hidden" name="from" value=${from || ""} /></Box>
+      <Box display="none"><Input type="hidden" name="from" value=${from ||
+        ""} /></Box>
     </Page>
   `;
   })

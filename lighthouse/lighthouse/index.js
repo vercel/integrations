@@ -3,8 +3,12 @@ const lighthouse = require("lighthouse");
 const puppeteer = require("puppeteer-core");
 const rawBody = require("raw-body");
 const { parse } = require("url");
+const { promisify } = require("util");
+const zlib = require("zlib");
 const auth = require("../lib/auth");
 const mongo = require("../lib/mongo");
+
+const gzip = promisify(zlib.gzip);
 
 let args;
 let executablePath;
@@ -83,8 +87,7 @@ module.exports = mongo.withClose(
         return o;
       }, {});
 
-      const html = result.report;
-      report = { html };
+      report = await gzip(result.report);
     }
 
     console.log(`saving deployment: ${id}, ${url}`);

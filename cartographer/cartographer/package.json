@@ -1,0 +1,8 @@
+{
+  "name": "zeit-addon-cartographer",
+  "dependencies": {
+    "@zeit/integration-utils": "^0.2.0",
+    "async-sema": "^3.0.0",
+    "micro": "^9.3.4"
+  }
+}

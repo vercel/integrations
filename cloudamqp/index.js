@@ -105,6 +105,8 @@ const actions = {
         const { url } = state.store.bindings[state.project.id];
         const secretName = await zeit.ensureSecret('cloudamqp_url_' + instanceId, url)
         await zeit.upsertEnv(state.project.id, 'CLOUDAMQP_URL', secretName)
+      } else {
+        await zeit.removeEnv(state.project.id, 'CLOUDAMQP_URL')
       }
     }
   },

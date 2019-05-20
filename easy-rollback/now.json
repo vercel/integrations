@@ -1,0 +1,12 @@
+{
+	"version": 1,
+	"alias": "integration-easy-rollback.zeit.sh",
+	"env": {
+		"NOW_COSMOSDB_MASTER_KEY": "@now_cosmosdb_master_key"
+	},
+	"build": {
+    "env": {
+      "NOW_NPM_TOKEN": "@npm-token"
+    }
+  }
+}

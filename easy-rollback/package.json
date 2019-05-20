@@ -1,0 +1,29 @@
+{
+  "name": "integration-easy-rollback",
+  "dependencies": {
+    "@zeit/cosmosdb": "^12.2.1",
+    "@zeit/integration-utils": "^0.3.0",
+    "ms": "^2.1.1"
+  },
+  "devDependencies": {
+    "@zeit/eslint-config-node": "^0.3.0",
+    "@zeit/git-hooks": "^0.1.4",
+    "eslint": "^5.16.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@zeit/eslint-config-node"
+    ]
+  },
+  "scripts": {
+		"start": "node server.js",
+    "lint": "zeit-eslint --ext .jsx,.js .",
+    "lint-staged": "git diff --diff-filter=ACMRT --cached --name-only '*.js' '*.jsx' | xargs zeit-eslint"
+  },
+  "git": {
+    "pre-commit": "lint-staged"
+  },
+	"engines": {
+		"node": "10.x.x"
+	}
+}

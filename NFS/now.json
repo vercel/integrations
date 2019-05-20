@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "name": "nfs-integration",
+  "alias": "nfs-integration.now.sh",
+  "builds": [
+    { "src": "integration/pages/index.js", "use": "@now/node"},
+    { "src": "integration/assets/**", "use": "@now/static"}
+  ],
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "integration/assets/$1" },
+    { "src": "/(.*)", "dest": "integration/pages/$1" }
+  ],
+  "env": {
+    "zeit_client_id": "oac_ePZPDKnfjDbFBY4RaQFd3YXK",
+    "zeit_client_secret": "B6mg69nVwVNBLPhCz7jyJZFe",
+    "zeit_redirect_uri": "https://front-git-integrations.zeit.sh/dashboard/integrations/installation/nfs"
+  }
+}

@@ -31,7 +31,7 @@ const Settings = ({ apiKey }) => htm`
   </Fieldset>`
 
 const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey, endpoint }) => htm`
-  <H1>Project Settings</H1>
+  <H1>RabbitMQ Instance</H1>
   <Fieldset>
     <FsContent>
       <Container>
@@ -127,11 +127,10 @@ const handleAction = async (action, state, zeit) => {
 
 module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
   const { clientState, action, project, configurationId } = payload;
-  const metadataApiEndpoint = `/v1/integrations/configuration/${configurationId}/metadata`;
 
   let oldStore;
   try {
-    oldStore = await zeit.fetchAndThrow(metadataApiEndpoint, { method: 'GET' });
+    oldStore = await zeit.getMetadata();
   } catch (e) {
     oldStore = {};
   }
@@ -163,10 +162,7 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
   // Save store if changed by the action
   if (store !== oldStore) {
     try {
-      zeit.fetchAndThrow(metadataApiEndpoint, {
-        method: 'POST',
-        data: store
-      });
+      await zeit.setMetadata(store)
     } catch (e) {
       errorMessage = 'Failed saving metadata';
     }

@@ -1,7 +1,7 @@
 {
   "name": "cloudamqp-integration",
   "dependencies": {
-    "@zeit/integration-utils": "^0.2.0",
+    "@zeit/integration-utils": "^0.3.0",
     "axios": "^0.18.0",
     "immer": "^3.1.1"
   }

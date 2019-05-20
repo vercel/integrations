@@ -2,6 +2,7 @@ import { withUiHook, htm } from '@zeit/integration-utils';
 import getAuthorizeUrl from '../lib/get-authorize-url';
 import getIntegrationConfig from '../lib/mongodb/get-integration-config';
 import getZeitClient from '../lib/zeit-client';
+import getSlackClient from '../lib/slack-client';
 
 export default withUiHook(async ({ payload }) => {
 	const configurationId: string = payload.configurationId;
@@ -43,13 +44,18 @@ export default withUiHook(async ({ payload }) => {
 	 * customize.
 	 */
 	const members = await zeit.getTeamMembers();
+	const slackTeams = await Promise.all(configurationWebhooks.map((webhook) => {
+		const slack = getSlackClient({ token: webhook.slackAuthorization.accessToken });
+		return slack.getTeamInfo(webhook.slackAuthorization.teamId);
+	}))
 
 	return htm`
 		<Page>
-			${configurationWebhooks.map(({ zeitWebhook, slackAuthorization }) => {
+			${configurationWebhooks.map(({ zeitWebhook, slackAuthorization }, idx) => {
 				const creatorFromTeam = members.find(
 					member => member.uid === zeitWebhook.userId
 				);
+				const slackTeam = slackTeams[idx];
 				const creator = zeit.teamId ? creatorFromTeam : payload.user;
 				const creatorUsername = creator
 					? creator.username
@@ -59,31 +65,32 @@ export default withUiHook(async ({ payload }) => {
 					: null;
 
 				return htm`
-					<Box display="flex" flexDirection="column" border="1px solid #eaeaea" borderRadius="5px" padding="15px" marginBottom="20px">
-						<Box display="flex" alignItems="center">
-							<B>Events:</B>
-							<Box display="flex" marginLeft="5px">
-								${
-									zeitWebhook.events.length === 0
-										? 'All events'
-										: zeitWebhook.events.join(', ')
-								}
+					<Box display="flex" flexDirection="column" backgroundColor="#fff" border="1px solid #eaeaea" borderRadius="5px" overflow="hidden">
+						<Box display="flex" padding="15px" flexDirection="column">
+							<Box display="flex" alignItems="center">
+								${slackTeam && slackTeam.icon.image_132 && (
+									htm`
+										<Box display="flex" borderRadius="50%" height="50px" width="50px" overflow="hidden">
+											<Img src=${slackTeam.icon.image_132} width="100%" />
+										</Box>
+									`
+								)}
+								<Box marginLeft="20px">
+									<Box display="flex" fontSize="18px" fontWeight="bold">
+										${zeitWebhook.events.length === 0 ? 'All events' : zeitWebhook.events.join(', ')}
+									</Box>
+									<Box display="flex" color="#666">
+										${slackAuthorization.teamName}
+									</Box>
+								</Box>
 							</Box>
-						</Box>
-						<Box display="flex" alignItems="center">
-							<B>Slack Team:</B>
-							<Box display="flex" marginLeft="5px">
-								${slackAuthorization.teamName}
-							</Box>
-						</Box>
-						<Box display="flex" alignItems="center">
-							<B>Channel:</B>
-							<Box display="flex" marginLeft="5px">
+
+							<Box display="inline-flex" marginTop="15px" fontSize="13px" marginRight="auto" width="auto" padding="0 4px" color="#666" border="1px solid #eaeaea" borderRadius="5px">
 								${slackAuthorization.incomingWebhook.channel}
 							</Box>
 						</Box>
 
-						<Box display="flex" marginTop="10px" justifyContent="space-between" width="100%">
+						<Box display="flex" backgroundColor="#fafbfc" justifyContent="space-between" width="100%" padding="10px" borderTop="1px solid #eaeaea">
 							<Box display="flex">
 								<Link href="${slackAuthorization.incomingWebhook.configuration_url}" target="_blank">View on Slack</Link>
 							</Box>

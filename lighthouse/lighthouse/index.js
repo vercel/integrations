@@ -29,7 +29,7 @@ async function lh(url) {
     const { port } = parse(browser.wsEndpoint());
     return await lighthouse(url, {
       port,
-      output: ["json", "html"],
+      output: "html",
       logLevel: "error"
     });
   } finally {
@@ -86,8 +86,8 @@ module.exports = mongo.withClose(
         return o;
       }, {});
 
-      const [json, html] = result.report;
-      report = { json, html };
+      const html = result.report;
+      report = { html };
     }
 
     console.log(`saving deployment: ${id}, ${url}`);

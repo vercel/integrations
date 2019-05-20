@@ -71,6 +71,12 @@ export default withUiHook(async ({ payload }) => {
 							</Box>
 						</Box>
 						<Box display="flex" alignItems="center">
+							<B>Slack Team:</B>
+							<Box display="flex" marginLeft="5px">
+								${slackAuthorization.teamName}
+							</Box>
+						</Box>
+						<Box display="flex" alignItems="center">
 							<B>Channel:</B>
 							<Box display="flex" marginLeft="5px">
 								${slackAuthorization.incomingWebhook.channel}
@@ -78,6 +84,9 @@ export default withUiHook(async ({ payload }) => {
 						</Box>
 
 						<Box display="flex" marginTop="10px" justifyContent="space-between" width="100%">
+							<Box display="flex">
+								<Link href="${slackAuthorization.incomingWebhook.configuration_url}" target="_blank">View on Slack</Link>
+							</Box>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" alignSelf="flex-end">
 								<Box display="flex" marginRight="5px" fontSize="12px" color="#444">
 									Installed by ${creatorUsername}

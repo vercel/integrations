@@ -9,7 +9,7 @@ const { HOOK_URL } = process.env;
  * the redirection URL for when the process is done.
  */
 export default function getAuthorizeUri({
-	scope = SCOPE.INCOMING_WEBHOOK,
+	scope = `${SCOPE.INCOMING_WEBHOOK} ${SCOPE.TEAM_READ}`,
 	configurationId,
 	ownerId,
 	next

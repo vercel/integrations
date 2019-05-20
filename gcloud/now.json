@@ -1,0 +1,23 @@
+{
+  "name": "gcloud-integration",
+  "alias": "gcloud-integration.zeit.sh",
+  "version": 2,
+  "builds": [
+    { "src": "src/**/*.ts", "use": "@now/node@canary" },
+    { "src": "static/*.png", "use": "@now/optipng" },
+    { "src": "static/*.svg", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/", "dest": "src/index.ts" },
+    { "src": "/static/(.*)", "dest": "static/$1" },
+    { "src": "/(.*)", "dest": "src/endpoints/$1.ts" }
+  ],
+  "env": {
+    "BASE_URL": "https://gcloud-integration.zeit.sh"
+  },
+  "build": {
+    "env": {
+      "NPM_TOKEN": "@npm-token"
+    }
+  }
+}

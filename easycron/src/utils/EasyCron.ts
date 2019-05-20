@@ -31,18 +31,18 @@ class EasyCron {
       uri += `&posts=${posts}`
     }
 
-    const { cron_job_id, status } = await fetch(encodeURI(uri), {
+    const { cron_job_id, error } = await fetch(encodeURI(uri), {
       method: 'POST',
     }).then(reponse => reponse.json())
-    return { status, cron_job_id }
+    return { error, cron_job_id }
   }
 
   async getJobs() {
-    const { cron_jobs, status } = await fetch(
+    const { cron_jobs, error } = await fetch(
       `${this.endpoint}/list?token=${this.apiKey}&limit=100`,
     ).then(reponse => reponse.json())
 
-    return { status, cronJobs: cron_jobs }
+    return { error, cronJobs: cron_jobs }
   }
 
   async getDetail(id: number) {
@@ -83,6 +83,14 @@ class EasyCron {
     ).then(reponse => reponse.json())
 
     return status
+  }
+
+  async timezone() {
+    const { timezone, error } = await fetch(
+      `${this.endpoint}/timezone?token=${this.apiKey}`,
+    ).then(reponse => reponse.json())
+
+    return { timezone, error }
   }
 }
 

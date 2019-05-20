@@ -5,7 +5,7 @@ import EasyCron from './utils/EasyCron'
 import { UpsertJob } from './views/UpsertJob'
 import { InvalidToken } from './views/InvalidToken'
 import uniq from 'lodash.uniq'
-import { filterCronJobs } from './utils/filter';
+import { filterCronJobs } from './utils/filter'
 
 export default withUiHook(
   async ({ zeitClient, payload }): Promise<string> => {
@@ -29,8 +29,9 @@ export default withUiHook(
       `
     }
 
+    
     const match = action.match(/(\d*)$/)
-
+    
     // Match job ID or use 0
     const id = (match && Number(match[1])) || 0
 
@@ -58,7 +59,8 @@ export default withUiHook(
     })
 
     if (action === 'createCronJob' || action.match(/^updateJob/)) {
-      const { cron_job_id } = await client.upsertJob({ id, clientState })
+      const result = await client.upsertJob({ id, clientState })
+      const { cron_job_id } = result
 
       if (!projectId) {
         // filter deployments by url and get name
@@ -98,16 +100,17 @@ export default withUiHook(
     ) {
       if (action === 'newCronJob') {
         return html`
-          <${UpsertJob} clientState=${clientState} deployments=${deployments} />
+          <${UpsertJob} clientState=${clientState} deployments=${deployments}  />
         `
       } else {
-        const [detail, logs] = await Promise.all([
+        const [detail, logs, {timezone}] = await Promise.all([
           client.getDetail(id),
           client.getLogs(id),
+          client.timezone()
         ])
 
         clientState = detail
-        const parsedUrl = detail.url.match(/(https:\/\/[^\/]*\/)(.*)/)
+        const parsedUrl = detail.url.match(/(https:\/\/[^\/]*\/?)(.*)/)
         clientState.url = parsedUrl[1]
         clientState.path = parsedUrl[2] || ''
  
@@ -117,14 +120,15 @@ export default withUiHook(
             logs=${logs}
             clientState=${clientState}
             deployments=${deployments}
+            timezone=${timezone}
           />
         `
       }
     }
 
-    const { status, cronJobs } = await client.getJobs()
+    const { error, cronJobs } = await client.getJobs()
 
-    if (status === 'error') {
+    if (error) {
       return html`
         <${InvalidToken} />
       `

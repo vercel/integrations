@@ -1,0 +1,9 @@
+{
+	"name": "zeit-addon-counter-micro",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"dependencies": {
+		"micro": "^9.3.4"
+	}
+}

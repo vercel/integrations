@@ -1,0 +1,34 @@
+{
+  "name": "mongodb-atlas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint:staged": "lint-staged",
+    "prettier": "prettier --write --single-quote './{src,test}/**/*.ts'"
+  },
+  "dependencies": {
+    "@zeit/integration-utils": "^0.1.0",
+    "digest-fetch": "^0.1.5",
+    "node-fetch": "^2.4.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "2.3.3",
+    "@types/uuid": "^3.4.4",
+    "@zeit/eslint-config-node": "0.3.0",
+    "@zeit/git-hooks": "0.1.4",
+    "eslint": "5.16.0",
+    "prettier": "1.17.0"
+  },
+  "git": {
+    "pre-commit": "lint:staged"
+  },
+  "pre-commit": "lint:staged",
+  "lint-staged": {
+    "*.{ts}": [
+      "prettier --write --single-quote",
+      "git add"
+    ]
+  }
+}

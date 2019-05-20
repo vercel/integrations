@@ -49,30 +49,31 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
       ${!binding ? '' : htm`✅ You can now use CLOUDAMQP_URL to connect to the ${binding.name} RabbitMQ cluster`}
     </FsFooter>
   </Fieldset>
-  ${
-    !binding ?
-      '' :
-      htm`
-      <H1>Webhooks</H1>
-      <Fieldset>
-        <FsContent>
-          <P>
-            You can use this integration to automatically have CloudAMQP hit
-            your deployment for processing of queue items. In order for us to
-            set up the webhook we need the Console API key as explained at
-            <Link href="https://www.cloudamqp.com/docs/api.html">https://www.cloudamqp.com/docs/api.html</Link>
-          </P>
-          <Input label=${`Console API Key for the ${binding.name} cluster`} name="consoleApiKey" value=${consoleApiKey ? consoleApiKey : ''} />
-          ${
-            !consoleApiKey ?
-              '' :
-              htm`<Input label=${`Endpoint (default: /)`} name="endpoinnt" value=${endpoint ? endpoint : ''} />`
-          }
-        </FsContent>
-      </Fieldset>
-    `
-  }
   `
+  // TODO: Implement webhook binding
+  // ${
+  //   !binding ?
+  //     '' :
+  //     htm`
+  //     <H1>Webhooks</H1>
+  //     <Fieldset>
+  //       <FsContent>
+  //         <P>
+  //           You can use this integration to automatically have CloudAMQP hit
+  //           your deployment for processing of queue items. In order for us to
+  //           set up the webhook we need the Console API key as explained at
+  //           <Link href="https://www.cloudamqp.com/docs/api.html">https://www.cloudamqp.com/docs/api.html</Link>
+  //         </P>
+  //         <Input label=${`Console API Key for the ${binding.name} cluster`} name="consoleApiKey" value=${consoleApiKey ? consoleApiKey : ''} />
+  //         ${
+  //           !consoleApiKey ?
+  //             '' :
+  //             htm`<Input label=${`Endpoint (default: /)`} name="endpoinnt" value=${endpoint ? endpoint : ''} />`
+  //         }
+  //       </FsContent>
+  //     </Fieldset>
+  //   `
+  // }
 
 const actions = {
   async save(state, zeit) {

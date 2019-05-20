@@ -71,10 +71,10 @@
     agentkeepalive "3.4.1"
     debug "3.1.0"
 
-"@zeit/integration-utils@^0.2.0":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.2.2.tgz#bb45947ab2e86217bc7679fd46d633be3f97cba9"
-  integrity sha512-f5siVRB0ADCT7Wt/wN2DSV4bRghe/pifEEUBgLBpIHMbDt7msiyAYOyQKfjQf0W+WPgWPpbBXBexfqKFO27jRQ==
+"@zeit/integration-utils@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.4.0.tgz#03a2efc28a6936e93151edb347af2ea0ba72cf20"
+  integrity sha512-JRKDJO/LSU40+//PcTPrE1cv0UXiST14bdEeyZhuLkHmlofc6U5g9776oFUcx0ixZytb6tRKaYBV0gxXa+Fqlg==
   dependencies:
     htm "2.1.1"
     micro "9.3.4"

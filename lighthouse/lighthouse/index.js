@@ -60,9 +60,6 @@ module.exports = mongo.withClose(
       return;
     }
 
-    // start connecting
-    const dbPromise = mongo();
-
     let result;
     let lhError;
 
@@ -91,7 +88,8 @@ module.exports = mongo.withClose(
     }
 
     console.log(`saving deployment: ${id}, ${url}`);
-    const db = await dbPromise;
+    // don't pre-connect mongo since lighthouse audits can take a long time
+    const db = await mongo();
     await db.collection("deployments").updateOne(
       { id },
       {

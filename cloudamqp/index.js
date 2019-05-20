@@ -34,7 +34,6 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
   <H1>Project Settings</H1>
   <Fieldset>
     <FsContent>
-      Select a RabbitMQ instance to make available to all <B>${project.name}</B> deployments
       <Container>
         <Select name="selectedInstance" value=${binding ? binding.id : '-1'}>
           <Option value="-1" caption="(none)" />
@@ -48,7 +47,9 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
       </Container>
     </FsContent>
     <FsFooter>
-      ${!binding ? '' : htm`✅ You can now use the environment variable CLOUDAMQP_URL from your deployments to connect to the ${binding.name} RabbitMQ cluster`}
+      ${!binding 
+        ? `Select a RabbitMQ instance to make available to all ${project.name} deployments`
+        : htm`✅ You can now use the environment variable CLOUDAMQP_URL in your deployments to connect to the ${binding.name} RabbitMQ cluster`}
     </FsFooter>
   </Fieldset>
   `
@@ -106,7 +107,6 @@ const actions = {
         await zeit.upsertEnv(state.project.id, 'CLOUDAMQP_URL', secretName)
       }
     }
-    state.message = 'Saved';
   },
   async refresh(state) {
     try {
@@ -185,7 +185,7 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
             project=${project}
             consoleApiKey=${consoleApiKey}
             binding=${binding}/>`:
-          htm`<Notice>Please go to a project's integration settings to setup its integration</Notice>`)}
+          htm`<Notice>Please go to a project's "Integrations" tab to set it up</Notice>`)}
       <Container>
         <Button action="save">Save</Button>
         ${state.message ? htm`<Notice>${state.message}</Notice>`: ''}

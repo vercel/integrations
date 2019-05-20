@@ -43,13 +43,13 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
             `)
           }
         </Select>
-        <Button action="refresh" small>Refresh</Button>
       </Container>
+      <Button action="refresh" small>Refresh</Button>
     </FsContent>
     <FsFooter>
       ${!binding 
         ? `Select a RabbitMQ instance to make available to all ${project.name} deployments`
-        : htm`✅ You can now use the environment variable CLOUDAMQP_URL in your deployments to connect to the ${binding.name} RabbitMQ cluster`}
+        : htm`You can now use the environment variable CLOUDAMQP_URL in your deployments to connect to the ${binding.name} RabbitMQ cluster`}
     </FsFooter>
   </Fieldset>
   `
@@ -82,7 +82,7 @@ const actions = {
   async save(state, zeit) {
     // Save global settings
     const apiKey = state.clientState.apiKey
-    state.store.apiKey = apiKey;
+    state.store.apiKey = typeof apiKey === 'string' ? apiKey.trim() : undefined;
 
     // Save project settings
     if (state.project) {

@@ -3,8 +3,12 @@ const lighthouse = require("lighthouse");
 const puppeteer = require("puppeteer-core");
 const rawBody = require("raw-body");
 const { parse } = require("url");
+const { promisify } = require("util");
+const zlib = require("zlib");
 const auth = require("../lib/auth");
 const mongo = require("../lib/mongo");
+
+const gzip = promisify(zlib.gzip);
 
 let args;
 let executablePath;
@@ -29,7 +33,7 @@ async function lh(url) {
     const { port } = parse(browser.wsEndpoint());
     return await lighthouse(url, {
       port,
-      output: ["json", "html"],
+      output: "html",
       logLevel: "error"
     });
   } finally {
@@ -60,9 +64,6 @@ module.exports = mongo.withClose(
       return;
     }
 
-    // start connecting
-    const dbPromise = mongo();
-
     let result;
     let lhError;
 
@@ -86,12 +87,12 @@ module.exports = mongo.withClose(
         return o;
       }, {});
 
-      const [json, html] = result.report;
-      report = { json, html };
+      report = await gzip(result.report);
     }
 
     console.log(`saving deployment: ${id}, ${url}`);
-    const db = await dbPromise;
+    // don't pre-connect mongo since lighthouse audits can take a long time
+    const db = await mongo();
     await db.collection("deployments").updateOne(
       { id },
       {

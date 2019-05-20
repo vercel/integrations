@@ -1,6 +1,6 @@
 {
 	"name": "zeit-addon-basic-form",
 	"dependencies": {
-		"@zeit/integration-utils": "^0.2.0"
+		"@zeit/integration-utils": "latest"
 	}
 }

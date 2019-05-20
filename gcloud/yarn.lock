@@ -102,10 +102,10 @@
   resolved "https://registry.yarnpkg.com/@zeit/git-hooks/-/git-hooks-0.1.4.tgz#70583db5dd69726a62c7963520e67f2c3a33cc5f"
   integrity sha512-NvgZgoYJ/n27Ly7lKxKttMIKSS8P4dr1EURgTmqihHVdTAEqVtkAYPT5XykZIR+GKz8WRGyEQVJekwSgvjYQLg==
 
-"@zeit/integration-utils@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.3.0.tgz#6e873d1370460973c01c783b0d1744462f73a1d1"
-  integrity sha512-GFn413tJozk7FtEEvVhPV054lxwp0g9CzRoLBmdr9DfYa1Qzgd/6ODDQcdsx+msFDO0Q80tgfsA1O5MZD7CkhA==
+"@zeit/integration-utils@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.4.0.tgz#03a2efc28a6936e93151edb347af2ea0ba72cf20"
+  integrity sha512-JRKDJO/LSU40+//PcTPrE1cv0UXiST14bdEeyZhuLkHmlofc6U5g9776oFUcx0ixZytb6tRKaYBV0gxXa+Fqlg==
   dependencies:
     htm "2.1.1"
     micro "9.3.4"

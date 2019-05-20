@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "lighthouse-integration",
   "env": {
     "API_SECRET": "@lhi-api-secret",
     "CLIENT_ID": "@lhi-client-id",

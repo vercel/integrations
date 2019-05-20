@@ -56,6 +56,7 @@ module.exports = withUiHook(async ({ payload, zeitClient }) => {
     return htm`
       <Page>
         <Notice type="warn">Please select a project to install the Datadog integration.</Notice>
+				<ProjectSwitcher />
       </Page>
     `
   }
@@ -165,6 +166,9 @@ module.exports = withUiHook(async ({ payload, zeitClient }) => {
 
   return htm`
         <Page>
+						<Box marginBottom="10px" textAlign="right">
+							<ProjectSwitcher />
+						</Box>
             <Box display="flex" justifyContent="center" margin-bottom="2rem">
               <Img src="https://datadog-prod.imgix.net/img/dd_logo_70x75.png" />
             </Box>

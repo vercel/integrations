@@ -24,6 +24,16 @@ async function update({ accessToken, id }) {
       limit: AUDIT_DEPLOYMENTS_COUNT,
       since: Date.now() - AUDIT_DEPLOYMENTS_CREATED_AFTER,
       teamId: isTeam ? id : null
+    }).catch(err => {
+      if (err.res && err.res.status === 403) {
+        // TODO: remove the user from database
+        console.log(
+          `Ignoring deployments for ${id}. The token is not valid anymore`
+        );
+        return;
+      }
+
+      throw err;
     }),
 
     // deployment docs to audit
@@ -39,6 +49,8 @@ async function update({ accessToken, id }) {
       )
       .toArray()
   ]);
+
+  if (!deployments) return;
 
   deployments = deployments.filter(d => d.state === "READY");
   const deploymentIds = deployments.map(d => d.uid);

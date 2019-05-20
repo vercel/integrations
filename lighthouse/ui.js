@@ -96,7 +96,9 @@ module.exports = withUiHook(
     let next;
 
     if (projectId) {
-      console.log(`fetching deployments of project: ${projectId}, from=${from || ''}`);
+      console.log(
+        `fetching deployments of project: ${projectId}, from=${from || ""}`
+      );
       ({ deployments } = await zeitClient.fetchAndThrow(
         `/v4/now/deployments?${stringify({
           from,
@@ -110,7 +112,7 @@ module.exports = withUiHook(
         next = deployments[deployments.length - 1].created - 1;
       }
     } else {
-      console.log(`fetching projects: from=${from || ''}`);
+      console.log(`fetching projects: from=${from || ""}`);
       let projects = await zeitClient.fetchAndThrow(
         `/v1/projects/list?${stringify({
           from,

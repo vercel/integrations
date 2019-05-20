@@ -1,0 +1,13 @@
+{
+  "name": "easycron-integration",
+  "version": 2,
+  "alias": "easycron-integration.zeit.sh",
+  "builds": [
+    { "src": "src/**/*.ts", "use": "@now/node@canary" },
+    { "src": "static/**", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/", "dest": "src/index.ts" },
+    { "src": "/static/(.*)", "dest": "static/$1" }
+  ]
+}

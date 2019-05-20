@@ -40,7 +40,7 @@ module.exports = withUiHook(async ({payload, zeitClient}) => {
 	if (!projectId) {
 		return htm`
 			<Page>
-				<${Info}>Select a project from the above menu to show rollback information.<//>
+				<${Info}>Select a project to show rollback information: <ProjectSwitcher/><//>
 			</Page>
 		`;
 	}

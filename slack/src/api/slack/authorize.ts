@@ -6,6 +6,7 @@ import { AUTH_COOKIE_NAME } from '../../constants';
 import getSlackAuthorizeUrl from '../../lib/get-slack-authorize-url';
 
 interface AuthorizeQuery {
+	configurationId?: string;
 	next?: string;
 	ownerId?: string;
 	scope?: string;
@@ -31,14 +32,28 @@ export default function authorize(req: IncomingMessage, res: ServerResponse) {
 		return send(res, 403, 'A query parameter `ownerId` is required');
 	}
 
+	if (!query.configurationId) {
+		return send(
+			res,
+			403,
+			'A query parameter `configurationId` is required'
+		);
+	}
+
 	/**
 	 * In the context we will need to store the url to redirect after the
 	 * process is done and the ownerId to be able to retrieve the token
-	 * to create the webhook during the callback.
+	 * to create the webhook during the callback. Also the configurationId
+	 * is needed to associate it with the current install.
 	 */
 	const state = `state_${Math.random()}`;
 	const redirectUrl = getSlackAuthorizeUrl(query.scope, state);
-	const context = { next: query.next, ownerId: query.ownerId, state };
+	const context = {
+		next: query.next,
+		ownerId: query.ownerId,
+		configurationId: query.configurationId,
+		state
+	};
 
 	res.writeHead(302, {
 		Location: redirectUrl,

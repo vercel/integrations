@@ -22,7 +22,7 @@ const api = async (apiKey, endpoint, opts = {}) => {
 const formatInstance= (i) =>
   `${i.name} (${i.plan} at ${i.region})`
 
-const Settings = ({ store: { apiKey }}) => htm`
+const Settings = ({ apiKey }) => htm`
   <H1>Global Settings</H1>
   <Fieldset>
     <FsContent>
@@ -30,7 +30,7 @@ const Settings = ({ store: { apiKey }}) => htm`
     </FsContent>
   </Fieldset>`
 
-const ProjectSettings = ({ rabbitInstances, project, binding, consoleApiKey, endpoint }) => htm`
+const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey, endpoint }) => htm`
   <H1>Project Settings</H1>
   <Fieldset>
     <FsContent>
@@ -84,7 +84,12 @@ const actions = {
     if (state.project) {
       const { selectedInstance } = state.clientState;
       const instanceId = selectedInstance === '-1' ? undefined : selectedInstance;
-      state.store.bindings[state.project.id] = instanceId && await api(apiKey, `instances/${instanceId}`);
+      state.store.bindings = state.store.bindings || {};
+      try {
+        state.store.bindings[state.project.id] = instanceId && await api(apiKey, `instances/${instanceId}`);
+      } catch (e) {
+        throw new Error('Failed to load instance. Are you using the right API key?');
+      }
 
       if (instanceId) {
         // Save console API for this cluster
@@ -101,8 +106,12 @@ const actions = {
     state.message = 'Saved';
   },
   async refresh(state) {
-    state.store.rabbitInstances = await api(state.store.apiKey, 'instances')
-    state.message = 'Instance list refreshed';
+    try {
+      state.store.rabbitInstances = await api(state.store.apiKey, 'instances')
+      state.message = 'Instance list refreshed';
+    } catch (e) {
+      throw new Error('Failed to refresh instance list. Are you using the right API key?');
+    }
   }
 }
 
@@ -113,44 +122,69 @@ const handleAction = async (action, state, zeit) => {
 }
 
 module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
-  const { clientState, action, project } = payload;
-  const oldStore = (await zeit.getMetadata()) || {};
+  const { clientState, action, project, configurationId } = payload;
+  const metadataApiEndpoint = `/v1/integrations/configuration/${configurationId}/metadata`;
+
+  let oldStore;
+  try {
+    oldStore = await zeit.fetchAndThrow(metadataApiEndpoint, { method: 'GET' });
+  } catch (e) {
+    oldStore = {};
+  }
 
   let state = { store: oldStore, clientState, project };
 
-  // Make sure we've loaded the instances
-  if (state.store.apiKey && !state.store.rabbitInstances && action !== 'refresh') {
-    state = await handleAction('refresh', state, zeit);
-  }
+  let errorMessage;
+  try {
+    // Make sure we've loaded the instances
+    if (state.store.apiKey && !state.store.rabbitInstances && action !== 'refresh') {
+      state = await handleAction('refresh', state, zeit);
+    }
 
-  // Run the current action
-  if (actions[action]) {
-    state = await handleAction(action, state, zeit);
+    // Run the current action
+    if (actions[action]) {
+      state = await handleAction(action, state, zeit);
+    }
+  } catch (e) {
+    if (e.userMessage) {
+      errorMessage = e.userMessage;
+    } else {
+      errorMessage = 'Failed to run action'
+    }
   }
 
   const { store } = state;
 
   // Save store if changed by the action
   if (store !== oldStore) {
-    await zeit.setMetadata(store);
+    try {
+      return zeit.fetchAndThrow(metadataApiEndpoint, {
+        method: 'POST',
+        data: store
+      });
+    } catch (e) {
+      errorMessage = 'Failed saving metadata';
+    }
   }
 
-  const binding = store.bindings[project.id];
+  const binding = project && store.bindings && store.bindings[project.id];
   const consoleApiKey = binding && store.consoleApiKeys ? store.consoleApiKeys[binding.id] : null
 
   return htm`
     <Page>
-      ${state.message ? htm`<Notice>${state.message}</Notice>`: ''}
-      <${Settings} store=${store}/>
-      ${project ?
+      <${Settings} apiKey=${store.apiKey}/>
+      ${!store.apiKey ? '' : (
+        project ?
           htm`<${ProjectSettings}
             rabbitInstances=${store.rabbitInstances}
             project=${project}
             consoleApiKey=${consoleApiKey}
             binding=${binding}/>`:
-          htm`<Notice>Select a project to configure</Notice>`}
+          htm`<Notice>Select a project to configure</Notice>`)}
       <Container>
         <Button action="save">Save</Button>
+        ${state.message ? htm`<Notice>${state.message}</Notice>`: ''}
+        ${state.errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>`: ''}
       </Container>
       Store:
       <Code value=${encodeURIComponent(JSON.stringify(store, null, ' '))} />

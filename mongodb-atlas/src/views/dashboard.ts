@@ -1,7 +1,8 @@
-import { ViewInfo, AtlasCluster, UiHookPayload } from '../types';
+import { ViewInfo, AtlasCluster } from '../types';
 import prepareAtlas from '../actions/prepare-atlas';
 import getClusters from '../actions/get-clusters';
 import linkCluster from '../actions/link-cluster';
+import { UiHookPayload } from '@zeit/integration-utils';
 
 function getLinks(cluster: AtlasCluster) {
   const configurationsLink = `https://cloud.mongodb.com/v2/${
@@ -125,7 +126,7 @@ export default async function dashboardView(viewInfo: ViewInfo) {
 
   if (/^link/.test(payload.action)) {
     if (!payload.projectId) {
-      error = 'To Link, select a project view. (Use the dropdown on top right)';
+      error = 'To Link, select a project view. <ProjectSwitcher />';
     } else {
       await linkCluster(viewInfo, clusters);
     }
@@ -138,6 +139,9 @@ export default async function dashboardView(viewInfo: ViewInfo) {
 
   const needToRefresh = Boolean(clusters.find(c => c.stateName !== 'IDLE'));
   return `
+		<Box marginBottom="10px" textAlign="right">
+			<ProjectSwitcher />
+		</Box>
 		${error ? `<Notice type="error">${error}</Notice>` : ''}
 		<Box display="flex" justify-content="space-between">
 			<Box>

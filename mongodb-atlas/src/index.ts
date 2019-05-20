@@ -8,7 +8,7 @@ import AtlasClient from './lib/atlas-client';
 import dashboardView from './views/dashboard';
 
 async function getContent(options: HandlerOptions) {
-	const { payload, zeitClient } = options;
+  const { payload, zeitClient } = options;
   const { action } = payload;
 
   const metadata = await zeitClient.getMetadata();
@@ -27,8 +27,12 @@ async function getContent(options: HandlerOptions) {
 }
 
 const handler = async (options: HandlerOptions) => {
-	const jsx = await getContent(options);
-	return `<Page>${jsx}</Page>`;
-}
+  const jsx = await getContent(options);
+  return `
+		<Page>
+			${jsx}
+		</Page>
+	`;
+};
 
 export default withUiHook(handler);

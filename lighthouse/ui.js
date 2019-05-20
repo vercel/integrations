@@ -192,7 +192,11 @@ module.exports = withUiHook(
         let contentView;
         let auditable = false;
 
-        if (
+        if (d.state !== "READY") {
+          contentView = htm`<P>The deployment is not ready (<Box color="#bd10e0" display="inline">${
+            d.state
+          }</Box>)</P>`;
+        } else if (
           (doc && doc.auditing) ||
           (!doc && relativeTime < ASSUMED_AUDITING_TIME)
         ) {
@@ -216,10 +220,6 @@ module.exports = withUiHook(
         } else if (doc && doc.lhError) {
           contentView = htm`<Box color="#c7221f">${doc.lhError}</Box>`;
           auditable = true;
-        } else if (d.state !== "READY") {
-          contentView = htm`<P>The deployment is not ready (<Box color="#bd10e0" display="inline">${
-            d.state
-          }</Box>)</P>`;
         } else {
           contentView = htm`<P>No report available</P>`;
           auditable = true;

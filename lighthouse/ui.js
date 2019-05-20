@@ -51,15 +51,16 @@ module.exports = withUiHook(
     const {
       action,
       clientState,
+      configurationId,
       installationUrl,
-      projectId,
+      project,
       query,
-      slug,
       team,
       user
     } = payload;
     const from = parseInt(clientState.from || query.from, 10) || undefined;
     const ownerId = (team || user).id;
+    console.log(payload)
 
     if (action && action.startsWith("audit:")) {
       const [, deploymentId] = action.split(":");
@@ -95,15 +96,15 @@ module.exports = withUiHook(
     let deployments;
     let next;
 
-    if (projectId) {
+    if (project) {
       console.log(
-        `fetching deployments of project: ${projectId}, from=${from || ""}`
+        `fetching deployments of project: ${project.id}, from=${from || ""}`
       );
       ({ deployments } = await zeitClient.fetchAndThrow(
         `/v4/now/deployments?${stringify({
           from,
           limit: DEPLOYMENTS_LIMIT + 1,
-          projectId
+          projectId: project.id
         })}`,
         {}
       ));
@@ -179,7 +180,7 @@ module.exports = withUiHook(
       const projectHref = d.project
         ? `/${encodeURIComponent(ownerSlug)}/${encodeURIComponent(
             d.project.name
-          )}/installation/${encodeURIComponent(slug)}`
+          )}/integrations/${encodeURIComponent(configurationId)}`
         : null;
       const relativeTime = Date.now() - d.created;
       const ago = relativeTime > 0 ? `${ms(relativeTime)} ago` : "Just now";
@@ -260,7 +261,7 @@ module.exports = withUiHook(
     return htm`
     <Page>
       <H1>Lighthouse scores of ${
-        projectId ? "deployments in the project" : "your projects"
+        project ? `deployments in ${project.name}` : "your projects"
       }</H1>
       ${deploymentViews}
       ${nextUrl ? htm`<Link href=${nextUrl}>View Next →</Link>` : ""}

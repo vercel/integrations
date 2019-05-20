@@ -35,18 +35,20 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
   <Fieldset>
     <FsContent>
       Select a RabbitMQ instance to make available to all <B>${project.name}</B> deployments
-      <Select name="selectedInstance" value=${binding && binding.id}>
-        <Option value="-1" caption="(none)" />
-        ${
-          rabbitInstances.map((instance) => htm`
-            <Option value=${instance.id} caption=${formatInstance(instance)}} />
-          `)
-        }
-      </Select>
-      <Button action="refresh" small>Refresh</Button>
+      <Container>
+        <Select name="selectedInstance" value=${binding ? binding.id : '-1'}>
+          <Option value="-1" caption="(none)" />
+          ${
+            rabbitInstances.map((instance) => htm`
+              <Option value=${instance.id} caption=${formatInstance(instance)}} />
+            `)
+          }
+        </Select>
+        <Button action="refresh" small>Refresh</Button>
+      </Container>
     </FsContent>
     <FsFooter>
-      ${!binding ? '' : htm`✅ You can now use CLOUDAMQP_URL to connect to the ${binding.name} RabbitMQ cluster`}
+      ${!binding ? '' : htm`✅ You can now use the environment variable CLOUDAMQP_URL from your deployments to connect to the ${binding.name} RabbitMQ cluster`}
     </FsFooter>
   </Fieldset>
   `
@@ -111,6 +113,7 @@ const actions = {
       state.store.rabbitInstances = await api(state.store.apiKey, 'instances')
       state.message = 'Instance list refreshed';
     } catch (e) {
+      console.log(e);
       throw new Error('Failed to refresh instance list. Are you using the right API key?');
     }
   }
@@ -141,17 +144,18 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
     if (state.store.apiKey && !state.store.rabbitInstances && action !== 'refresh') {
       state = await handleAction('refresh', state, zeit);
     }
-
+  } catch (e) {
+    errorMessage = e.message;
+    console.log(e);
+  }
+  try {
     // Run the current action
     if (actions[action]) {
       state = await handleAction(action, state, zeit);
     }
   } catch (e) {
-    if (e.userMessage) {
-      errorMessage = e.userMessage;
-    } else {
-      errorMessage = 'Failed to run action'
-    }
+    errorMessage = e.message;
+    console.log(e);
   }
 
   const { store } = state;
@@ -159,7 +163,7 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
   // Save store if changed by the action
   if (store !== oldStore) {
     try {
-      return zeit.fetchAndThrow(metadataApiEndpoint, {
+      zeit.fetchAndThrow(metadataApiEndpoint, {
         method: 'POST',
         data: store
       });
@@ -181,16 +185,17 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
             project=${project}
             consoleApiKey=${consoleApiKey}
             binding=${binding}/>`:
-          htm`<Notice>Select a project to configure</Notice>`)}
+          htm`<Notice>Please go to a project's integration settings to setup its integration</Notice>`)}
       <Container>
         <Button action="save">Save</Button>
         ${state.message ? htm`<Notice>${state.message}</Notice>`: ''}
-        ${state.errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>`: ''}
+        ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>`: ''}
       </Container>
-      Store:
-      <Code value=${encodeURIComponent(JSON.stringify(store, null, ' '))} />
-      Payload
-      <Code value=${encodeURIComponent(JSON.stringify(payload, null, ' '))} />
     </Container>
   `
+  // Debugging
+  // Store:
+  // <Code value=${encodeURIComponent(JSON.stringify(store, null, ' '))} />
+  // Payload
+  // <Code value=${encodeURIComponent(JSON.stringify(payload, null, ' '))} />
 })

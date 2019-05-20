@@ -1,0 +1,28 @@
+{
+  "name": "zeit-addon-codesandbox",
+  "scripts": {
+    "start": "tsc --outDir dist && micro dist/index.js -l tcp://localhost:5005",
+    "prettier": "prettier --write './{src,test}/**/*.ts'"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "dependencies": {
+    "@zeit/fetch": "^5.1.0",
+    "@zeit/integration-utils": "^0.2.0",
+    "codesandbox-import-util-types": "^2.1.5",
+    "codesandbox-import-utils": "^2.1.5",
+    "datauri": "^2.0.0",
+    "humps": "^2.0.1",
+    "node-fetch": "^2.5.0",
+    "shortid": "^2.2.14"
+  },
+  "devDependencies": {
+    "@types/humps": "^1.1.2",
+    "@types/node-fetch": "^2.3.3",
+    "micro": "^9.3.4",
+    "prettier": "^1.17.0",
+    "typescript": "^3.4.5"
+  }
+}

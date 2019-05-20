@@ -1,0 +1,27 @@
+{
+  "name": "slack-integration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --write --single-quote './{src,test}/**/*.ts'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/cookie": "0.3.2",
+    "@types/micro": "7.3.3",
+    "@types/mongodb": "3.1.26",
+    "@types/node": "12.0.1",
+    "@types/node-fetch": "2.3.3",
+    "@zeit/integration-utils": "0.2.2",
+    "cookie": "0.3.1",
+    "micro": "9.3.4",
+    "mongodb": "3.2.4",
+    "node-fetch": "2.5.0"
+  },
+  "devDependencies": {
+    "prettier": "1.17.1"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "zeit-slack-integration",
+  "alias": "zeit-slack-integration.now.sh",
+  "version": 2,
+  "builds": [
+    { "src": "src/**/*.ts", "use": "@now/node" }
+  ],
+  "routes": [
+    { "src": "/authorize", "dest": "/src/api/slack/authorize.ts" },
+    { "src": "/callback", "dest": "/src/api/slack/callback.ts" },
+    { "src": "/uihook", "dest": "/src/uihook/uihook.ts" },
+    { "src": "/webhook-handler", "dest": "/src/api/webhook.ts" },
+    { "src": "/zeit/callback", "dest": "/src/api/zeit/callback.ts" }
+  ],
+  "env": {
+    "HOOK_URL": "https://zeit-slack-integration.now.sh",
+    "MONGO_URI": "@slack-integration-mongo-url",
+    "NODE_ENV": "production",
+    "SLACK_CLIENT_ID": "@slack-integration-slack-client-id",
+    "SLACK_CLIENT_SECRET": "@slack-integration-slack-client-secret",
+    "ZEIT_CLIENT_ID": "@slack-integration-zeit-client-id",
+    "ZEIT_CLIENT_REDIRECT_URI": "https://zeit-slack-integration.now.sh/zeit/callback",
+    "ZEIT_CLIENT_SECRET": "@slack-integration-zeit-client-secret"
+  }
+}

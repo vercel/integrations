@@ -14,7 +14,7 @@ permission_id=lhi-updater-event
 handler="index.handler" \
 timeout=120
 schedule="rate(1 minute)"
-endpoint="https://lighthouse-integration.nkzawa-zeit.now.sh/update"
+endpoint="https://lighthouse.zeit.sh/update"
 environment="Variables={API_SECRET=$API_SECRET,ENDPOINT=$endpoint}"
 zipfile="${TMPDIR}${function_name}-$(date +%s).zip"
 

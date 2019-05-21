@@ -8,6 +8,7 @@ const PROJECTS_LIMIT = 5;
 const DEPLOYMENTS_LIMIT = 10;
 const ASSUMED_AUDITING_TIME = 10 * 60 * 1000;
 const ASSETS_LINK_URL = `${HOST}/assets/link.png`;
+const GAUGE_SVG_URL = `${HOST}/gauge.svg`;
 
 function parseDeploymentURL(url) {
   const parts1 = url.split(".");
@@ -36,11 +37,16 @@ const Score = ({ score, title }) => {
     color = "#178239";
   }
 
+  const gaugeSvgUrl = `${GAUGE_SVG_URL}?score=${encodeURIComponent(score)}`;
+
   return htm`
     <Box textAlign="center">
-      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${
+      <Box display="flex" justifyContent="center" alignItems="center" position="relative">
+        <Img src=${gaugeSvgUrl} width="60" height="60" />
+        <Box color=${color} fontSize="18px" fontWeight="bold" position="absolute">${
     score || score === 0 ? Math.floor(score * 100) : "?"
   }</Box>
+      </Box>
       <P>${title}</P>
     </Box>
   `;

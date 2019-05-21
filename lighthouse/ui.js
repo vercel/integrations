@@ -38,9 +38,9 @@ const Score = ({ score, title }) => {
 
   return htm`
     <Box textAlign="center">
-      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${score || score === 0 ? Math.floor(
-    score * 100
-  ) : '?'}</Box>
+      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${
+    score || score === 0 ? Math.floor(score * 100) : "?"
+  }</Box>
       <P>${title}</P>
     </Box>
   `;

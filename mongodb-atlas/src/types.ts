@@ -1,15 +1,6 @@
 import AtlasClient from './lib/atlas-client';
 import { RequestInit } from 'node-fetch';
-import { ZeitClient } from '@zeit/integration-utils';
-
-export interface UiHookPayload {
-  action: string;
-  token: string;
-  teamId: string | null;
-  slug: string;
-  projectId?: string | null;
-  clientState: any;
-}
+import { ZeitClient, UiHookPayload } from '@zeit/integration-utils';
 
 export interface ViewInfo {
   metadata: any;

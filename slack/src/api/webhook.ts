@@ -7,8 +7,8 @@ import getFormatter from '../lib/formatter';
 import getIntegrationConfig from '../lib/mongodb/get-integration-config';
 
 interface WebhookParams {
-	owner_id?: string;
 	incoming_webhook?: string;
+	owner_id?: string;
 }
 
 export default async function webhookHandler(
@@ -26,7 +26,6 @@ export default async function webhookHandler(
 		return send(res, 200);
 	}
 
-	console.log(`Sending a notification to ${incomingWebhook} with text`, body);
 	await fetch(incomingWebhook, {
 		method: 'POST',
 		body: JSON.stringify(body)

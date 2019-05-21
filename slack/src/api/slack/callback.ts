@@ -11,6 +11,7 @@ import getZeitClient from '../../lib/zeit-client';
 
 interface CallbackQuery {
 	code?: string;
+	error?: string;
 	state?: string;
 }
 
@@ -25,9 +26,13 @@ export default async function callback(
 	res: ServerResponse
 ) {
 	const { query } = parse(req.url!, true);
-	const { code, state }: CallbackQuery = query;
+	const { code, state, error }: CallbackQuery = query;
 	const cookies = cookie.parse(req.headers.cookie || '');
 	const context = JSON.parse(cookies[AUTH_COOKIE_NAME] || '{}');
+
+	if (error) {
+		return send(res, 403, 'You must select a channel to send events');
+	}
 
 	if (!code || !state) {
 		return send(res, 403, 'No code or state found');
@@ -39,6 +44,14 @@ export default async function callback(
 
 	if (!context.ownerId) {
 		return send(res, 403, 'No ownerId found to create ZEIT webhook');
+	}
+
+	if (!context.configurationId) {
+		return send(
+			res,
+			403,
+			'No configurationId found to create ZEIT webhook'
+		);
 	}
 
 	// Exchange the code for an access token and ensure there is a webhook
@@ -64,6 +77,7 @@ export default async function callback(
 		webhooks: [
 			...config.webhooks,
 			{
+				configurationId: context.configurationId,
 				slackAuthorization: {
 					accessToken: tokenInfo.access_token,
 					scope: tokenInfo.scope,

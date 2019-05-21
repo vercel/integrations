@@ -31,10 +31,9 @@ const Settings = ({ apiKey }) => htm`
   </Fieldset>`
 
 const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey, endpoint }) => htm`
-  <H1>Project Settings</H1>
+  <H1>RabbitMQ Instance</H1>
   <Fieldset>
     <FsContent>
-      Select a RabbitMQ instance to make available to all <B>${project.name}</B> deployments
       <Container>
         <Select name="selectedInstance" value=${binding ? binding.id : '-1'}>
           <Option value="-1" caption="(none)" />
@@ -44,11 +43,13 @@ const ProjectSettings = ({ rabbitInstances = [], project, binding, consoleApiKey
             `)
           }
         </Select>
-        <Button action="refresh" small>Refresh</Button>
       </Container>
+      <Button action="refresh" small>Refresh</Button>
     </FsContent>
     <FsFooter>
-      ${!binding ? '' : htm`✅ You can now use the environment variable CLOUDAMQP_URL from your deployments to connect to the ${binding.name} RabbitMQ cluster`}
+      ${!binding 
+        ? `Select a RabbitMQ instance to make available to all ${project.name} deployments`
+        : htm`You can now use the environment variable CLOUDAMQP_URL in your deployments to connect to the ${binding.name} RabbitMQ cluster`}
     </FsFooter>
   </Fieldset>
   `
@@ -81,7 +82,7 @@ const actions = {
   async save(state, zeit) {
     // Save global settings
     const apiKey = state.clientState.apiKey
-    state.store.apiKey = apiKey;
+    state.store.apiKey = typeof apiKey === 'string' ? apiKey.trim() : undefined;
 
     // Save project settings
     if (state.project) {
@@ -104,9 +105,10 @@ const actions = {
         const { url } = state.store.bindings[state.project.id];
         const secretName = await zeit.ensureSecret('cloudamqp_url_' + instanceId, url)
         await zeit.upsertEnv(state.project.id, 'CLOUDAMQP_URL', secretName)
+      } else {
+        await zeit.removeEnv(state.project.id, 'CLOUDAMQP_URL')
       }
     }
-    state.message = 'Saved';
   },
   async refresh(state) {
     try {
@@ -127,11 +129,10 @@ const handleAction = async (action, state, zeit) => {
 
 module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
   const { clientState, action, project, configurationId } = payload;
-  const metadataApiEndpoint = `/v1/integrations/configuration/${configurationId}/metadata`;
 
   let oldStore;
   try {
-    oldStore = await zeit.fetchAndThrow(metadataApiEndpoint, { method: 'GET' });
+    oldStore = await zeit.getMetadata();
   } catch (e) {
     oldStore = {};
   }
@@ -163,10 +164,7 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
   // Save store if changed by the action
   if (store !== oldStore) {
     try {
-      zeit.fetchAndThrow(metadataApiEndpoint, {
-        method: 'POST',
-        data: store
-      });
+      await zeit.setMetadata(store)
     } catch (e) {
       errorMessage = 'Failed saving metadata';
     }
@@ -185,7 +183,7 @@ module.exports = withUiHook(async ({ payload, zeitClient: zeit }) => {
             project=${project}
             consoleApiKey=${consoleApiKey}
             binding=${binding}/>`:
-          htm`<Notice>Please go to a project's integration settings to setup its integration</Notice>`)}
+          htm`<Notice>Please go to a project's "Integrations" tab to set it up</Notice>`)}
       <Container>
         <Button action="save">Save</Button>
         ${state.message ? htm`<Notice>${state.message}</Notice>`: ''}

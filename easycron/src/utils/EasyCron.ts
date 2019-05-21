@@ -17,72 +17,86 @@ class EasyCron {
       http_method,
       posts,
       path,
+      url
     } = clientState
 
-    let { url } = clientState
+    console.log(url)
 
-    url = `${url.match(/^https:\/\//) ? url : `https://${url}/`}${path}`
+
+    const endpoint = `${path === '' ? `https://${url}` : `https://${url}/${path}`}`
+
+    console.log(endpoint)
 
     let uri = `${this.endpoint}/${id ? 'edit' : 'add'}?token=${
       this.apiKey
-    }${id? `&id=${id}` : ''}&cron_job_name=${cron_job_name}&url=${url}&cron_expression=${cron_expression}&timezone_from=2&timezone=${timezone}&http_method=${http_method}`
+    }${id? `&id=${id}` : ''}&cron_job_name=${cron_job_name}&url=${endpoint}&cron_expression=${cron_expression}&timezone_from=2&timezone=${timezone}&http_method=${http_method}`
 
     if (posts !== '') {
       uri += `&posts=${posts}`
     }
 
-    const { cron_job_id, status } = await fetch(encodeURI(uri), {
+    console.log(uri)
+
+    const { cron_job_id, error } = await fetch(encodeURI(uri), {
       method: 'POST',
     }).then(reponse => reponse.json())
-    return { status, cron_job_id }
+    return { cron_job_id, error }
   }
 
   async getJobs() {
-    const { cron_jobs, status } = await fetch(
+    const { cron_jobs, error } = await fetch(
       `${this.endpoint}/list?token=${this.apiKey}&limit=100`,
     ).then(reponse => reponse.json())
 
-    return { status, cronJobs: cron_jobs }
+    return { cronJobs: cron_jobs, error }
   }
 
   async getDetail(id: number) {
-    const { cron_job } = await fetch(
+    const { cron_job, error } = await fetch(
       `${this.endpoint}/detail?token=${this.apiKey}&id=${id}`,
     ).then(reponse => reponse.json())
 
-    return cron_job
+    return { cron_job, error }
   }
 
   async getLogs(id: number) {
-    const { logs } = await fetch(
+    const { logs, error } = await fetch(
       `${this.endpoint}/logs?token=${this.apiKey}&id=${id}`,
     ).then(reponse => reponse.json())
 
-    return logs
+    return { logs, error }
   }
 
   async deleteJob(id: number) {
-    const { status } = await fetch(
+    const { error } = await fetch(
       `${this.endpoint}/delete?token=${this.apiKey}&id=${id}`,
     ).then(reponse => reponse.json())
 
-    return status
+    return { error }
   }
 
   async enable(id: number) {
-    const { status } = await fetch(
+    const { error } = await fetch(
       `${this.endpoint}/enable?token=${this.apiKey}&id=${id}`,
     ).then(reponse => reponse.json())
 
-    return status
+    return { error }
   }
 
   async disable(id: number) {
-    const { status } = await fetch(
+    const { error } = await fetch(
       `${this.endpoint}/disable?token=${this.apiKey}&id=${id}`,
     ).then(reponse => reponse.json())
 
-    return status
+    return { error }
+  }
+
+  async timezone() {
+    const { timezone, error } = await fetch(
+      `${this.endpoint}/timezone?token=${this.apiKey}`,
+    ).then(reponse => reponse.json())
+
+    return { timezone, error }
   }
 }
 

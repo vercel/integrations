@@ -1,24 +1,26 @@
 import { htm as html } from '@zeit/integration-utils'
-import { Status } from '../components/Status';
+import { Status, Method } from '../components/Status';
+import { TableRow, BodyItem, Table, HeaderItem } from '../components/Table';
 
 export const CronJob = ({ cronJob }: { cronJob: any }) => {
   return html`
-    <Box display="table-row" borderColor="#eaeaea" borderStyle="solid" borderBottomWidth="1px">
-      <Box display="flex" justifyContent="center" padding="10px"><${Status} active=${Boolean(Number(cronJob.status))} /></Box>
-      <Box display="table-cell" padding="10px"><P>${cronJob.cron_job_name}</P></Box>
-      <Box display="table-cell" padding="10px"><Link href=${cronJob.url} target="_blank">${cronJob.url}</Link></Box>
-      <Box display="table-cell" padding="10px"><P>${cronJob.cron_expression}</P></Box>
-      <Box display="table-cell" padding="10px">
+    <${TableRow}>
+      <${BodyItem}>${cronJob.cron_job_name}</${BodyItem}>
+      <Box display="flex" padding="10px"><${Method}>${cronJob.http_method}</${Method}></Box>      
+      <${BodyItem}><Link href=${cronJob.url} target="_blank">${cronJob.url}</Link> <${Status} active=${Boolean(Number(cronJob.status))} /></${BodyItem}>
+      <${BodyItem}>${cronJob.cron_expression}</${BodyItem}>
+      <${BodyItem}>
         <Button small secondary action=${`detail-${cronJob.cron_job_id}`}>
           Detail
         </Button>
-      </Box>
-    </Box>
+      </${BodyItem}>
+    </${TableRow}>
   `
 }
 
 export const Logout = () => html`
-  <Box width="100%" display="flex" justifyContent="flex-end" marginTop="20px">
+  <Box width="100%" display="flex" justifyContent="space-between" alignItems="center" marginTop="20px">
+    <ProjectSwitcher />
     <P>You can change your API key <Link action="changeToken">here.</Link></P>
   </Box>  
 `
@@ -33,35 +35,21 @@ export const CronJobs = ({ cronJobs }: { cronJobs: any[] }) => {
             Create a new cron job
           </Button>
         </Box>
-        <Box
-          width="100%"
-          display="table"
-          borderRadius="5px"
-          borderColor="#eaeaea"
-          overflow="hidden"
-          borderStyle="solid"
-          borderWidth="1px"
-          marginTop="20px"
-          marginBottom="20px"
-        >
-          <Box display="table-header-group" backgroundColor="rgb(250, 250, 250)">
-            <Box display="table-row">
-              <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>Active</B></P></Box>
-              <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>Name</B></P></Box>
-              <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>Cron url</B></P></Box>
-              <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>Cron expression</B></P></Box>
-              <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>Action</B></P></Box>
-            </Box>
-          </Box>
-          <Box display="table-row-group">
-            ${cronJobs.map(
-              cronJob =>
-                html`
-                  <${CronJob} cronJob=${cronJob} />
-                `,
-            )}
-          </Box>
-        </Box>
+        <${Table} header=${html`
+            <${HeaderItem}>Name</${HeaderItem}>
+            <${HeaderItem}>Method</${HeaderItem}>
+            <${HeaderItem}>Url</${HeaderItem}>
+            <${HeaderItem}>Cron expression</${HeaderItem}>
+            <${HeaderItem}>Action</${HeaderItem}>
+          `}
+        >      
+          ${cronJobs.map(
+            cronJob =>
+              html`
+                <${CronJob} cronJob=${cronJob} />
+              `,
+          )}
+        </${Table}>
         <${Logout} />
       </Page>
     `
@@ -81,6 +69,7 @@ export const CronJobs = ({ cronJobs }: { cronJobs: any[] }) => {
           borderWidth="1px"
           marginTop="20px"
           marginBottom="20px"
+          backgroundColor="white"
         >
           <Button small action="newCronJob">
             Create a new cron job

@@ -1,6 +1,12 @@
 import { htm as html } from '@zeit/integration-utils'
 
-export const Table = ({ header, children }: { header: any, children: any }) => html`
+export const Table = ({
+  header,
+  children,
+}: {
+  header: any
+  children: any
+}) => html`
   <Box
     width="100%"
     display="table"
@@ -23,8 +29,28 @@ export const Table = ({ header, children }: { header: any, children: any }) => h
   </Box>
 `
 
+export const TableRow = ({ children }: { children: any }) => html`
+  <Box
+    display="table-row"
+    borderColor="#eaeaea"
+    borderStyle="solid"
+    borderBottomWidth="1px"
+    backgroundColor="white"
+  >
+    ${children}
+  </Box>
+`
+
 export const HeaderItem = ({ children }: { children: any }) => html`
-  <Box display="table-cell" padding="10px" borderColor="#eaeaea" borderStyle="solid" borderWidth="0px" borderBottomWidth="1px"><P><B>${children}</B></P></Box>
+  <Box
+    display="table-cell"
+    padding="10px"
+    borderColor="#eaeaea"
+    borderStyle="solid"
+    borderWidth="0px"
+    borderBottomWidth="1px"
+    ><P><B>${children}</B></P></Box
+  >
 `
 
 export const BodyItem = ({ children }: { children: any }) => html`

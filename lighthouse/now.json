@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "lighthouse-integration",
+  "alias": "lighthouse.zeit.sh",
   "env": {
     "API_SECRET": "@lhi-api-secret",
     "CLIENT_ID": "@lhi-client-id",

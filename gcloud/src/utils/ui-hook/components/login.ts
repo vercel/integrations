@@ -20,8 +20,13 @@ const formatAccount = (email: string) => {
 const LoginScreen = ({ error, projectId, inputValue, config }: any) => html`
   <Page>
     ${!projectId ? html`
+    <Box display="flex" alignItems="center" justifyContent="flex-end">
+      ZEIT Project:
+      <Box width="5px" />
+      <ProjectSwitcher />
+    </Box>
     <Notice type="message">
-      <B>NOTE:</B> In order to link Google Cloud resources to your deployments, <ProjectSwitcher />
+      <B>NOTE:</B> In order to link Google Cloud resources to your deployments, select a project from the picker above
     </Notice>
     <BR />
     ` : ''}

@@ -3,7 +3,7 @@
   "alias": "gcloud-integration.zeit.sh",
   "version": 2,
   "builds": [
-    { "src": "src/**/*.ts", "use": "@now/node@canary" },
+    { "src": "src/index.ts", "use": "@now/node@canary" },
     { "src": "static/*.png", "use": "@now/optipng" },
     { "src": "static/*.svg", "use": "@now/static" }
   ],

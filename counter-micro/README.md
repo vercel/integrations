@@ -17,5 +17,5 @@ Then run this UiHook locally with:
 npm start
 ```
 
-Then [create a ZEIT addon](https://zeit.co/docs/addons) and set the UiHook URI to: `http:///localhost:5005`
+Then [create a ZEIT integration](https://zeit.co/docs/integrations) and set the UiHook URI to: `http:///localhost:5005`
 

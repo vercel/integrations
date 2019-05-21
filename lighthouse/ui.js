@@ -28,19 +28,19 @@ function parseDeploymentURL(url) {
 
 const Score = ({ score, title }) => {
   let color;
-  if (score >= 0.9) {
-    color = "#178239";
-  } else if (score >= 0.5) {
+  if (!score || score < 0.5) {
+    color = "#c7221f";
+  } else if (score < 0.9) {
     color = "#e67700";
   } else {
-    color = "#c7221f";
+    color = "#178239";
   }
 
   return htm`
     <Box textAlign="center">
-      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${Math.floor(
+      <Box color=${color} fontSize="18px" fontWeight="bold" width="100px">${score || score === 0 ? Math.floor(
     score * 100
-  )}</Box>
+  ) : '?'}</Box>
       <P>${title}</P>
     </Box>
   `;
@@ -60,7 +60,6 @@ module.exports = withUiHook(
     } = payload;
     const from = parseInt(clientState.from || query.from, 10) || undefined;
     const ownerId = (team || user).id;
-    console.log(payload)
 
     if (action && action.startsWith("audit:")) {
       const [, deploymentId] = action.split(":");

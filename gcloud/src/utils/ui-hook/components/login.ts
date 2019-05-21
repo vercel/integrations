@@ -60,7 +60,7 @@ const LoginScreen = ({ error, projectId, inputValue, config }: any) => html`
         <H2>Known credentials</H2>
         ${Object.keys(config).reduce((acc: any[], key: string): any[] => {
     /* eslint-disable @typescript-eslint/indent */
-          let exists = acc.find(
+          let exists = acc && acc.find(
               credential => config[key].googleCredentials &&
               credential.private_key_id === config[key].googleCredentials.private_key_id
             )

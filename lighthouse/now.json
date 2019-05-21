@@ -27,6 +27,7 @@
     { "src": "assets/*", "use": "@now/static" }
   ],
   "routes": [
+    { "src": "/gauge.svg", "dest": "/gauge.js" },
     { "src": "/reports/(?<url>[^/]+)", "dest": "/report.js?url=$url" }
   ]
 }

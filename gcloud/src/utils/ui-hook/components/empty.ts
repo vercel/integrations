@@ -10,7 +10,7 @@ export default function Empty() {
   return html`
     <Page>
       <Notice type="message">
-        <B>NOTE:</B> In order to link Google Cloud resources to your deployments, please open integration settings from a project
+        <B>NOTE:</B> In order to link Google Cloud resources to your deploymentst, <ProjectSwitcher />
       </Notice>
       <BR />
       <Box display="flex" justifyContent="space-between" alignItems="center">

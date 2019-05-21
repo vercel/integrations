@@ -21,7 +21,7 @@ const LoginScreen = ({ error, projectId, inputValue, config }: any) => html`
   <Page>
     ${!projectId ? html`
     <Notice type="message">
-      <B>NOTE:</B> In order to link Google Cloud resources to your deployments, please open integration settings from a project
+      <B>NOTE:</B> In order to link Google Cloud resources to your deployments, <ProjectSwitcher />
     </Notice>
     <BR />
     ` : ''}
@@ -60,7 +60,11 @@ const LoginScreen = ({ error, projectId, inputValue, config }: any) => html`
         <H2>Known credentials</H2>
         ${Object.keys(config).reduce((acc: any[], key: string): any[] => {
     /* eslint-disable @typescript-eslint/indent */
-          let exists = acc && acc.find(
+					if (!config[key]) {
+						return acc;
+					}
+
+          let exists = acc.find(
               credential => config[key].googleCredentials &&
               credential.private_key_id === config[key].googleCredentials.private_key_id
             )

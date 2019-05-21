@@ -167,6 +167,7 @@ module.exports = withUiHook(
         }
       )
       .toArray();
+    mongo.close();
 
     const deploymentDocMap = new Map(deploymentDocs.map(d => [d.id, d]));
     const nextUrl = next ? `${installationUrl}?from=${next}` : null;

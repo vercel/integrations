@@ -17,9 +17,6 @@ module.exports = mongo.withClose(async (req, res) => {
     query: { code, next, teamId }
   } = parse(req.url, true);
 
-  // start connecting mongo first
-  const dbPromise = mongo();
-
   console.log("fetching accessToken");
   const accessToken = await fetchAccessToken({
     code,
@@ -39,7 +36,7 @@ module.exports = mongo.withClose(async (req, res) => {
 
   deployments = deployments.filter(d => d.state === "READY");
 
-  const db = await dbPromise;
+  const db = await mongo();
 
   if (user) {
     console.log(`> saving user: ${user.uid}, ${user.username}`);
@@ -104,6 +101,7 @@ module.exports = mongo.withClose(async (req, res) => {
       }
     })
   );
+  mongo.close();
 
   if (user) {
     const setCookie = cookie.serialize("accessToken", accessToken, {

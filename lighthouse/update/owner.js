@@ -14,30 +14,50 @@ const limitLighthouse = RateLimit(5);
 async function update({ accessToken, id }) {
   console.log(`fetching deployments for ${id}`);
 
-  const db = await mongo();
-  const deploymentsCollection = db.collection("deployments");
   const isTeam = id.startsWith("team_");
 
-  let [deployments, deploymentDocs] = await Promise.all([
-    // recent deployments
-    fetchDeployments({
-      accessToken,
-      limit: AUDIT_DEPLOYMENTS_COUNT,
-      since: Date.now() - AUDIT_DEPLOYMENTS_CREATED_AFTER,
-      teamId: isTeam ? id : null
-    }).catch(err => {
-      if (err.res && err.res.status === 403) {
-        // TODO: remove the user from database
-        console.log(
-          `Ignoring deployments for ${id}. The token is not valid anymore`
-        );
-        return;
-      }
+  // recent deployments
+  let deployments = await fetchDeployments({
+    accessToken,
+    limit: AUDIT_DEPLOYMENTS_COUNT,
+    since: Date.now() - AUDIT_DEPLOYMENTS_CREATED_AFTER,
+    teamId: isTeam ? id : null
+  }).catch(err => {
+    if (err.res && err.res.status === 403) {
+      // TODO: remove the user from database
+      console.log(
+        `Ignoring deployments for ${id}. The token is not valid anymore`
+      );
+      return;
+    }
 
-      throw err;
-    }),
+    throw err;
+  });
 
-    // deployment docs to audit
+  deployments = deployments.filter(d => d.state === "READY");
+  if (!deployments.length) return;
+
+  const deploymentIds = deployments.map(d => d.uid);
+
+  console.log(
+    `getting existing deployment docs for ${id}: ${deploymentIds.length}`
+  );
+
+  const db = await mongo();
+  const deploymentsCollection = db.collection("deployments");
+
+  // deployment docs to audit
+  const [existingDeploymentDocs, deploymentDocs] = await Promise.all([
+    deploymentsCollection
+      .find(
+        {
+          id: { $in: deploymentIds }
+        },
+        {
+          projection: { id: 1 }
+        }
+      )
+      .toArray(),
     deploymentsCollection
       .find(
         {
@@ -51,24 +71,8 @@ async function update({ accessToken, id }) {
       .toArray()
   ]);
 
-  if (!deployments) return;
+  mongo.close();
 
-  deployments = deployments.filter(d => d.state === "READY");
-  const deploymentIds = deployments.map(d => d.uid);
-
-  console.log(
-    `getting existing deployment docs for ${id}: ${deploymentIds.length}`
-  );
-  const existingDeploymentDocs = await deploymentsCollection
-    .find(
-      {
-        id: { $in: deploymentIds }
-      },
-      {
-        projection: { id: 1 }
-      }
-    )
-    .toArray();
   const existingIds = new Set(existingDeploymentDocs.map(d => d.id));
   deployments = deployments.filter(d => !existingIds.has(d.uid));
 

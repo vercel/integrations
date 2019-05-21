@@ -22,6 +22,8 @@ module.exports = mongo.withClose(async (req, res) => {
       }
     }
   );
+  mongo.close();
+
   if (!deploymentDoc) {
     res.statusCode = 404;
     res.end("not found");

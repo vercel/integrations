@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@zeit/integration-utils@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.2.0.tgz#d607d7e136ee12676b1a8b5b9d3ef982bc8f7d3f"
-  integrity sha512-t/7GAE3hc1JoA/2nzTvRj3Igu0DU4J953Q/uyVfm1wHdte2Wb+C3HrGZP4YT189Y5dLjHdyTnLoKn9fHURhHpg==
+"@zeit/integration-utils@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@zeit/integration-utils/-/integration-utils-0.4.0.tgz#03a2efc28a6936e93151edb347af2ea0ba72cf20"
+  integrity sha512-JRKDJO/LSU40+//PcTPrE1cv0UXiST14bdEeyZhuLkHmlofc6U5g9776oFUcx0ixZytb6tRKaYBV0gxXa+Fqlg==
   dependencies:
     htm "2.1.1"
     micro "9.3.4"

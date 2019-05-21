@@ -6,9 +6,12 @@
 <a href="https://zeit.co/blog/zeit-now-integrations-platform">Read the blog post</a>
 <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <a href="https://zeit.co/integrations">Visit the Marketplace</a>
+<br>
+<br>
+  Integrations are one-click seamless extensions for the ZEIT Dashboard. Their custom UI can be securely provided by a third-party service. This repository contains example integrations created by ZEIT staff, that you can use as a base for your own integration.
 </div>
 
-Integrations are one-click seamless extensions for the ZEIT Dashboard. Their custom UI can be securely provided by a third-party service. This repository contains example integrations created by ZEIT staff, that you can use as a base for your own integration.
+
 
 
 ## About

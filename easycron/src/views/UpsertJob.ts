@@ -26,16 +26,17 @@ const Log = ({ log, timezone }: {log: any, timezone: string }) => {
 }
 
 export const UpsertJob = ({ id, logs, timezone, clientState, deployments, error, }: { id: number | undefined, logs: any[] | undefined, timezone: string | undefined, clientState: any, deployments: any[], error: any }) => {
+	console.log(deployments)
   return html`
     <Page>
-			${error ? html`<Notice>${error.message}</Notice>` : ''}
+			${error ? html`<Notice type="error">${error.message}</Notice>` : ''}
 			<Container>
 				<Box width="100%" display="flex" justifyContent="space-between">
     	  	<H1>${id ? 'Cron job detail' : 'Create a new cron job'}</H1>
 					<Button small secondary action="back">Back</Button>
 				</Box>
 				<${Field} title="Cron name">
-					<Input name="cron_job_name" placholder="Cron name" value="${clientState.cron_job_name || ''}"/>
+					<Input width="100%" name="cron_job_name" placholder="Cron name" value="${clientState.cron_job_name || ''}"/>
 				</${Field}>
 				<${Field} title="Cron url" footer=${html`<P>Cron job execution <B>method</B> and <B>url</B> where is cron periodically executed.</P>`}>
 					<Box display="flex" alignItems="center">

@@ -204,7 +204,9 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
         const instanceName = zeit.action.split('sql-delete-instance-')[1]
 
         await google.deleteSQLInstance(currentProject, instanceName)
-        await zeit.removeSQLCredentials(sqlCredentials[instanceName])
+        if (sqlCredentials[instanceName]) {
+          await zeit.removeSQLCredentials(sqlCredentials[instanceName])
+        }
 
         delete sqlCredentials[instanceName]
       } catch (e) {

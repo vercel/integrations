@@ -9,12 +9,15 @@ const fetchDeployments = require("../lib/fetch-deployments");
 const mongo = require("../lib/mongo");
 const runAudits = require("../lib/run-audits");
 
+const limitUpdate = RateLimit(5);
 const limitLighthouse = RateLimit(5);
 
 async function update({ accessToken, id }) {
-  console.log(`fetching deployments for ${id}`);
-
   const isTeam = id.startsWith("team_");
+
+  await limitUpdate();
+
+  console.log(`fetching deployments for ${id}`);
 
   // recent deployments
   let deployments = await fetchDeployments({
@@ -72,8 +75,6 @@ async function update({ accessToken, id }) {
       .toArray()
   ]);
 
-  mongo.close().catch(console.error);
-
   const existingIds = new Set(existingDeploymentDocs.map(d => d.id));
   deployments = deployments.filter(d => !existingIds.has(d.uid));
 
@@ -99,24 +100,27 @@ async function update({ accessToken, id }) {
 
 async function handler(req, res) {
   const body = await rawBody(req);
-  let accessToken;
-  let id;
+  let json;
 
   try {
-    ({ accessToken, id } = JSON.parse(body));
+    json = JSON.parse(body);
   } catch (err) {
     res.statusCode = 400;
     res.end("Invalid JSON");
     return;
   }
 
-  if (!accessToken || !id) {
-    res.statusCode = 400;
-    res.end("Missing required properties: accessToken, id");
-    return;
+  const owners = Array.isArray(json) ? json : [json];
+
+  for (const o of owners) {
+    if (!o || !o.accessToken || !o.id) {
+      res.statusCode = 400;
+      res.end("Missing required properties: accessToken, id");
+      return;
+    }
   }
 
-  await update({ accessToken, id });
+  await Promise.all(owners.map(update));
 
   res.end("ok");
 }

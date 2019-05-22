@@ -16,16 +16,14 @@ module.exports = async ({
     }
   });
 
-  const body = await res.json();
-
   if (!res.ok) {
-    const err = new Error(body.error.message || "Failed to fetch deployments");
+    const err = new Error("Failed to fetch deployments");
     err.res = res;
-    err.body = body;
+    err.body = await res.text();
     throw err;
   }
 
-  let { deployments } = body;
+  let { deployments } = await res.json();
 
   if (since) {
     deployments = deployments.filter(d => d.created >= since);

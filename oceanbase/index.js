@@ -1,15 +1,28 @@
 const { withUiHook, htm } = require("@zeit/integration-utils");
 
+const newClusterView = require("./views/new-cluster");
+const dashboardView = require("./views/dashboard");
 const setupView = require("./views/setup");
 
 async function getContent(options) {
   const { payload, zeitClient } = options;
-  const { actions } = payload;
-  const viewInfo = { zeitClient, payload };
+  const { clientState, action } = payload;
 
-  console.log("viewInfo:", viewInfo);
+  const metadata = await zeitClient.getMetadata();
 
-  return setupView(viewInfo);
+  const viewInfo = { metadata, zeitClient, payload };
+
+  console.log("VIEW INFO:", viewInfo);
+
+  if (!metadata.accessToken) {
+    return setupView(viewInfo);
+  }
+
+  if (action === "new-cluster" || action === "create-cluster") {
+    return newClusterView(viewInfo);
+  }
+
+  return dashboardView(viewInfo);
 }
 
 async function handler(options) {

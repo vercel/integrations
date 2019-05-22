@@ -17,6 +17,12 @@ module.exports = mongo.withClose(async (req, res) => {
     query: { code, next, teamId }
   } = parse(req.url, true);
 
+  if (!code) {
+    res.statusCode = 400;
+    res.end("missing query parameter: code");
+    return;
+  }
+
   console.log("fetching accessToken");
   const accessToken = await fetchAccessToken({
     code,
@@ -101,7 +107,7 @@ module.exports = mongo.withClose(async (req, res) => {
       }
     })
   );
-  mongo.close();
+  mongo.close().catch(console.error);
 
   if (user) {
     const setCookie = cookie.serialize("accessToken", accessToken, {

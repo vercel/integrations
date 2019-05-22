@@ -72,7 +72,7 @@ async function update({ accessToken, id }) {
       .toArray()
   ]);
 
-  mongo.close();
+  mongo.close().catch(console.error);
 
   const existingIds = new Set(existingDeploymentDocs.map(d => d.id));
   deployments = deployments.filter(d => !existingIds.has(d.uid));
@@ -97,28 +97,28 @@ async function update({ accessToken, id }) {
   }
 }
 
-module.exports = mongo.withClose(
-  auth(async (req, res) => {
-    const body = await rawBody(req);
-    let accessToken;
-    let id;
+async function handler(req, res) {
+  const body = await rawBody(req);
+  let accessToken;
+  let id;
 
-    try {
-      ({ accessToken, id } = JSON.parse(body));
-    } catch (err) {
-      res.statusCode = 400;
-      res.end("Invalid JSON");
-      return;
-    }
+  try {
+    ({ accessToken, id } = JSON.parse(body));
+  } catch (err) {
+    res.statusCode = 400;
+    res.end("Invalid JSON");
+    return;
+  }
 
-    if (!accessToken || !id) {
-      res.statusCode = 400;
-      res.end("Missing required properties: accessToken, id");
-      return;
-    }
+  if (!accessToken || !id) {
+    res.statusCode = 400;
+    res.end("Missing required properties: accessToken, id");
+    return;
+  }
 
-    await update({ accessToken, id });
+  await update({ accessToken, id });
 
-    res.end("ok");
-  })
-);
+  res.end("ok");
+}
+
+module.exports = mongo.withClose(auth(handler));

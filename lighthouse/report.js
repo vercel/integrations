@@ -22,7 +22,7 @@ module.exports = mongo.withClose(async (req, res) => {
       }
     }
   );
-  mongo.close();
+  mongo.close().catch(console.error);
 
   if (!deploymentDoc) {
     res.statusCode = 404;

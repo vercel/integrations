@@ -57,6 +57,8 @@ const getDbVersion = ({ databaseVersion }: { databaseVersion: string }) => {
       return '(MySQL 5.6)'
     case 'POSTGRES_9_6':
       return '(PostgreSQL 9.6)'
+    default:
+      return ''
   }
 }
 

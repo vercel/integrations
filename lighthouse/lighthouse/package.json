@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "now-build": "cp cri.js node_modules/lighthouse/lighthouse-core/gather/connections/cri.js"
+  },
   "dependencies": {
     "chrome-aws-lambda": "1.15.1",
     "lighthouse": "4.3.1",

@@ -33,6 +33,7 @@ async function update({ accessToken, id }) {
 
     throw err;
   });
+  if (!deployments) return;
 
   deployments = deployments.filter(d => d.state === "READY");
   if (!deployments.length) return;

@@ -293,7 +293,6 @@ export default class Google {
 
       return { webapps: (webapps.data as any).apps || [] }
     } catch (e) {
-      console.log('WAPPS_ERR', JSON.stringify(e, null, 2))
       if (e.toString().includes('has not been used') || e.toString().includes('Error 404 (Not Found)')) {
         return { disabled: true }
       }

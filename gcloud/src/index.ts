@@ -113,7 +113,7 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
     await zeit.saveConfig({ ...config, [zeit.projectId]: projectSettings })
   }
 
-  const currentProject = linkedProject || gcpProjects[0].name
+  const currentProject = linkedProject || gcpProjects[0].projectId
 
   if (zeit.action === 'add-env-var') {
     await zeit.ensureCredentials(currentProject, projectSettings.googleCredentials)

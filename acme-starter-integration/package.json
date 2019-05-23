@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@zeit/fetch": "^5.1.0",
+    "@zeit/integration-utils": "^0.5.1",
+    "mz": "^2.7.0",
+    "node-fetch": "^2.6.0",
+    "now": "^15.3.0",
+    "shell-quote": "^1.6.1",
+    "uid-promise": "^1.1.0"
+  }
+}

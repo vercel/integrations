@@ -119,6 +119,10 @@ export default class Google {
 
       return { jobs }
     } catch (e) {
+      if (e.toString().includes('has not been used')) {
+        return { disabled: true }
+      }
+
       const error = format(e.response, 'error')
       return { error: error ? error.message : null }
     }

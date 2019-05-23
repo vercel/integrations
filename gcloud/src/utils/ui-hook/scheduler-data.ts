@@ -9,8 +9,12 @@ export default async function getSchedulerData(zeit: ZEIT, google: Google, curre
     }
   }
 
-  const { jobs, error } = await google.scheduler(currentProject)
+  const { jobs, error, disabled } = await google.scheduler(currentProject)
   const deployments = await zeit.deploymentsInCurrentProject()
+
+  if (disabled) {
+    return { disabled }
+  }
 
   return { jobs, error, deployments }
 }

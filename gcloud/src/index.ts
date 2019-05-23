@@ -102,18 +102,22 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
     return html`<${LoginScreen} projectId=${zeit.projectId} error=${e.message === 'no_projects' ? "This service account doesn't appear to have access to any projects" : html`Couldn’t retrieve any projects. Make sure <Link href="https://console.cloud.google.com/apis/library/cloudresourcemanager.googleapis.com" target="_blank">Resource Manager API</Link> is enabled in your project`} />`
   }
 
-  const selectedProject = zeit.get('gcp-project')
+  const selectedProject = zeit.get('gcp-project') || gcpProjects[0].projectId
   let { linkedProject } = projectSettings
 
   // Save GCP project if switched
-  if (selectedProject !== linkedProject) {
+  if (linkedProject !== selectedProject) {
     linkedProject = selectedProject
     projectSettings.linkedProject = linkedProject
 
     await zeit.saveConfig({ ...config, [zeit.projectId]: projectSettings })
   }
 
-  const currentProject = linkedProject || gcpProjects[0].projectId
+  const currentProject = linkedProject
+
+  if (!currentProject) {
+    return html`<${Empty} />`
+  }
 
   if (zeit.action === 'add-env-var') {
     await zeit.ensureCredentials(currentProject, projectSettings.googleCredentials)
@@ -293,7 +297,7 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
           </Select>
         </Box>
       </Box>
-      <$${FS.Scheduler} disabled=${!zeit.projectId} jobs=${scheduler.jobs} error=${schedulerError || scheduler.error} deployments=${scheduler.deployments} />
+      <$${FS.Scheduler} disabled=${!zeit.projectId} jobs=${scheduler.jobs} error=${schedulerError || scheduler.error} deployments=${scheduler.deployments} apiDisabled=${scheduler.disabled} />
       <$${FS.Storage} disabled=${!zeit.projectId} buckets=${storage.buckets} error=${storage.error} hasCredentials=${hasCredentials} currentProject=${currentProject} />
       <$${FS.SQL} disabled=${!zeit.projectId} instances=${sql.instances} error=${sqlError || sql.error} apiDisabled=${sql.disabled} credentials=${sqlCredentials} />
       <Box>

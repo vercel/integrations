@@ -63,6 +63,7 @@ const FirebaseFieldset = ({ disabled, apiDisabled, error, webapps = [], appConfi
           <P>Add Firebase to your web application</P>
           <Box display="flex" flexDirection="column">
             <Input width="250px" name="firebase-app-name" placeholder="My Next.js App" />
+            <Box height="10px" />
             <Button action="firebase-app-create" small>Create Web App</Button>
           </Box>
           ${newConfig ? html`

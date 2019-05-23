@@ -10,6 +10,7 @@ interface SchedulerFieldsetProps {
   error?: string | null;
   disabled?: boolean;
   deployments: any[];
+  apiDisabled?: boolean;
 }
 
 const Job = ({ job }: { job: cloudscheduler_v1beta1.Schema$Job }) => {
@@ -54,24 +55,24 @@ const Job = ({ job }: { job: cloudscheduler_v1beta1.Schema$Job }) => {
 
 const methods = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'HEAD', 'OPTIONS']
 
-const SchedulerFieldset = ({ jobs, error, deployments, disabled }: SchedulerFieldsetProps) => html`
+const SchedulerFieldset = ({ jobs, error, deployments, disabled, apiDisabled }: SchedulerFieldsetProps) => html`
   <Fieldset>
     <FsContent>
       <H2>Cloud Scheduler</H2>
       <P>Run your Now deployments as cron jobs</P>
-      ${!jobs && !error && !disabled ? html`
+      ${apiDisabled ? html`
         <${Note} >
           It appears <Link href="https://console.cloud.google.com/apis/library/cloudscheduler.googleapis.com" target="_blank">Cloud Scheduler API</Link> is disabled in your project or your service account doesn’t have access to it.
           Enable the API in Google Cloud Console and add it to your service account to use Cloud Scheduler.
         </${Note}>
       ` : ''}
-      ${error ? html`
+      ${error && !apiDisabled ? html`
         <${Note} type="error">
           ${error}
         </${Note}>
       ` : ''}
       ${jobs && jobs.length > 0 ? jobs.map(job => html`<${Job} job=${job} />`) : disabled ? html`<P>No project selected</P>` : html`<P>There are no Cloud Scheduler jobs in this Google Cloud project</P>`}
-      ${disabled ? '' : html`
+      ${disabled || apiDisabled ? '' : html`
         <Box flexDirection="column" borderTop="1px solid #eaeaea" paddingTop="10px">
           <H2>Create Job</H2>
           <Box display="flex" alignItems="center" marginTop="15px" marginBottom="10px">

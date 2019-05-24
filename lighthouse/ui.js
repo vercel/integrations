@@ -178,13 +178,13 @@ module.exports = withUiHook(
       const doc = deploymentDocMap.get(d.uid);
       const parsedUrl = parseDeploymentURL(d.url);
       const href = `https://${d.url}`;
-      const deploymentHref = `/${encodeURIComponent(
+      const deploymentHref = `https://zeit.co/${encodeURIComponent(
         ownerSlug
       )}/${encodeURIComponent(parsedUrl.projectName)}/${encodeURIComponent(
         parsedUrl.id
       )}`;
       const projectHref = d.project
-        ? `/${encodeURIComponent(ownerSlug)}/${encodeURIComponent(
+        ? `https://zeit.co/${encodeURIComponent(ownerSlug)}/${encodeURIComponent(
             d.project.name
           )}/integrations/${encodeURIComponent(configurationId)}`
         : null;

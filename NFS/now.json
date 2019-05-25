@@ -11,8 +11,8 @@
     { "src": "/(.*)", "dest": "integration/pages/$1" }
   ],
   "env": {
-    "zeit_client_id": "oac_ePZPDKnfjDbFBY4RaQFd3YXK",
-    "zeit_client_secret": "B6mg69nVwVNBLPhCz7jyJZFe",
-    "zeit_redirect_uri": "https://front-git-integrations.zeit.sh/dashboard/integrations/installation/nfs"
+    "zeit_client_id": "@client_id_nfs",
+    "zeit_client_secret": "@client_secret_nfs",
+    "zeit_redirect_uri": "@redirect_uri_nfs"
   }
 }

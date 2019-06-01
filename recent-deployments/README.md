@@ -1,6 +1,6 @@
 # ZEIT Integration: Recent Deployments
 
-This UiHook fetchs some data from the ZEIT API and render it to the user.
+This UiHook fetches some data from the ZEIT API and renders it to the user.
 
 ## Run Locally
 

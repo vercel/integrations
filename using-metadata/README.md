@@ -1,6 +1,6 @@
 # ZEIT Addon: Using Metadata
 
-This UiHook takes two inputs from the user and keep them inside the metadata store provided by ZEIT addons.
+This UiHook takes two inputs from the user and keeps them inside the metadata store provided by ZEIT addons.
 
 ## Run Locally
 

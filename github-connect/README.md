@@ -1,6 +1,6 @@
 # ZEIT Addon: Connect With GitHub
 
-This ZEIT addons connects with a GitHub account and show details of the connected user.
+This ZEIT addon connects with a GitHub account and shows details of the connected user.
 
 ## Run Locally
 
@@ -27,10 +27,9 @@ Set that as the `ROOT_URL` env variable in your `now.json` file.
 
 **Create a GitHub OAuth app**
 
-First of all, [create](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) a GitHub OAuth app and get the client id and client secret.
-Add then to the related environment variables defined in your `now.json` file.
+First of all, [create](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) a GitHub OAuth app and get the client id and client secret. Then add these to the related environment variables defined in your `now.json` file.
 
-While creating your app, GitHub ask for a callback URL. For that, add the following url:
+While creating your app, GitHub asks for a callback URL. For that, add the following url:
 
 ```
 ROOT_URL/github-callback

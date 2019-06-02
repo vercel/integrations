@@ -1,0 +1,6 @@
+{
+	"name": "zeit-integration-set-env",
+	"dependencies": {
+		"@zeit/integration-utils": "latest"
+	}
+}

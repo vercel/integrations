@@ -23,7 +23,7 @@ After that, add those values to related variables in the [constant.js](./constan
 Run the following command in a different CLI tab:
 
 ```
-ngrok http -p 5005
+ngrok http 5005
 ```
 
 This will show you a URL. Set that as the `ROOT_URL` in the [constant.js](./constant.js) file.

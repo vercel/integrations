@@ -17,4 +17,10 @@ Then run this UiHook locally with:
 now dev -p 5005
 ```
 
-Then [create a ZEIT integration](https://zeit.co/docs/integrations) and set the Redirect URI to: `http:///localhost:5005`
+## Create the Integration
+
+Create an integration by logging in to the [Integration Console](https://zeit.co/dashboard/integrations/console).
+
+Then set the "Redirect URL" to `http://localhost:5005`.
+
+Leave the "UIHook URL" field blank.

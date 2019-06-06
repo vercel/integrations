@@ -1,20 +1,17 @@
 const micro = require('micro');
-const { withUiHook, htm } = require('@zeit/integration-utils');
-
-const renderUIHook = withUiHook(() => {
-  console.log('UIHook loaded.');
-  return htm`
-		<Page>
-			<H1>Delete Hooks - Redirect URI example</H1>
-		</Page>
-	`;
-});
+const { parse: parseUrl } = require('url');
 
 module.exports = function(req, res) {
+  const { query } = parseUrl(req.url, true);
   if (req.method === 'DELETE') {
     console.log('Configuration has been deleted. Do some cleanup tasks here.');
     return micro.send(res, 200, {});
   }
-
-  return renderUIHook(req, res);
+  console.log('Configuration has been added.');
+  if (query.next) {
+    res.writeHead(302, {
+      Location: query.next
+    });
+    res.end('Redirecting...');
+  }
 };

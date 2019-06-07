@@ -21,7 +21,7 @@ async function completeOAuthProcess({payload, zeitClient, metadata}) {
 
 	if (response.status !== 200) {
 		throw new Error(
-			`Invalid status code on Azure token fetching: ${
+			`Invalid status code on GitHub token fetching: ${
 				response.status
 			} error: ${await response.text()}`
 		);

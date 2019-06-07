@@ -55,8 +55,6 @@ async function setupWebhook(req, res) {
 	const token = tokenPayload['access_token'];
 	TokenStore[query.configurationId] = token;
 
-	console.log('XXXX', query.teamId, token);
-
 	const zeitClient = new ZeitClient({token, teamId: query.teamId});
 	const hookInfo = await zeitClient.fetchAndThrow(`/v1/integrations/webhooks`, {
 		method: 'POST',

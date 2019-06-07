@@ -1,7 +1,8 @@
 # DELETE Hooks - Redirect URI example
 
-Integrations that require OAuth credentials need to set a Redirect URI. If a user removes a configuration for such an integration sometimes is useful to do some cleanup tasks.
-This example UiHook demonstrates how it can be handled.
+This is a ZEIT Integration using the Redirect URI. It does nothing other than printing some messages to the console.
+But it shows how you can handle the DELETE Hook request when the user removes the Integration configuration.
+Using that, the Integration can implement clean up tasks like deleting created databases and so on.
 
 ## Run Locally
 

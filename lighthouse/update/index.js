@@ -5,7 +5,7 @@ function sleep(t) {
   return new Promise(r => setTimeout(r, t));
 }
 
-const PER_SECONDS = 20;
+const PER_SECONDS = 60;
 const COUNTS = Math.floor(60 / PER_SECONDS);
 
 module.exports = auth(async (req, res) => {

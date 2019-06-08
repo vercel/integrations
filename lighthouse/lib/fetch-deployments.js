@@ -20,6 +20,7 @@ module.exports = async ({
     const err = new Error("Failed to fetch deployments");
     err.res = res;
     err.body = await res.text();
+    err.headers = [...res.headers.entries()];
     throw err;
   }
 

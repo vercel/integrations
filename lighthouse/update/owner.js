@@ -9,7 +9,7 @@ const fetchDeployments = require("../lib/fetch-deployments");
 const mongo = require("../lib/mongo");
 const runAudits = require("../lib/run-audits");
 
-const limitUpdate = RateLimit(5);
+const limitUpdate = RateLimit(1);
 const limitLighthouse = RateLimit(5);
 
 async function update({ accessToken, id }) {

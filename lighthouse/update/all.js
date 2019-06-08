@@ -5,7 +5,7 @@ const mongo = require("../lib/mongo");
 
 const BATCH_SIZE = 20;
 
-const limit = RateLimit(50);
+const limit = RateLimit(10);
 
 async function fetchUpdateOwner(buf) {
   await limit();

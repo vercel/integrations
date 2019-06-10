@@ -14,6 +14,10 @@ interface SchedulerFieldsetProps {
 }
 
 const Job = ({ job }: { job: cloudscheduler_v1beta1.Schema$Job }) => {
+  if (!job.httpTarget) {
+    return ''
+  }
+
   const [, name] = (job.name as string).split('/jobs/')
 
   /* eslint-disable no-irregular-whitespace */
@@ -93,8 +97,8 @@ const SchedulerFieldset = ({ jobs, error, deployments, disabled, apiDisabled }: 
             </Select>
           </Box>
           <Box display="flex" alignItems="center" marginTop="15px" marginBottom="10px">
-            <Select name="job-deployment" width="330px" value=${deployments[0].url}>
-              ${deployments.map((deployment: any) => html`
+            <Select name="job-deployment" width="330px" value=${deployments && deployments.length > 0 ? deployments[0].url : ''}>
+              ${deployments && deployments.map((deployment: any) => html`
                 <Option caption=${deployment.url} value=${deployment.url} />
               `)}
             </Select>

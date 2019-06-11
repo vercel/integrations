@@ -1,5 +1,5 @@
 {
-  "name": "delete-hooks-redirect-uri",
+  "name": "delete-hooks",
   "version": 2,
   "builds": [
     {

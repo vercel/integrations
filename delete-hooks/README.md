@@ -14,15 +14,15 @@ Install NPM dependencies with:
 npm install
 ```
 
-Then run this UiHook locally with:
+Then run it locally with:
 
 ```
 now dev -p 5005
 ```
 
-## Tunnel local UiHook URL with `ngrok`
+## Tunnel local Delete Hook URL with `ngrok`
 
-Since the UiHook is run locally, it needs to be publicly exposed using a tunnel service like [`ngrok`](https://ngrok.com). After you download it, start it with the command `./ngrok http 5005`. This will give you a public URL in the form of `http://<id>.ngrok.io` that you will use it when creating the integration.
+Since this example is run locally, it needs to be publicly exposed using a tunnel service like [`ngrok`](https://ngrok.com). After you download it, start it with the command `./ngrok http 5005`. This will give you a public URL in the form of `http://<id>.ngrok.io` that you will use it when creating the integration.
 
 ## Create the Integration
 

@@ -6,19 +6,19 @@ module.exports = async function(req, res) {
   if (req.method === 'DELETE') {
     const payload = await micro.json(req)
     console.log('Configuration has been deleted. You can do some cleanup tasks here.');
-		console.log(`Payload: ${JSON.stringify(payload)}`);
+    console.log(`Payload: ${JSON.stringify(payload)}`);
     return micro.send(res, 200, {});
   }
 
-  console.log('Configuration has been added.');
-	// Here you can get an ZEIT token an use it to access our APIs.
+  console.log('Configuration has been added.'); 
+  // Here you can get an ZEIT token an use it to access our APIs.
   if (query.next) {
     res.writeHead(302, {
       Location: query.next
     });
     res.end('Redirecting...');
-		return;
+    return;
   }
 
-	return micro.send(res, 200, {});
+  return micro.send(res, 200, {});
 };

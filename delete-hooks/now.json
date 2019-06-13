@@ -1,0 +1,13 @@
+{
+  "name": "delete-hooks",
+  "version": 2,
+  "builds": [
+    {
+      "src": "*.js",
+      "use": "@now/node"
+    }
+  ],
+	"routes": [
+		{"src": "/delete", "dest": "/delete.js"}
+	]
+}

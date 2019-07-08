@@ -13,11 +13,8 @@
   "builds": [
     {
       "src": "lighthouse/index.js",
-      "use": "@nkzawa/now-node-raw",
+      "use": "@now/node@canary",
       "config": {
-        "includeFiles": [
-          "lighthouse/node_modules/**"
-        ],
         "maxLambdaSize": "100mb"
       }
     },

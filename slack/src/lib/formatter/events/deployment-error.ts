@@ -19,19 +19,21 @@ export default async function formatDeploymentErrorEvent(
 	const username = getUserDisplayName(user, deployment);
 	const projectUrl = getProjectURL(name, user, team);
 	const deployContext = getDeploymentContext(deployment);
-	const deploymentDashboardURL = getDeploymentDasboardURL(deployment);
+	const deploymentDashboardURL = getDeploymentDasboardURL(deployment, user, team);
 
 	return {
 		attachments: [
 			{
-				title: deployment.url,
-				title_link: deploymentDashboardURL,
 				author_name: `${username}${
 					team ? ` from ${team.name} team` : ``
 				}`,
 				author_icon: avatar,
-				text: `:red_circle: The project <${projectUrl}|${name}> deployed to <https://${deployment.url}|${deployment.url}> is *ERRORED*.`,
-				fallback: `The project ${projectUrl} deployed to ${deployment.url} is ERRORED`,
+				text: `Deployment *<${deploymentDashboardURL}|${deployment.url}>* \`ERRORED\` :red_circle:`,
+				fallback: `Deployment ${deployment.url} ERRORED`,
+				fields: [{
+					value: `Project <${projectUrl}|${name}>`,
+					short: true
+				}],
 				footer: deployContext,
 				ts: (event.createdAt || Date.now()) / 1000,
 				color: 'danger'

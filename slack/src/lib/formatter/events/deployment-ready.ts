@@ -19,19 +19,21 @@ export default async function formatDeploymentReadyEvent(
 	const username = getUserDisplayName(user, deployment);
 	const projectUrl = getProjectURL(name, user, team);
 	const deployContext = getDeploymentContext(deployment);
-	const deploymentDashboardURL = getDeploymentDasboardURL(deployment);
+	const deploymentDashboardURL = getDeploymentDasboardURL(deployment, user, team);
 
 	return {
 		attachments: [
 			{
-				title: deployment.url,
-				title_link: deploymentDashboardURL,
 				author_name: `${username}${
 					team ? ` from ${team.name} team` : ``
 				}`,
 				author_icon: avatar,
-				text: `:white_check_mark: The project <${projectUrl}|${name}> deployed to <https://${deployment.url}|${deployment.url}> is *READY*.`,
-				fallback: `The project ${projectUrl} deployed to ${deployment.url} is READY`,
+				text: `Deployment *<${deploymentDashboardURL}|${deployment.url}>* \`READY\` :white_check_mark:`,
+				fallback: `Deployment ${deployment.url} READY`,
+				fields: [{
+					value: `Project <${projectUrl}|${name}>`,
+					short: true
+				}],
 				footer: deployContext,
 				ts: (event.createdAt || Date.now()) / 1000,
 				color: 'good'

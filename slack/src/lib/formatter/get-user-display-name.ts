@@ -6,13 +6,9 @@ export default function getUserDisplayName(
 	user?: CurrentUser | TeamMember,
 	deployment?: Components.Schemas.Deployment
 ) {
-	if (!deployment) {
-		return user ? user.username : null;
-	}
-
-	if (path(deployment, 'meta.githubDeployment')) {
+	if (deployment && path(deployment, 'meta.githubDeployment')) {
 		return deployment.meta.githubCommitAuthorLogin;
 	}
 
-	return null;
+	return user ? user.username : null;
 }

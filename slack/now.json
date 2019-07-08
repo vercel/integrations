@@ -12,6 +12,11 @@
     { "src": "/webhook-handler", "dest": "/src/api/webhook.ts" },
     { "src": "/zeit/callback", "dest": "/src/api/zeit/callback.ts" }
   ],
+  "build": {
+    "env": {
+      "NPM_TOKEN": "@npm-token"
+    }
+  },
   "env": {
     "HOOK_URL": "https://zeit-slack-integration.now.sh",
     "MONGO_URI": "@slack-integration-mongo-url",

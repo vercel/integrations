@@ -1,3 +1,5 @@
+import APIZEIT from '@zeit/api-types';
+
 export interface Token {
 	access_token: string;
 	token_type: 'Bearer';
@@ -14,14 +16,6 @@ export interface Webhook {
 	teamId?: string | null;
 	url: string;
 	userId: string;
-}
-
-export interface Event<T extends { [key: string]: any }> {
-	type: string;
-	userId: string;
-	teamId?: string | null;
-	createdAt?: number;
-	payload: T;
 }
 
 export interface TeamMember {
@@ -52,3 +46,11 @@ export interface Team {
 	avatar: string;
 	description: string;
 }
+
+export type Event =
+	| APIZEIT.Components.RequestBodies.AliasEvent
+	| APIZEIT.Components.RequestBodies.DeploymentErrorEvent
+	| APIZEIT.Components.RequestBodies.DeploymentEvent
+	| APIZEIT.Components.RequestBodies.DeploymentReadyEvent
+	| APIZEIT.Components.RequestBodies.DomainDeleteEvent
+	| APIZEIT.Components.RequestBodies.DomainEvent;

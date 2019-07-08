@@ -12,5 +12,5 @@ export interface TeamInfo {
 		image_132: string;
 		image_original: string;
 		image_230: string;
-	}
+	};
 }

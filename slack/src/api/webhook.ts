@@ -16,11 +16,11 @@ export default async function webhookHandler(
 	res: ServerResponse
 ) {
 	const { query }: { query: WebhookParams } = parse(req.url!, true);
-	const event = await json(req);
+	const event = (await json(req)) as Event;
 	const incomingWebhook = decodeURIComponent(query.incoming_webhook!);
 	const config = await getIntegrationConfig(query.owner_id!);
 	const formatter = getFormatter(config);
-	const body = await formatter(event as Event<any>);
+	const body = await formatter(event);
 
 	if (!body) {
 		return send(res, 200);

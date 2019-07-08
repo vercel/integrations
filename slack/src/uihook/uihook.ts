@@ -44,10 +44,14 @@ export default withUiHook(async ({ payload }) => {
 	 * customize.
 	 */
 	const members = await zeit.getTeamMembers();
-	const slackTeams = await Promise.all(configurationWebhooks.map((webhook) => {
-		const slack = getSlackClient({ token: webhook.slackAuthorization.accessToken });
-		return slack.getTeamInfo(webhook.slackAuthorization.teamId);
-	}))
+	const slackTeams = await Promise.all(
+		configurationWebhooks.map(webhook => {
+			const slack = getSlackClient({
+				token: webhook.slackAuthorization.accessToken
+			});
+			return slack.getTeamInfo(webhook.slackAuthorization.teamId);
+		})
+	);
 
 	return htm`
 		<Page>
@@ -68,16 +72,20 @@ export default withUiHook(async ({ payload }) => {
 					<Box display="flex" flexDirection="column" backgroundColor="#fff" border="1px solid #eaeaea" borderRadius="5px" overflow="hidden">
 						<Box display="flex" padding="15px" flexDirection="column">
 							<Box display="flex" alignItems="center">
-								${slackTeam && slackTeam.icon.image_132 && (
+								${slackTeam &&
+									slackTeam.icon.image_132 &&
 									htm`
 										<Box display="flex" borderRadius="50%" height="50px" width="50px" overflow="hidden">
 											<Img src=${slackTeam.icon.image_132} width="100%" />
 										</Box>
-									`
-								)}
+									`}
 								<Box marginLeft="20px">
 									<Box display="flex" fontSize="18px" fontWeight="bold">
-										${zeitWebhook.events.length === 0 ? 'All events' : zeitWebhook.events.join(', ')}
+										${
+											zeitWebhook.events.length === 0
+												? 'All events'
+												: zeitWebhook.events.join(', ')
+										}
 									</Box>
 									<Box display="flex" color="#666">
 										${slackAuthorization.teamName}
@@ -92,7 +100,10 @@ export default withUiHook(async ({ payload }) => {
 
 						<Box display="flex" backgroundColor="#fafbfc" justifyContent="space-between" width="100%" padding="10px" borderTop="1px solid #eaeaea">
 							<Box display="flex">
-								<Link href="${slackAuthorization.incomingWebhook.configuration_url}" target="_blank">View on Slack</Link>
+								<Link href="${
+									slackAuthorization.incomingWebhook
+										.configuration_url
+								}" target="_blank">View on Slack</Link>
 							</Box>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" alignSelf="flex-end">
 								<Box display="flex" marginRight="5px" fontSize="12px" color="#444">

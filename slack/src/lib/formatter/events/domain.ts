@@ -1,13 +1,10 @@
-import { ZeitClient, Event } from '../../zeit-client';
+import { Components } from '@zeit/api-types';
+import { ZeitClient } from '../../zeit-client';
 import getEventUser from '../get-event-user';
-
-interface DomainPayload {
-	name: string;
-}
 
 export default async function domain(
 	zeit: ZeitClient,
-	event: Event<DomainPayload>
+	event: Components.RequestBodies.DomainEvent
 ) {
 	const eventUser = await getEventUser(zeit, event.userId);
 	const username = eventUser ? eventUser.username : event.userId;

@@ -2,7 +2,7 @@ import buildGetTeamInfo from './get-team-info';
 
 export default function getSlackClient({ token }: { token: string }) {
 	return {
-		getTeamInfo: buildGetTeamInfo({ token }),
+		getTeamInfo: buildGetTeamInfo({ token })
 	};
 }
 

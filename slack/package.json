@@ -10,18 +10,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/cookie": "0.3.2",
-    "@types/micro": "7.3.3",
-    "@types/mongodb": "3.1.26",
-    "@types/node": "12.0.1",
-    "@types/node-fetch": "2.3.3",
+    "@zeit/api-types": "0.0.15",
     "@zeit/integration-utils": "0.4.0",
-    "cookie": "0.3.1",
+    "cookie": "0.4.0",
     "micro": "9.3.4",
-    "mongodb": "3.2.4",
-    "node-fetch": "2.5.0"
+    "mongodb": "3.2.7",
+    "node-fetch": "2.6.0"
   },
   "devDependencies": {
-    "prettier": "1.17.1"
+    "@types/cookie": "0.3.3",
+    "@types/micro": "7.3.3",
+    "@types/mongodb": "3.1.28",
+    "@types/node": "12.0.12",
+    "@types/node-fetch": "2.3.7",
+    "prettier": "1.18.2"
   }
 }

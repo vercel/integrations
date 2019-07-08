@@ -7,13 +7,12 @@ import getDeploymentContext from '../get-deployment-context';
 import getDeploymentDasboardURL from '../get-deployment-dashboard-url';
 import getProjectURL from '../get-project-url';
 
-export default async function deployment(
+export default async function formatDeploymentReadyEvent(
 	zeit: ZeitClient,
-	event: Components.RequestBodies.DeploymentEvent
+	event: Components.RequestBodies.DeploymentReadyEvent
 ) {
 	const name = event.payload.name;
 	const deployment = event.payload.deployment;
-	const url = deployment ? deployment.url : event.payload.url;
 	const user = await getEventUser(zeit, event.userId);
 	const team = zeit.teamId ? await zeit.getTeam() : null;
 	const avatar = getUserAvatar(user, deployment);
@@ -25,16 +24,17 @@ export default async function deployment(
 	return {
 		attachments: [
 			{
-				title: url,
+				title: deployment.url,
 				title_link: deploymentDashboardURL,
 				author_name: `${username}${
 					team ? ` from ${team.name} team` : ``
 				}`,
 				author_icon: avatar,
-				text: `Deployment to <https://${url}|${url}> for project <${projectUrl}|${name}> created.`,
-				fallback: `Deployment ${url} for project ${projectUrl} created`,
+				text: `:white_check_mark: The project <${projectUrl}|${name}> deployed to <https://${deployment.url}|${deployment.url}> is *READY*.`,
+				fallback: `The project ${projectUrl} deployed to ${deployment.url} is READY`,
 				footer: deployContext,
-				ts: (event.createdAt || Date.now()) / 1000
+				ts: (event.createdAt || Date.now()) / 1000,
+				color: 'good'
 			}
 		]
 	};

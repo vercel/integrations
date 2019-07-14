@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "now-build": "cp lighthouse/cri.js node_modules/lighthouse/lighthouse-core/gather/connections/cri.js",
     "dev": "now dev",
     "format": "prettier --write '**/*.js'",
     "lint": "eslint ."
@@ -10,10 +11,13 @@
   "dependencies": {
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
+    "chrome-aws-lambda": "1.15.1",
     "cookie": "0.4.0",
+    "lighthouse": "4.3.1",
     "mongodb": "3.2.5",
     "ms": "2.1.1",
     "node-fetch": "2.6.0",
+    "puppeteer-core": "1.15.0",
     "raw-body": "2.4.0"
   },
   "devDependencies": {

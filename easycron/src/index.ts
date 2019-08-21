@@ -48,7 +48,7 @@ export default withUiHook(
       await client.disable(id)
     }
 
-    let apiUrl = `/v4/now/deployments?limit=10`
+    let apiUrl = `/v4/now/deployments`
     if (projectId) {
       apiUrl += `&projectId=${projectId}`
     } else if (id && !projectId) {

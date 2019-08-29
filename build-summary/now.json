@@ -1,0 +1,14 @@
+{
+  "env": {
+    "CLIENT_ID": "@build-summary-integration-client-id",
+    "CLIENT_SECRET": "@build-summary-integration-client-secret",
+    "GITHUB_CLIENT_ID": "@build-summary-integration-github-client-id",
+    "GITHUB_CLIENT_SECRET": "@build-summary-integration-github-client-secret",
+    "GITLAB_CLIENT_ID": "@build-summary-integration-gitlab-client-id",
+    "GITLAB_CLIENT_SECRET": "@build-summary-integration-gitlab-client-secret",
+    "MONGO_URI": "@build-summary-integration-mongo-uri",
+    "INTEGRATION_HOMEPAGE": "https://zeit.co/integrations/build-summary",
+    "INTEGRATION_URL": "https://build-summary.now.sh",
+    "MICROLINK_API_KEY": "@microlink-api-key"
+  }
+}

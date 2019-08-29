@@ -1,0 +1,41 @@
+{
+  "name": "build-summary",
+  "scripts": {
+    "test": "jest",
+    "build": "mkdir -p public && touch public/index.html"
+  },
+  "dependencies": {
+    "@microlink/mql": "0.3.15",
+    "@octokit/rest": "16.28.2",
+    "@zeit/fetch": "5.1.0",
+    "@zeit/integration-utils": "0.6.4",
+    "change-case": "3.1.0",
+    "cookie": "0.4.0",
+    "gitlab": "10.0.0",
+    "mongodb": "3.2.7",
+    "node-fetch": "2.6.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.2",
+    "eslint": "^6.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "env": {
+      "node": true,
+      "es6": true,
+      "jest": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "env": {
+    "CLIENT_ID": "@deploy-summary-integration-client-id",
+    "CLIENT_SECRET": "@deploy-summary-integration-client-secret",
+    "GITHUB_CLIENT_ID": "@deploy-summary-integration-github-client-id",
+    "GITHUB_CLIENT_SECRET": "@deploy-summary-integration-github-client-secret",
+    "GITLAB_CLIENT_ID": "@deploy-summary-integration-gitlab-client-id",
+    "GITLAB_CLIENT_SECRET": "@deploy-summary-integration-gitlab-client-secret",
+    "MONGO_URI": "@deploy-summary-integration-mongo-uri",
+    "INTEGRATION_HOMEPAGE": "https://zeit.co/integrations/deploy-summary",
+    "INTEGRATION_URL": "https://deploy-summary.now.sh",
+    "MICROLINK_API_KEY": "@microlink-api-key"
+  }
+}

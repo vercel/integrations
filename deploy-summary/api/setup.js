@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
         authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        name: 'build-summary-webhook',
+        name: 'deploy-summary-webhook',
         url: `${process.env.INTEGRATION_URL}/api/webhook`
       })
     }

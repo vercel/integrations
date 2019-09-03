@@ -1,5 +1,5 @@
 {
-  "name": "build-summary",
+  "name": "deploy-summary",
   "scripts": {
     "test": "jest",
     "build": "mkdir -p public && touch public/index.html"

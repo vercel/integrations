@@ -9,16 +9,19 @@ module.exports = withUiHook(async ({ payload }) => {
 
   const record = await store.findOne({ ownerId })
 
-  const providers = ['github', 'gitlab']
+  const providers = [
+    { id: 'github', name: 'GitHub' },
+    { id: 'gitlab', name: 'GitLab' }
+  ]
 
   const strategies = providers.map(provider => ({
     provider,
-    strategy: getStrategy(provider)
+    strategy: getStrategy(provider.id)
   }))
 
   const connections = await Promise.all(
     strategies.map(async ({ provider, strategy }) => {
-      const token = record[provider + 'Token']
+      const token = record[provider.id + 'Token']
       let user
 
       if (token) {
@@ -28,14 +31,14 @@ module.exports = withUiHook(async ({ payload }) => {
         if (!client) {
           await store.updateOne(
             { ownerId },
-            { $unset: { [`${provider}Token`]: '' } }
+            { $unset: { [`${provider.id}Token`]: '' } }
           )
         } else {
           user = await strategy.getUser(client)
         }
       }
 
-      return { provider, token, user, strategy }
+      return { provider, strategy, token, user }
     })
   )
 
@@ -46,8 +49,12 @@ module.exports = withUiHook(async ({ payload }) => {
     <Box marginTop="15px" justifyContent="center">
       <Link href=${process.env.INTEGRATION_URL +
         '/api/connect?' +
-        qs.stringify({ ownerId, next: payload.installationUrl, provider })}>
-        <Button>Connect to ${provider}</Button>
+        qs.stringify({
+          ownerId,
+          next: payload.installationUrl,
+          provider: provider.id
+        })}>
+        <Button>Connect to ${provider.name}</Button>
       </Link>
     </Box>`
 
@@ -60,7 +67,7 @@ module.exports = withUiHook(async ({ payload }) => {
           </Box>
           <Box marginLeft="20px">
             <Box display="flex" fontSize="18px" fontWeight="bold">${user.username}</Box>
-            <Box display="flex" color="#666">${provider}</Box>
+            <Box display="flex" color="#666">${provider.name}</Box>
           </Box>
         </Box>
       </Box>
@@ -75,7 +82,7 @@ module.exports = withUiHook(async ({ payload }) => {
     ${
       connected.length > 0
         ? htm`<Box marginBottom="10px" fontSize="18px" fontWeight="bold">Connected to the following account:</Box>`
-        : htm`<P>You need to connect to Github or Gitlab to enable this integration:</P>`
+        : htm`<P>You need to connect to GitHub or GitLab to enable this integration:</P>`
     }
 
     ${connected.map(card)}

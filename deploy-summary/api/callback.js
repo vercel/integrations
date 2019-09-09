@@ -1,8 +1,9 @@
 const { getStore } = require('../lib/mongo')
 const { getContext, setContext, redirect } = require('../lib/context')
 const getStrategy = require('../lib/strategy')
+const { withSentry } = require('../lib/sentry')
 
-module.exports = async (req, res) => {
+module.exports = withSentry('callback', async (req, res) => {
   const { code } = req.query
 
   const { ownerId, next, provider } = getContext(req)
@@ -24,4 +25,4 @@ module.exports = async (req, res) => {
 
   setContext(res, {})
   redirect(res, next)
-}
+})

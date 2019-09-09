@@ -9,6 +9,7 @@
     "MONGO_URI": "@deploy-summary-integration-mongo-uri",
     "INTEGRATION_HOMEPAGE": "https://zeit.co/integrations/deploy-summary",
     "INTEGRATION_URL": "https://deploy-summary.now.sh",
-    "MICROLINK_API_KEY": "@microlink-api-key"
+    "MICROLINK_API_KEY": "@microlink-api-key",
+    "SENTRY_DSN": "@deploy-summary-sentry-dsn"
   }
 }

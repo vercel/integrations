@@ -1,6 +1,7 @@
 const { getStore } = require('../lib/mongo')
+const { withSentry } = require('../lib/sentry')
 
-module.exports = async (req, res) => {
+module.exports = withSentry('delete', async (req, res) => {
   const ownerId = req.body.teamId || req.body.userId
 
   try {
@@ -12,4 +13,4 @@ module.exports = async (req, res) => {
     console.error(err)
     return res.status(500).send()
   }
-}
+})

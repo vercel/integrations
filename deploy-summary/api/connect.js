@@ -1,7 +1,8 @@
 const { setContext, redirect } = require('../lib/context')
 const getStrategy = require('../lib/strategy')
+const { withSentry } = require('../lib/sentry')
 
-module.exports = async (req, res) => {
+module.exports = withSentry('connect', async (req, res) => {
   const { ownerId, next, provider } = req.query
 
   const strategy = getStrategy(provider)
@@ -10,4 +11,4 @@ module.exports = async (req, res) => {
 
   setContext(res, { ownerId, provider, next })
   redirect(res, authorizeEndpoint)
-}
+})

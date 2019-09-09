@@ -1,7 +1,8 @@
 const fetch = require('../lib/fetch')
 const { getStore } = require('../lib/mongo')
+const { withSentry } = require('../lib/sentry')
 
-module.exports = async (req, res) => {
+module.exports = withSentry('setup', async (req, res) => {
   const resAuth = await fetch('https://api.zeit.co/v2/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -64,4 +65,4 @@ module.exports = async (req, res) => {
 
   res.setHeader('location', req.query.next)
   res.status(302).send('Redirecting...')
-}
+})

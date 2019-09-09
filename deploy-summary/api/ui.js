@@ -2,50 +2,52 @@ const { withUiHook, htm } = require('@zeit/integration-utils')
 const { getStore } = require('../lib/mongo')
 const getStrategy = require('../lib/strategy')
 const qs = require('querystring')
+const { withSentry } = require('../lib/sentry')
 
-module.exports = withUiHook(async ({ payload }) => {
-  const store = await getStore()
-  const ownerId = payload.team ? payload.team.id : payload.user.id
+module.exports = withUiHook(
+  withSentry('ui', async ({ payload }) => {
+    const store = await getStore()
+    const ownerId = payload.team ? payload.team.id : payload.user.id
 
-  const record = await store.findOne({ ownerId })
+    const record = await store.findOne({ ownerId })
 
-  const providers = [
-    { id: 'github', name: 'GitHub' },
-    { id: 'gitlab', name: 'GitLab' }
-  ]
+    const providers = [
+      { id: 'github', name: 'GitHub' },
+      { id: 'gitlab', name: 'GitLab' }
+    ]
 
-  const strategies = providers.map(provider => ({
-    provider,
-    strategy: getStrategy(provider.id)
-  }))
+    const strategies = providers.map(provider => ({
+      provider,
+      strategy: getStrategy(provider.id)
+    }))
 
-  const connections = await Promise.all(
-    strategies.map(async ({ provider, strategy }) => {
-      const token = record[provider.id + 'Token']
-      let user
+    const connections = await Promise.all(
+      strategies.map(async ({ provider, strategy }) => {
+        const token = record[provider.id + 'Token']
+        let user
 
-      if (token) {
-        const client = await strategy.createClient(token)
+        if (token) {
+          const client = await strategy.createClient(token)
 
-        // client is null if the token has been revoked
-        if (!client) {
-          await store.updateOne(
-            { ownerId },
-            { $unset: { [`${provider.id}Token`]: '' } }
-          )
-        } else {
-          user = await strategy.getUser(client)
+          // client is null if the token has been revoked
+          if (!client) {
+            await store.updateOne(
+              { ownerId },
+              { $unset: { [`${provider.id}Token`]: '' } }
+            )
+          } else {
+            user = await strategy.getUser(client)
+          }
         }
-      }
 
-      return { provider, strategy, token, user }
-    })
-  )
+        return { provider, strategy, token, user }
+      })
+    )
 
-  const connected = connections.filter(c => c.user)
-  const disconnected = connections.filter(c => !c.user)
+    const connected = connections.filter(c => c.user)
+    const disconnected = connections.filter(c => !c.user)
 
-  const connectUi = ({ provider }) => htm`
+    const connectUi = ({ provider }) => htm`
     <Box marginTop="15px" justifyContent="center">
       <Link href=${process.env.INTEGRATION_URL +
         '/api/connect?' +
@@ -58,7 +60,7 @@ module.exports = withUiHook(async ({ payload }) => {
       </Link>
     </Box>`
 
-  const card = ({ provider, user }) => htm`
+    const card = ({ provider, user }) => htm`
     <Box display="flex" flexDirection="column" backgroundColor="#fff" border="1px solid #eaeaea" borderRadius="5px" overflow="hidden" maxWidth="400px" marginTop="15px">
       <Box display="flex" padding="15px" flexDirection="column">
         <Box display="flex" alignItems="center">
@@ -78,7 +80,7 @@ module.exports = withUiHook(async ({ payload }) => {
       </Box>
     </Box>`
 
-  return htm`<Page>
+    return htm`<Page>
     ${
       connected.length > 0
         ? htm`<Box marginBottom="10px" fontSize="18px" fontWeight="bold">Connected to the following account:</Box>`
@@ -89,4 +91,5 @@ module.exports = withUiHook(async ({ payload }) => {
 
     ${disconnected.map(connectUi)}
   </Page>`
-})
+  })
+)

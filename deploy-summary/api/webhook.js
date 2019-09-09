@@ -4,6 +4,7 @@ const { ZeitClient } = require('@zeit/integration-utils')
 const frameworks = require('../lib/frameworks')
 const getStrategy = require('../lib/strategy')
 const mql = require('@microlink/mql')
+const { withSentry } = require('../lib/sentry')
 
 const MAX_SCREENSHOTS = 6
 
@@ -22,7 +23,7 @@ const takeScreenshot = async (url, opts = {}) => {
   return data.screenshot.url
 }
 
-module.exports = async (req, res) => {
+module.exports = withSentry('webhook', async (req, res) => {
   const event = req.body
   const { type, ownerId, teamId, payload } = event
 
@@ -149,7 +150,7 @@ module.exports = async (req, res) => {
     routes.slice(0, MAX_SCREENSHOTS).map(async route => {
       const url = `${deploymentUrl}${route}`
 
-      const [thumbnailUrl,  screenshotUrl] = await Promise.all([
+      const [thumbnailUrl, screenshotUrl] = await Promise.all([
         takeScreenshot(url),
         takeScreenshot(url, { fullPage: true })
       ])
@@ -181,4 +182,4 @@ module.exports = async (req, res) => {
   await strategy.upsertComment(providerClient, { meta, pull, body: comment })
 
   return res.send()
-}
+})

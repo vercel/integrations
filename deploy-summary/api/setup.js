@@ -1,6 +1,6 @@
 const fetch = require('../lib/fetch')
 const { getStore } = require('../lib/mongo')
-const { withSentry } = require('../lib/sentry')
+const { withSentry, sendToSentry } = require('../lib/sentry')
 
 module.exports = withSentry('setup', async (req, res) => {
   const resAuth = await fetch('https://api.zeit.co/v2/oauth/access_token', {
@@ -18,6 +18,13 @@ module.exports = withSentry('setup', async (req, res) => {
   const jsonAuth = await resAuth.json()
 
   if (!resAuth.ok) {
+    sendToSentry(
+      new Error(
+        `Error: authenticating failed with code ${
+          resAuth.status
+        } and response ${JSON.stringify(jsonAuth)}`
+      )
+    )
     return res.status(resAuth.status).json(jsonAuth)
   }
 
@@ -42,6 +49,13 @@ module.exports = withSentry('setup', async (req, res) => {
   const jsonWebhook = await resWebhook.json()
 
   if (!resWebhook.ok) {
+    sendToSentry(
+      new Error(
+        `Error: creating webhook failed with code ${
+          resWebhook.status
+        } and response ${JSON.stringify(jsonWebhook)}`
+      )
+    )
     return res.status(resWebhook.status).json(jsonWebhook)
   }
 
@@ -54,7 +68,8 @@ module.exports = withSentry('setup', async (req, res) => {
       { upsert: true }
     )
   } catch (err) {
-    console.error(err)
+    sendToSentry(err)
+    console.error(`failed to setup integration`)
     return res.status(500).json({
       error: {
         code: 'internal_server_error',

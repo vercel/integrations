@@ -11,6 +11,10 @@ module.exports = withUiHook(
 
     const record = await store.findOne({ ownerId })
 
+    if (!record) {
+      return htm`<Notice type="error">An error occurred with your installation. Please try to install this integration again.</Notice>`
+    }
+
     const providers = [
       { id: 'github', name: 'GitHub' },
       { id: 'gitlab', name: 'GitLab' }

@@ -1,5 +1,5 @@
 const { getStore } = require('../lib/mongo')
-const { withSentry } = require('../lib/sentry')
+const { withSentry, sendToSentry } = require('../lib/sentry')
 
 module.exports = withSentry('delete', async (req, res) => {
   const ownerId = req.body.teamId || req.body.userId
@@ -9,8 +9,8 @@ module.exports = withSentry('delete', async (req, res) => {
     await store.deleteOne({ ownerId })
     return res.send()
   } catch (err) {
-    console.log(`failed to delete integration for owner ${ownerId}`)
-    console.error(err)
+    sendToSentry(err)
+    console.error(`failed to delete integration`)
     return res.status(500).send()
   }
 })

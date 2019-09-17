@@ -7,6 +7,7 @@ if (SENTRY_DSN) {
     dsn: SENTRY_DSN,
     environment: process.env.NODE_ENV
   })
+  console.log('SENTRY_DSN defined, sending errors to Sentry')
 } else {
   console.log('SENTRY_DSN is not defined, not sending errors to Sentry')
 }
@@ -33,8 +34,13 @@ const withSentry = (functionName, fn) => {
       Sentry.withScope(scope => {
         scope.setTag('functionName', functionName)
         sendToSentry(error)
-        throw error
       })
+
+      if (!(await Sentry.flush(2000))) {
+        console.log(`Timeout expired, failed to report error to Sentry`)
+      }
+
+      throw error
     }
   }
 }

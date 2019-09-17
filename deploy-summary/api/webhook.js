@@ -30,9 +30,6 @@ module.exports = withSentry('webhook', async (req, res) => {
   // not a deployment-ready event
   if (type !== 'deployment-ready') return res.send()
 
-  // log event
-  console.log(JSON.stringify(event, null, 2))
-
   const { meta } = payload.deployment
 
   let provider
@@ -44,6 +41,11 @@ module.exports = withSentry('webhook', async (req, res) => {
 
   // not a "git" deployment
   if (!provider) return res.send()
+
+  // log event
+  console.log(
+    `Received event for ready deployment ${event.payload.deploymentId}`
+  )
 
   // retrieve zeit token and provider token from store
   const store = await getStore()

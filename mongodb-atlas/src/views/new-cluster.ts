@@ -1,7 +1,7 @@
 import { ViewInfo } from '../types';
 
 export default async function newClusterView(viewInfo: ViewInfo) {
-  const { connectionInfo, project } = viewInfo.metadata;
+  const { project } = viewInfo.metadata;
   const loginUrl = 'https://cloud.mongodb.com/user#/atlas/login';
   const buildClusterUrl = `https://cloud.mongodb.com/v2/${
     project.id
@@ -16,9 +16,7 @@ export default async function newClusterView(viewInfo: ViewInfo) {
 			<P>These steps help you to create a new MongoDB Atlas cluster which works best with ZEIT deployments.</P>
 			<Box margin="10px 0">
 				<Box ${stepStyles}>
-					Login to <Link href="${loginUrl}" target="_blank">MongoDB Atlas</Link> with your email: <B>${
-    connectionInfo.username
-  }</B>
+					Login to <Link href="${loginUrl}" target="_blank">MongoDB Atlas</Link>.
 				</Box>
 				<Box ${stepStyles}>
 					Build cluster by following <Link href="${buildClusterUrl}" target="_blank">this</Link> wizard.

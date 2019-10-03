@@ -5,7 +5,7 @@
 		"NODE_ENV": "production"
 	},
   "builds": [
-		{ "src": "./src/index.ts", "use": "@now/node" }
+		{ "src": "src/index.ts", "use": "@now/node" }
 	],
 	"routes": [
 		{"src": "/", "dest": "/src/index.ts"}

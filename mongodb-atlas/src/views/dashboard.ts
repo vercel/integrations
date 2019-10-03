@@ -118,7 +118,22 @@ function renderClusters(
 }
 
 export default async function dashboardView(viewInfo: ViewInfo) {
-  await prepareAtlas(viewInfo);
+  try {
+    await prepareAtlas(viewInfo);
+  } catch(err) {
+    return `
+      <Box>
+        <Notice type="error">${err.message}</Notice>
+        <Box>
+          Make sure your MongoDB Atlas API Key has the "Organization Owner" permission.
+        </Box>
+        <Box>
+          If not, remove this configuration and add a new one with your new MongoDB Atlas API key.
+        </Box>
+      </Box>
+    `
+  }
+
   const clusters = await getClusters(viewInfo);
   const { metadata, payload, zeitClient } = viewInfo;
   metadata.linkedClusters = metadata.linkedClusters || {};

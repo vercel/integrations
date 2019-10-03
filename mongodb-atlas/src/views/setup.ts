@@ -5,7 +5,7 @@ import dashboardView from './dashboard';
 export default async function setupView(viewInfo: ViewInfo) {
   const { payload, metadata, zeitClient } = viewInfo;
   const atlasUrl = 'https://www.mongodb.com/cloud/atlas';
-  const apiKeyUrl = 'https://cloud.mongodb.com/v2#/account/publicApi';
+  const atlasApiKeyDocsUrl = 'https://docs.atlas.mongodb.com/configure-api-access/#manage-programmatic-access-to-an-organization'
   const { username, apiKey } = payload.clientState;
 
   let error = null;
@@ -39,15 +39,24 @@ export default async function setupView(viewInfo: ViewInfo) {
 			</Fieldset>
 			<Fieldset>
 				<FsContent>
-					<FsTitle>Your Username</FsTitle>
-					<FsSubtitle>This is the email you use to login with MongoDB Atlas account.</FsSubtitle>
+					<FsTitle>Create an API Key</FsTitle>
+					<FsSubtitle>Follow the <Link href="${atlasApiKeyDocsUrl}" target="_blank">documentation</Link> to create an API key for your organization.</FsSubtitle>
+				</FsContent>
+				<FsFooter>
+					<P>Make sure the API key has the <B>"Organization Owner"</B> permission.</P>
+				</FsFooter>
+			</Fieldset>
+			<Fieldset>
+				<FsContent>
+					<FsTitle>API Public Key</FsTitle>
+					<FsSubtitle>This is the public key of the API key you just created.</FsSubtitle>
 					<Input name="username" value="${username || ''}"/>
 				</FsContent>
 			</Fieldset>
 			<Fieldset>
 				<FsContent>
-					<FsTitle>Your Public API Key</FsTitle>
-					<FsSubtitle>Visit your <Link href="${apiKeyUrl}" target="_blank">account settings</Link> page and create a public API Key.</FsSubtitle>
+					<FsTitle>API Private Key</FsTitle>
+					<FsSubtitle>This is the private key of the above API key.</FsSubtitle>
 					<Input name="apiKey" value="${apiKey || ''}"/>
 				</FsContent>
 			</Fieldset>

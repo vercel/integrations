@@ -14,7 +14,8 @@ export default async function prepareAtlas(viewInfo: ViewInfo) {
     method: 'GET'
   });
   if (!project) {
-    throw new Error('No project found on this account');
+    const error = new Error('No project found on this account');
+    throw error;
   }
   metadata.project = project;
 

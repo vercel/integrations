@@ -6,7 +6,7 @@ const getStrategy = require('../lib/strategy')
 const mql = require('@microlink/mql')
 const { withSentry } = require('../lib/sentry')
 
-const MAX_SCREENSHOTS = 6
+const { MAX_WIDTH, MAX_SCREENSHOTS } = require('../lib/constants')
 
 const { MICROLINK_API_KEY } = process.env
 
@@ -21,6 +21,14 @@ const takeScreenshot = async (url, opts = {}) => {
   })
 
   return data.screenshot.url
+}
+
+const wrapWithWeServ = (url, isThumbnail = false) => {
+  const urlWithoutHttps = url.replace('https://', '')
+
+  return `https://images.weserv.nl?url=${urlWithoutHttps}${
+    isThumbnail ? `&w=${MAX_WIDTH * 2}` : ''
+  }`
 }
 
 module.exports = withSentry('webhook', async (req, res) => {
@@ -160,8 +168,8 @@ module.exports = withSentry('webhook', async (req, res) => {
       return {
         route,
         routeLink: `${aliasUrl || deploymentUrl}${route}`,
-        thumbnailUrl,
-        screenshotUrl
+        thumbnailUrl: wrapWithWeServ(thumbnailUrl, true),
+        screenshotUrl: wrapWithWeServ(screenshotUrl)
       }
     })
   )

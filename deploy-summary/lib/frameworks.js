@@ -37,7 +37,8 @@ module.exports = [
     routes: fsRoutes({
       baseDir: 'pages/',
       filter: ['/_app', '/_document']
-    })
+    }),
+    shouldScreenshot: route => !route.startsWith('/api/')
   },
   {
     dependency: 'gatsby',

@@ -12,9 +12,9 @@ const escapeLinkTitle = txt => {
 const createComment = ({
   commitSha,
   url,
-  screenshots,
-  otherRoutes = [],
-  deletedRoutes = []
+  screenshots = [],
+  others = [],
+  deleted = []
 }) => {
   // group by screenshots by 3
   const grouped = screenshots.reduce((pv, cv, i) => {
@@ -50,11 +50,13 @@ ${grouped
   .join('')}
 
 ${
-  otherRoutes.length > 0
-    ? `And ${otherRoutes.length} other route${
-        otherRoutes.length === 1 ? '' : 's'
-      }:
-${otherRoutes
+  others.length > 0
+    ? `${
+        screenshots.length > 0
+          ? `And ${others.length} other route${others.length === 1 ? '' : 's'}:`
+          : ''
+      }
+${others
   .map(
     ({ route, routeLink }) => `- [**${escapeLinkTitle(route)}**](${routeLink})`
   )
@@ -63,11 +65,9 @@ ${otherRoutes
 }
 
 ${
-  deletedRoutes.length > 0
-    ? `And ${deletedRoutes.length} deleted route${
-        deletedRoutes.length === 1 ? '' : 's'
-      }:
-${deletedRoutes.map(route => `- **${route}**`).join('\n')}`
+  deleted.length > 0
+    ? `${deleted.length} deleted route${deleted.length === 1 ? '' : 's'}:
+${deleted.map(route => `- **${route}**`).join('\n')}`
     : ''
 }
 

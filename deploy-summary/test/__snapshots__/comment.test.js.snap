@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`only deleted 1`] = `
+"#### 📝Changed routes:
+
+
+
+
+2 deleted routes:
+- **<deleted0_route>**
+- **<deleted1_route>**
+
+Commit <commit_sha> (<url>)."
+`;
+
+exports[`only others 1`] = `
+"#### 📝Changed routes:
+
+
+
+- [**<other0_route>**](<other0_route_link>)
+- [**<other1_route>**](<other1_route_link>)
+
+
+
+Commit <commit_sha> (<url>)."
+`;
+
+exports[`only screenshots 1`] = `
+"#### 📝Changed routes:
+
+
+| [**<screenshot0_route>**](<screenshot0_route_link>) | [**<screenshot1_route>**](<screenshot1_route_link>) |
+|:-:|:-:|
+|<a href=\\"<screenshot0_route_link>\\"><img src=\\"<screenshot0_thumbnail_url>\\" alt=\\"Screenshot of <screenshot0_route>\\" width=\\"300\\"></a><br /><sup><a href=\\"<screenshot0_screenshot_url>\\">(view full size)</a> |<a href=\\"<screenshot1_route_link>\\"><img src=\\"<screenshot1_thumbnail_url>\\" alt=\\"Screenshot of <screenshot1_route>\\" width=\\"300\\"></a><br /><sup><a href=\\"<screenshot1_screenshot_url>\\">(view full size)</a> |
+
+
+
+
+
+
+
+Commit <commit_sha> (<url>)."
+`;
+
+exports[`simple opts 1`] = `
+"#### 📝Changed routes:
+
+
+| [**<screenshot0_route>**](<screenshot0_route_link>) | [**<screenshot1_route>**](<screenshot1_route_link>) |
+|:-:|:-:|
+|<a href=\\"<screenshot0_route_link>\\"><img src=\\"<screenshot0_thumbnail_url>\\" alt=\\"Screenshot of <screenshot0_route>\\" width=\\"300\\"></a><br /><sup><a href=\\"<screenshot0_screenshot_url>\\">(view full size)</a> |<a href=\\"<screenshot1_route_link>\\"><img src=\\"<screenshot1_thumbnail_url>\\" alt=\\"Screenshot of <screenshot1_route>\\" width=\\"300\\"></a><br /><sup><a href=\\"<screenshot1_screenshot_url>\\">(view full size)</a> |
+
+
+
+And 2 other routes:
+- [**<other0_route>**](<other0_route_link>)
+- [**<other1_route>**](<other1_route_link>)
+
+2 deleted routes:
+- **<deleted0_route>**
+- **<deleted1_route>**
+
+Commit <commit_sha> (<url>)."
+`;

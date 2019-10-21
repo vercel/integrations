@@ -131,9 +131,9 @@ module.exports = withSentry('webhook', async (req, res) => {
   const diff = await strategy.getDiff(providerClient, { meta, pull })
 
   const routes = diff.modified.map(framework.routes).filter(Boolean)
-  const deletedRoutes = diff.deleted.map(framework.routes).filter(Boolean)
+  const deleted = diff.deleted.map(framework.routes).filter(Boolean)
 
-  if (routes.length === 0 && deletedRoutes.length === 0) {
+  if (routes.length === 0 && deleted.length === 0) {
     console.log(`ignoring event: no changed route`)
     return res.send()
   }
@@ -156,8 +156,20 @@ module.exports = withSentry('webhook', async (req, res) => {
 
   console.log('creating screenshots...')
 
+  const screenshotRoutes = []
+  const otherRoutes = []
+  const shouldScreenshot = framework.shouldScreenshot || (() => true)
+
+  for (let route of routes) {
+    if (shouldScreenshot(route) && screenshotRoutes.length < MAX_SCREENSHOTS) {
+      screenshotRoutes.push(route)
+    } else {
+      otherRoutes.push(route)
+    }
+  }
+
   const screenshots = await Promise.all(
-    routes.slice(0, MAX_SCREENSHOTS).map(async route => {
+    screenshotRoutes.map(async route => {
       const url = `${deploymentUrl}${route}`
 
       const [thumbnailUrl, screenshotUrl] = await Promise.all([
@@ -174,7 +186,7 @@ module.exports = withSentry('webhook', async (req, res) => {
     })
   )
 
-  const otherRoutes = routes.slice(MAX_SCREENSHOTS).map(route => ({
+  const others = otherRoutes.map(route => ({
     route,
     routeLink: `${aliasUrl || deploymentUrl}${route}`
   }))
@@ -185,8 +197,8 @@ module.exports = withSentry('webhook', async (req, res) => {
     commitSha: strategy.getCommitShaFromMeta(meta),
     url: aliasUrl || deploymentUrl,
     screenshots,
-    otherRoutes,
-    deletedRoutes
+    others,
+    deleted
   })
 
   await strategy.upsertComment(providerClient, { meta, pull, body: comment })

@@ -1,10 +1,10 @@
 const { parse } = require("url");
-const { HOST } = require("./lib/env");
-const createLogDrain = require("./lib/create-log-drain");
-const getAccessToken = require("./lib/get-access-token");
-const getLogDrains = require("./lib/get-log-drains");
+const { HOST } = require("../lib/env");
+const createLogDrain = require("../lib/create-log-drain");
+const getAccessToken = require("../lib/get-access-token");
+const getLogDrains = require("../lib/get-log-drains");
 
-const DRAIN_URL = `${HOST}/drain.js`;
+const JSON_HTTPS_DRAIN_URL = `${HOST}/api/drain`;
 
 module.exports = async (req, res) => {
   const {
@@ -20,20 +20,20 @@ module.exports = async (req, res) => {
   console.log("getting accessToken");
   const accessToken = await getAccessToken({
     code,
-    redirectUri: `${HOST}/callback.js`
+    redirectUri: `${HOST}/api/callback`
   });
 
   console.log("getting existing log drains");
   const logDrains = await getLogDrains({ accessToken, teamId });
-  const hasDrain = logDrains.some(d => d.url === DRAIN_URL);
-  if (!hasDrain) {
-    console.log("creating a new log drain");
+  const hasJsonHttpsDrain = logDrains.some(d => d.url === JSON_HTTPS_DRAIN_URL);
+  if (!hasJsonHttpsDrain) {
+    console.log("creating a new log drain of json-https");
     await createLogDrain({
       accessToken,
-      name: "Log drain integration",
+      name: "log-drain-integration-json-https",
       teamId,
-      type: "now-https-json",
-      url: DRAIN_URL
+      type: "json-https",
+      url: JSON_HTTPS_DRAIN_URL
     });
   }
 

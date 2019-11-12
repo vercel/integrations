@@ -3,6 +3,6 @@
   "env": {
     "CLIENT_ID": "@log-drains-client-id",
     "CLIENT_SECRET": "@log-drains-client-secret",
-    "HOST": "https://log-drains-integration.zeit.sh"
+    "HOST": "@log-drains-host"
   }
 }

@@ -15,10 +15,11 @@ module.exports = async (arg, { state }) => {
       <Box display="flex" justifyContent="flex-end">
         <Button action="GET /drains/new">Create Drain</Button>
       </Box>
-      ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ''}
+      ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
       ${
-        drains.length ? drains.map((drain) => {
-          return htm`
+        drains.length
+          ? drains.map(drain => {
+              return htm`
             <Fieldset>
               <FsContent>
                 <Box display="flex" justifyContent="space-between">
@@ -28,14 +29,19 @@ module.exports = async (arg, { state }) => {
                     <P><B>URL:</B> ${drain.url}</P>
                   </Box>
                   <Box alignItems="flex-end" display="flex" flexDirection="column" justifyContent="space-between">
-                    <P><Box color="#666">${ms(Date.now() - drain.createdAt)}</Box></P>
-                    <Button action=${`DELETE /drains/${encodeURIComponent(drain.id)}`} small type="error">DELETE</Button>
+                    <P><Box color="#666">${ms(
+                      Date.now() - drain.createdAt
+                    )}</Box></P>
+                    <Button action=${`DELETE /drains/${encodeURIComponent(
+                      drain.id
+                    )}`} small type="error">DELETE</Button>
                   </Box>
                 </Box>
               </FsContent>
             </Fieldset>
           `;
-        }) : htm`
+            })
+          : htm`
           <Box alignItems="center" display="flex" height="300px" justifyContent="center">
             <P>No drain found: <Link action="GET /drains/new">Create a new log drain</Link></P>
           </Box>

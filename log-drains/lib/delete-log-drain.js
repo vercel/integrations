@@ -5,7 +5,9 @@ const responseError = require("./response-error");
 module.exports = async ({ token, teamId }, { id }) => {
   const query = stringify({ teamId });
   const res = await fetch(
-    `https://api.zeit.co/v1/integrations/log-drains/${encodeURIComponent(id)}?${query}`,
+    `https://api.zeit.co/v1/integrations/log-drains/${encodeURIComponent(
+      id
+    )}?${query}`,
     {
       method: "DELETE",
       headers: {

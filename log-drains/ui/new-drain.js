@@ -1,11 +1,9 @@
 const { htm } = require("@zeit/integration-utils");
-const createLogDrain = require("../lib/create-log-drain");
-const getMetadata = require("../lib/get-metadata");
 
 module.exports = async (arg, { state }) => {
   const { payload } = arg;
   const { clientState } = payload;
-  const { name = '', type = 'json', url = '' } = clientState;
+  const { name = "", type = "json", url = "" } = clientState;
   const { errorMessage } = state;
 
   return htm`
@@ -20,7 +18,7 @@ module.exports = async (arg, { state }) => {
         </Select>
         <Input label="URL" name="url" value=${url} maxWidth="500px" width="100%" />
       </Box>
-      ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ''}
+      ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
       <Box display="flex" justifyContent="flex-end">
         <Button action="POST /drains">Create</Button>
       </Box>

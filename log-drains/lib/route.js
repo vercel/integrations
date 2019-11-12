@@ -20,14 +20,14 @@ module.exports = (arg, action, state = {}) => {
     routes = {};
     for (const [method, route] of Object.entries(ROUTES)) {
       routes[method] = Object.entries(route).map(([p, m]) => [match(p), m]);
-    };
+    }
   }
 
   if (!action) {
     action = arg.payload.action;
   }
 
-  const [method, path] = action.split(' ');
+  const [method, path] = action.split(" ");
   for (const [m, fn] of routes[method]) {
     const params = m(path);
     if (params) {

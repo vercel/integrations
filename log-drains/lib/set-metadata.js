@@ -5,7 +5,9 @@ const responseError = require("./response-error");
 module.exports = async ({ configurationId, teamId, token }, data) => {
   const query = stringify({ teamId });
   const res = await fetch(
-    `https://api.zeit.co/v1/integrations/configuration/${encodeURIComponent(configurationId)}/metadata?${query}`,
+    `https://api.zeit.co/v1/integrations/configuration/${encodeURIComponent(
+      configurationId
+    )}/metadata?${query}`,
     {
       method: "POST",
       headers: {

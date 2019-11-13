@@ -3,17 +3,18 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "now dev",
     "format": "prettier --write '**/*.js'",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@zeit/integration-utils": "0.6.4",
+    "ms": "2.1.2",
     "node-fetch": "2.6.0",
-    "raw-body": "2.4.0"
+    "raw-body": "2.4.1"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
-    "eslint-config-prettier": "4.3.0",
-    "prettier": "1.17.1"
+    "eslint": "6.6.0",
+    "eslint-config-prettier": "6.5.0",
+    "prettier": "1.19.1"
   }
 }

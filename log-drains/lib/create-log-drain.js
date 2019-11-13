@@ -1,24 +1,22 @@
 const fetch = require("node-fetch");
 const { stringify } = require("querystring");
+const responseError = require("./response-error");
 
-module.exports = async ({ accessToken, name, teamId, type, url }) => {
+module.exports = async ({ token, teamId }, { name, type, url }) => {
   const query = stringify({ teamId });
   const res = await fetch(
     `https://api.zeit.co/v1/integrations/log-drains?${query}`,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({ type, name, url })
     }
   );
 
   if (!res.ok) {
-    const err = new Error("Failed to create log drain");
-    err.res = res;
-    err.body = await res.text();
-    throw err;
+    throw await responseError(res);
   }
 
   return res.json();

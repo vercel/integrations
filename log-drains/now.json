@@ -1,12 +1,8 @@
 {
-  "version": 2,
   "name": "log-drains-integration",
   "env": {
     "CLIENT_ID": "@log-drains-client-id",
     "CLIENT_SECRET": "@log-drains-client-secret",
-    "HOST": "https://log-drains-integration.zeit.sh"
-  },
-  "builds": [
-    { "src": "*.js", "use": "@now/node" }
-  ]
+    "HOST": "@log-drains-host"
+  }
 }

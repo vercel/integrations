@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const { stringify } = require("querystring");
 const { CLIENT_ID, CLIENT_SECRET } = require("./env");
+const responseError = require("./response-error");
 
 module.exports = async ({ code, redirectUri }) => {
   const res = await fetch("https://api.zeit.co/v2/oauth/access_token", {
@@ -16,16 +17,10 @@ module.exports = async ({ code, redirectUri }) => {
     })
   });
 
-  const body = await res.json();
-
   if (!res.ok) {
-    const err = new Error(
-      body.error_description || "Failed to fetch accessToken"
-    );
-    err.res = res;
-    err.body = body;
-    throw err;
+    throw await responseError(res);
   }
 
+  const body = await res.json();
   return body.access_token;
 };

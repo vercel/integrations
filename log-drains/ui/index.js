@@ -1,5 +1,6 @@
 const { htm } = require("@zeit/integration-utils");
 const ms = require("ms");
+const { stringify } = require("querystring");
 const getLogDrains = require("../lib/get-log-drains");
 
 module.exports = async (arg, { state }) => {
@@ -13,7 +14,7 @@ module.exports = async (arg, { state }) => {
     <Page>
       <H1>Log Drains</H1>
       <Box display="flex" justifyContent="flex-end">
-        <Button action="GET /drains/new">Create Drain</Button>
+        <Button action="new-drain">Create Drain</Button>
       </Box>
       ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
       ${
@@ -32,9 +33,9 @@ module.exports = async (arg, { state }) => {
                     <P><Box color="#666">${ms(
                       Date.now() - drain.createdAt
                     )}</Box></P>
-                    <Button action=${`DELETE /drains/${encodeURIComponent(
-                      drain.id
-                    )}`} small type="error">DELETE</Button>
+                    <Button action=${`delete-drain?${stringify({
+                      id: drain.id
+                    })}`} small type="error">DELETE</Button>
                   </Box>
                 </Box>
               </FsContent>
@@ -43,7 +44,7 @@ module.exports = async (arg, { state }) => {
             })
           : htm`
           <Box alignItems="center" display="flex" height="300px" justifyContent="center">
-            <P>No drain found: <Link action="GET /drains/new">Create a new log drain</Link></P>
+            <P>No drain found: <Link action="list-drains">Create a new log drain</Link></P>
           </Box>
         `
       }

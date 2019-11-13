@@ -8,7 +8,7 @@ module.exports = async (arg, { state }) => {
 
   return htm`
     <Page>
-      <P><Link action="GET /drains">Back to list</Link></P>
+      <P><Link action="list-drains">Back to list</Link></P>
       <Box marginBottom="50px">
         <Input label="Name" name="name" value=${name} maxWidth="500px" width="100%" />
         <Select label="Type" name="type" value=${type} >
@@ -20,7 +20,7 @@ module.exports = async (arg, { state }) => {
       </Box>
       ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
       <Box display="flex" justifyContent="flex-end">
-        <Button action="POST /drains">Create</Button>
+        <Button action="create-drain">Create</Button>
       </Box>
     </Page>
   `;

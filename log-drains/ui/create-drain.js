@@ -25,7 +25,7 @@ module.exports = async arg => {
     );
   } catch (err) {
     if (err.body && err.body.error) {
-      return route(arg, "GET /drains/new", {
+      return route(arg, "new-drain", {
         errorMessage: err.body.error.message
       });
     } else {
@@ -33,5 +33,5 @@ module.exports = async arg => {
     }
   }
 
-  return route(arg, "GET /drains");
+  return route(arg, "list-drains");
 };

@@ -18,7 +18,7 @@ module.exports = async (arg, { params }) => {
         teamId
       },
       {
-        id: params.drainId
+        id: params.id
       }
     );
   } catch (err) {
@@ -29,5 +29,5 @@ module.exports = async (arg, { params }) => {
     }
   }
 
-  return route(arg, "GET /drains", state);
+  return route(arg, "list-drains", state);
 };

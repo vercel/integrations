@@ -6,7 +6,7 @@ module.exports = withUiHook(async arg => {
     payload: { action }
   } = arg;
   if (action === "view") {
-    action = "GET /drains";
+    action = "list-drains";
   }
   return route(arg, action);
 });

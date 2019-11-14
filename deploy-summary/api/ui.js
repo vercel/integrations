@@ -53,15 +53,15 @@ module.exports = withUiHook(
 
     const connectUi = ({ provider }) => htm`
     <Box marginTop="15px" justifyContent="center">
-      <Link href=${process.env.INTEGRATION_URL +
+      <ButtonLink href=${process.env.INTEGRATION_URL +
         '/api/connect?' +
         qs.stringify({
           ownerId,
           next: payload.installationUrl,
           provider: provider.id
         })}>
-        <Button>Connect to ${provider.name}</Button>
-      </Link>
+        Connect to ${provider.name}
+      </ButtonLink>
     </Box>`
 
     const card = ({ provider, user }) => htm`

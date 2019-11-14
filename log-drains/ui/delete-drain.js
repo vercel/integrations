@@ -9,7 +9,7 @@ module.exports = async (arg, { params }) => {
   console.log("Getting metadata");
   const metadata = await getMetadata({ configurationId, token, teamId });
 
-  console.log("Deleting log drain: ${id}");
+  console.log(`Deleting log drain: ${params.id}`);
   const state = {};
   try {
     await deleteLogDrain(

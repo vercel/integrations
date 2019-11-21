@@ -5,14 +5,15 @@ const getLogDrains = require("../lib/get-log-drains");
 const getMetadata = require("../lib/get-metadata");
 
 module.exports = withUiHook(async ({ payload }) => {
-  const { action, clientState, configurationId, integrationId, teamId, token } = payload;
+  const { action, clientState, configurationId, teamId, token } = payload;
 
   console.log("getting log drains");
   const drains = await getLogDrains({ teamId, token });
-  const drain = drains.find(d => d.configurationId === configurationId);
+  let drain = drains.find(d => d.configurationId === configurationId);
+  let errorMessage;
+
   if (!drain) {
-    let errorMessage;
-    if (action === 'setup') {
+    if (action === "setup") {
       console.log("getting metadata");
       const metadata = await getMetadata({ configurationId, token, teamId });
 
@@ -24,17 +25,20 @@ module.exports = withUiHook(async ({ payload }) => {
             teamId
           },
           {
-            name: 'LogDNA drain',
-            type: 'syslog',
+            name: "LogDNA drain",
+            type: "syslog",
             url: `syslog+tls://${clientState.url}`
           }
         );
       } catch (err) {
-        console.error('Failed to create log drain', err);
-        errorMessage = err.body && err.body.error ? err.body.error.message : err.message;
+        console.error("Failed to create log drain", err);
+        errorMessage =
+          err.body && err.body.error ? err.body.error.message : err.message;
       }
     }
+  }
 
+  if (!drain) {
     return htm`
       <Page>
         <Fieldset>
@@ -56,10 +60,13 @@ module.exports = withUiHook(async ({ payload }) => {
           <FsContent>
             <H2>Syslog URL</H2>
             <P>This is the syslog URL you just provisioned.</P>
-            <Input name="url" value=${clientState.url || ''} maxWidth="500px" width="100%" />
+            <Input name="url" value=${clientState.url ||
+              ""} maxWidth="500px" width="100%" />
           </FsContent>
         </Fieldset>
-        ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
+        ${
+          errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""
+        }
         <Button action="setup">Setup</Button>
       </Page>
     `;

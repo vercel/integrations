@@ -7,6 +7,6 @@ export default function getProjectURL(
 	team?: Team | null
 ) {
 	return team
-		? `https://zeit.co/${team.slug}/${name}`
+		? `https://zeit.co/${team.slug}/${encodeURIComponent(name)}`
 		: `https://zeit.co/${getUserDisplayName(user)}/${name}`;
 }

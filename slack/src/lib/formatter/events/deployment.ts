@@ -27,12 +27,12 @@ export default async function deployment(
 			{
 				author_name: `${username}${
 					team ? ` from ${team.name} team` : ``
-				}`,
+					}`,
 				author_icon: avatar,
-				text: `Deployment *<${deploymentDashboardURL}|${url}>* \`CREATED\` :white_circle:`,
+				text: `Deployment *<${url}|${url}>* \`CREATED\` :white_circle:`,
 				fallback: `Deployment ${url} CREATED`,
 				fields: [{
-					value: `Project <${projectUrl}|${name}>`,
+					value: `${name} • <${projectUrl}|Project> • <${deploymentDashboardURL}|Deployment Dashboard>`,
 					short: true
 				}],
 				footer: deployContext,

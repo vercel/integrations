@@ -13,7 +13,12 @@ module.exports = withUiHook(async ({ payload }) => {
 
   if (!drain) {
     if (action === "setup") {
-      ({ drain, errorMessage } = await setup({ clientState, configurationId, teamId, token }));
+      ({ drain, errorMessage } = await setup({
+        clientState,
+        configurationId,
+        teamId,
+        token
+      }));
     }
   }
 
@@ -39,7 +44,8 @@ module.exports = withUiHook(async ({ payload }) => {
           <FsContent>
             <H2>API Key</H2>
             <P>Go to the <Link href="https://app.datadoghq.com/account/settings#api" target="_blank">account settings</Link> and open the <B>"API Keys"</B> section to retrieve an API key</P>
-            <Input name="key" value=${clientState.key || ""} maxWidth="500px" width="100%" />
+            <Input name="key" value=${clientState.key ||
+              ""} maxWidth="500px" width="100%" />
           </FsContent>
         </Fieldset>
         ${
@@ -51,14 +57,14 @@ module.exports = withUiHook(async ({ payload }) => {
   }
 
   const { pathname } = parse(drain.url);
-  const key = pathname.split('/').pop();
+  const key = pathname.split("/").pop();
   return htm`
     <Page>
       <P>You logs are being forwarded using the following API key on your account.</P>
         <Fieldset>
           <FsContent>
             <Box alignItems="center" display="flex" margin="20px 0" justifyContent="center">
-              <H2>${'*'.repeat(key.length - 4) + key.slice(-4)}</H2>
+              <H2>${"*".repeat(key.length - 4) + key.slice(-4)}</H2>
             </Box>
           </FsContent>
           <FsFooter>

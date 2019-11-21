@@ -1,8 +1,13 @@
 const createLogDrain = require("./create-log-drain");
 const getMetadata = require("./get-metadata");
 
-module.exports = async function setup({ clientState, configurationId, teamId, token }) {
-  const key = (clientState.key || '').trim();
+module.exports = async function setup({
+  clientState,
+  configurationId,
+  teamId,
+  token
+}) {
+  const key = (clientState.key || "").trim();
   if (!key) {
     return { errorMessage: `API Key is required` };
   }
@@ -10,6 +15,7 @@ module.exports = async function setup({ clientState, configurationId, teamId, to
   console.log("getting metadata", configurationId);
   const metadata = await getMetadata({ configurationId, teamId, token });
 
+  let drain;
   let errorMessage;
   console.log("creating a new log drain", configurationId);
   try {
@@ -21,7 +27,9 @@ module.exports = async function setup({ clientState, configurationId, teamId, to
       {
         name: "Datadog drain",
         type: "json",
-        url: `https://http-intake.logs.datadoghq.com/v1/input/${encodeURIComponent(key)}`
+        url: `https://http-intake.logs.datadoghq.com/v1/input/${encodeURIComponent(
+          key
+        )}`
       }
     );
   } catch (err) {
@@ -31,4 +39,4 @@ module.exports = async function setup({ clientState, configurationId, teamId, to
   }
 
   return { drain, errorMessage };
-}
+};

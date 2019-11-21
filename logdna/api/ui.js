@@ -1,8 +1,7 @@
 const { htm, withUiHook } = require("@zeit/integration-utils");
 const { parse } = require("url");
-const createLogDrain = require("../lib/create-log-drain");
 const getLogDrains = require("../lib/get-log-drains");
-const getMetadata = require("../lib/get-metadata");
+const setup = require("../lib/setup");
 
 module.exports = withUiHook(async ({ payload }) => {
   const { action, clientState, configurationId, teamId, token } = payload;
@@ -14,27 +13,12 @@ module.exports = withUiHook(async ({ payload }) => {
 
   if (!drain) {
     if (action === "setup") {
-      console.log("getting metadata");
-      const metadata = await getMetadata({ configurationId, token, teamId });
-
-      console.log("creating a new log drain");
-      try {
-        drain = await createLogDrain(
-          {
-            token: metadata.token,
-            teamId
-          },
-          {
-            name: "LogDNA drain",
-            type: "syslog",
-            url: `syslog+tls://${clientState.url}`
-          }
-        );
-      } catch (err) {
-        console.error("Failed to create log drain", err);
-        errorMessage =
-          err.body && err.body.error ? err.body.error.message : err.message;
-      }
+      ({ drain, errorMessage } = await setup({
+        clientState,
+        configurationId,
+        teamId,
+        token
+      }));
     }
   }
 
@@ -53,7 +37,7 @@ module.exports = withUiHook(async ({ payload }) => {
         <Fieldset>
           <FsContent>
             <H2>Setup a Syslog Port</H2>
-            <P>Follow the <Link href="https://docs.logdna.com/docs/syslog">documentation</Link> to provision a syslog port for your organization.</P>
+            <P>Follow the <Link href="https://docs.logdna.com/docs/syslog" target="_blank">documentation</Link> to provision a syslog port for your organization.</P>
           </FsContent>
         </Fieldset>
         <Fieldset>
@@ -75,13 +59,16 @@ module.exports = withUiHook(async ({ payload }) => {
   const { host } = parse(drain.url);
   return htm`
     <Page>
-      <P>Your logs are forwarded to this sylog url available on your account.</P>
+      <P>Your logs are being forwarded to this sylog url available on your account.</P>
         <Fieldset>
           <FsContent>
             <Box alignItems="center" display="flex" margin="20px 0" justifyContent="center">
               <H2>${host}</H2>
             </Box>
           </FsContent>
+          <FsFooter>
+            <Link href="https://app.logdna.com" target="_blank">View logs on LogDNA</Link>
+          </FsFooter>
         </Fieldset>
     </Page>
   `;

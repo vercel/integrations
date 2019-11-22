@@ -1,5 +1,6 @@
 const createLogDrain = require("./create-log-drain");
 const getMetadata = require("./get-metadata");
+const { DATADOG_HOSTS } = require("./constants");
 
 module.exports = async function setup({
   clientState,
@@ -14,6 +15,7 @@ module.exports = async function setup({
 
   console.log("getting metadata", configurationId);
   const metadata = await getMetadata({ configurationId, teamId, token });
+  const host = DATADOG_HOSTS[clientState.region] || DATADOG_HOSTS.us;
 
   let drain;
   let errorMessage;
@@ -27,7 +29,7 @@ module.exports = async function setup({
       {
         name: "Datadog drain",
         type: "json",
-        url: `https://http-intake.logs.datadoghq.com/v1/input/${encodeURIComponent(
+        url: `https://http-intake.logs.${host}/v1/input/${encodeURIComponent(
           key
         )}`
       }

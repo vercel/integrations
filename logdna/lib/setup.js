@@ -1,7 +1,13 @@
 const createLogDrain = require("./create-log-drain");
 const getMetadata = require("./get-metadata");
 
-module.exports = async ({ clientState, configurationId, teamId, token }) => {
+module.exports = async ({
+  clientState,
+  configurationId,
+  project,
+  teamId,
+  token
+}) => {
   const url = (clientState.url || "").trim();
   if (!url) {
     return { errorMessage: "URL is required" };
@@ -27,7 +33,8 @@ module.exports = async ({ clientState, configurationId, teamId, token }) => {
       {
         name: "LogDNA drain",
         type: "syslog",
-        url: `syslog+tls://${url}`
+        url: `syslog+tls://${url}`,
+        projectId: project ? project.id : null
       }
     );
   } catch (err) {

@@ -1,10 +1,18 @@
 const { htm, withUiHook } = require("@zeit/integration-utils");
 const { parse } = require("url");
 const getLogDrains = require("../lib/get-log-drains");
+const getProject = require("../lib/get-project");
 const setup = require("../lib/setup");
 
 module.exports = withUiHook(async ({ payload }) => {
-  const { action, clientState, configurationId, teamId, token } = payload;
+  const {
+    action,
+    clientState,
+    configurationId,
+    project,
+    teamId,
+    token
+  } = payload;
 
   console.log("getting log drains");
   const drains = await getLogDrains({ teamId, token });
@@ -16,6 +24,7 @@ module.exports = withUiHook(async ({ payload }) => {
       ({ drain, errorMessage } = await setup({
         clientState,
         configurationId,
+        project,
         teamId,
         token
       }));
@@ -25,6 +34,13 @@ module.exports = withUiHook(async ({ payload }) => {
   if (!drain) {
     return htm`
       <Page>
+        <Fieldset>
+          <FsContent>
+            <H2>Project Filtering</H2>
+            <P>Subscribe logs of a project only (optional)</P>
+            <ProjectSwitcher message="Select a project" />
+          </FsContent>
+        </Fieldset>
         <Fieldset>
           <FsContent>
             <H2>Create Your LogDNA Account</H2>
@@ -56,20 +72,46 @@ module.exports = withUiHook(async ({ payload }) => {
     `;
   }
 
+  let projectForDrain = null;
+  if (drain.projectId) {
+    try {
+      projectForDrain = await getProject(
+        { token, teamId },
+        { projectId: drain.projectId }
+      );
+    } catch (err) {
+      if (!err.res || err.res.status !== 404) {
+        throw err;
+      }
+    }
+  }
+
   const { host } = parse(drain.url);
   return htm`
     <Page>
+      ${
+        drain.projectId && !projectForDrain
+          ? htm`<Notice type="warn">The project to be filtered does not exist anymore (ID: ${drain.projectId})</Notice>`
+          : ""
+      }
       <P>Your logs are being forwarded to this sylog url available on your account.</P>
-        <Fieldset>
-          <FsContent>
-            <Box alignItems="center" display="flex" margin="20px 0" justifyContent="center">
-              <H2>${host}</H2>
-            </Box>
-          </FsContent>
-          <FsFooter>
+      <Fieldset>
+        <FsContent>
+          <Box alignItems="center" display="flex" margin="20px 0" justifyContent="center">
+            <H2>${host}</H2>
+          </Box>
+        </FsContent>
+        <FsFooter>
+          <Box display="flex" flex="0 0 100%" justifyContent="space-between">
             <Link href="https://app.logdna.com" target="_blank">View logs on LogDNA</Link>
-          </FsFooter>
-        </Fieldset>
+            ${
+              projectForDrain
+                ? htm`<P>Filtering for the project <B>${projectForDrain.name}</B></P>`
+                : ""
+            }
+          </Box>
+        </FsFooter>
+      </Fieldset>
     </Page>
   `;
 });

@@ -5,6 +5,7 @@ const { DATADOG_HOSTS } = require("./constants");
 module.exports = async function setup({
   clientState,
   configurationId,
+  project,
   teamId,
   token
 }) {
@@ -31,7 +32,8 @@ module.exports = async function setup({
         type: "json",
         url: `https://http-intake.logs.${host}/v1/input/${encodeURIComponent(
           key
-        )}`
+        )}`,
+        projectId: project ? project.id : null
       }
     );
   } catch (err) {

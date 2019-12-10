@@ -12,8 +12,10 @@ module.exports = withUiHook(async ({ payload }) => {
     clientState,
     configurationId,
     project,
+    team,
     teamId,
-    token
+    token,
+    user
   } = payload;
 
   console.log("getting log drains", configurationId);
@@ -122,7 +124,7 @@ module.exports = withUiHook(async ({ payload }) => {
             <P><Link href=${`https://app.${DATADOG_HOSTS[region]}/logs`} target="_blank">View logs on Datadog (${region.toUpperCase()})</Link></P>
             ${
               projectForDrain
-                ? htm`<P>Filtering for the project <B>${projectForDrain.name}</B></P>`
+                ? htm`<P>Filtering for the project <Link href=${`https://zeit.co/${encodeURIComponent(team ? team.slug : user.username)}/${encodeURIComponent(projectForDrain.name)}`}><B>${projectForDrain.name}</B></Link></P>`
                 : ""
             }
           </Box>

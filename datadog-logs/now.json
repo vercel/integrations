@@ -1,0 +1,8 @@
+{
+  "name": "datadog-logs-integration",
+  "env": {
+    "CLIENT_ID": "@datadog-logs-client-id",
+    "CLIENT_SECRET": "@datadog-logs-client-secret",
+    "HOST": "@datadog-logs-host"
+  }
+}

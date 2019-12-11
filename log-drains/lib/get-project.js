@@ -2,16 +2,14 @@ const fetch = require("node-fetch");
 const { stringify } = require("querystring");
 const responseError = require("./response-error");
 
-module.exports = async ({ token, teamId }, { name, projectId, type, url }) => {
+module.exports = async ({ token, teamId }, idOrName) => {
   const query = stringify({ teamId });
   const res = await fetch(
-    `https://api.zeit.co/v1/integrations/log-drains?${query}`,
+    `https://api.zeit.co/v1/projects/${encodeURIComponent(idOrName)}?${query}`,
     {
-      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ name, projectId, type, url })
+      }
     }
   );
 

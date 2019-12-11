@@ -1,10 +1,13 @@
 const { htm } = require("@zeit/integration-utils");
+const getProjects = require("../lib/get-projects");
 
 module.exports = async (arg, { state }) => {
   const { payload } = arg;
-  const { clientState } = payload;
-  const { name = "", type = "json", url = "" } = clientState;
+  const { clientState, teamId, token } = payload;
+  const { name = "", projectId = "", type = "json", url = "" } = clientState;
   const { errorMessage } = state;
+
+  const projects = await getProjects({ token, teamId });
 
   return htm`
     <Page>
@@ -17,6 +20,10 @@ module.exports = async (arg, { state }) => {
           <Option value="syslog" caption="syslog" />
         </Select>
         <Input label="URL" name="url" value=${url} maxWidth="500px" width="100%" />
+        <Select label="Project (Optional)" name="projectId" value=${projectId}>
+          <Option value="" caption="Select a project" />
+          ${projects.map(p => htm`<Option value=${p.id} caption=${p.name} />`)}
+        </Select>
       </Box>
       ${errorMessage ? htm`<Notice type="error">${errorMessage}</Notice>` : ""}
       <Box display="flex" justifyContent="flex-end">

@@ -1,0 +1,8 @@
+{
+  "name": "logdna-integration",
+  "env": {
+    "CLIENT_ID": "@logdna-client-id",
+    "CLIENT_SECRET": "@logdna-client-secret",
+    "HOST": "@logdna-host"
+  }
+}

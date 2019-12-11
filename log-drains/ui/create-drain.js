@@ -5,7 +5,7 @@ const route = require("../lib/route");
 module.exports = async arg => {
   const { payload } = arg;
   const { clientState, configurationId, teamId, token } = payload;
-  const { name, type, url } = clientState;
+  const { name, projectId, type, url } = clientState;
 
   console.log("getting metadata");
   const metadata = await getMetadata({ configurationId, token, teamId });
@@ -19,6 +19,7 @@ module.exports = async arg => {
       },
       {
         name,
+        projectId: projectId || null,
         type,
         url
       }

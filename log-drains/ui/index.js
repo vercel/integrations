@@ -3,10 +3,11 @@ const ms = require("ms");
 const { stringify } = require("querystring");
 const getLogDrains = require("../lib/get-log-drains");
 const getIntegration = require("../lib/get-integration");
+const getProject = require("../lib/get-project");
 
 module.exports = async (arg, { state }) => {
   const { payload } = arg;
-  const { integrationId, teamId, token } = payload;
+  const { integrationId, team, teamId, token, user } = payload;
   const { errorMessage } = state;
   const drains = await getLogDrains({ teamId, token });
   drains.sort((a, b) => b.createdAt - a.createdAt);
@@ -25,6 +26,23 @@ module.exports = async (arg, { state }) => {
     otherIntergraionsMap = new Map(otherIntegrations.map(i => [i.id, i]));
   }
 
+  const projectIds = new Set(drains.map(d => d.projectId).filter(Boolean));
+  const projectMap = new Map(
+    await Promise.all(
+      [...projectIds].map(async id => {
+        let project = null;
+        try {
+          project = await getProject({ teamId, token }, id);
+        } catch (err) {
+          if (!err.res || err.res.status !== 404) {
+            throw err;
+          }
+        }
+        return [id, project];
+      })
+    )
+  );
+
   return htm`
     <Page>
       <H1>Log Drains</H1>
@@ -35,6 +53,9 @@ module.exports = async (arg, { state }) => {
       ${
         drains.length
           ? drains.map(drain => {
+              const project = drain.projectId
+                ? projectMap.get(drain.projectId)
+                : null;
               return htm`
             <Fieldset>
               <FsContent>
@@ -43,6 +64,17 @@ module.exports = async (arg, { state }) => {
                     <H2>${drain.name}</H2>
                     <P><B>Type:</B> ${drain.type}</P>
                     <P><B>URL:</B> ${drain.url}</P>
+                    ${
+                      project
+                        ? htm`<P><B>Project:</B> <Link href=${`https://zeit.co/${encodeURIComponent(
+                            team ? team.slug : user.username
+                          )}/${encodeURIComponent(project.name)}`}>${
+                            project.name
+                          }</Link></P>`
+                        : drain.projectId
+                        ? htm`<Box color="red"><P>The project subscribing is already deleted (ID: ${drain.projectId})</P></Box>`
+                        : ""
+                    }
                   </Box>
                   <Box alignItems="flex-end" display="flex" flexDirection="column" justifyContent="space-between">
                     <P><Box color="#666">${ms(

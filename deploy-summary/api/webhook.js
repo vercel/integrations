@@ -57,9 +57,14 @@ module.exports = withSentry('webhook', async (req, res) => {
 
   // retrieve zeit token and provider token from store
   const store = await getStore()
-  const { token, [provider + 'Token']: providerToken } = await store.findOne({
-    ownerId
-  })
+  const authDoc = await store.findOne({ ownerId })
+
+  if (!authDoc) {
+    console.log(`ignoring event: ${ownerId} does not have a auth document`)
+    return res.send()
+  }
+
+  const { token, [provider + 'Token']: providerToken } = authDoc
 
   if (!token || !providerToken) {
     console.log(`ignoring event: ${ownerId} does not have a ${provider}Token`)

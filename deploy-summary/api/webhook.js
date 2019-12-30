@@ -24,9 +24,7 @@ const takeScreenshot = async (url, opts = {}) => {
 }
 
 const wrapWithWeServ = (url, isThumbnail = false) => {
-  const urlWithoutHttps = url.replace('https://', '')
-
-  return `https://images.weserv.nl?url=${urlWithoutHttps}${
+  return `https://images.weserv.nl?url=${url}${
     isThumbnail ? `&w=${MAX_WIDTH * 2}` : ''
   }`
 }

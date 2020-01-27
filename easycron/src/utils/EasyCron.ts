@@ -17,9 +17,10 @@ class EasyCron {
       http_method,
       posts,
       path,
-      url
+      url: url_
     } = clientState
 
+    const url = url_.replace('https://', '')
     console.log(url)
 
 

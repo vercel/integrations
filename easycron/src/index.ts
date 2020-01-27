@@ -70,7 +70,7 @@ export default withUiHook(
       if (!updateId) {
         // filter deployments by url and get name
         const deployment = deployments.filter(
-          (d: any) => (d.url === clientState.url),
+          (d: any) => (clientState.url.includes(d.url)),
         )[0]
         const { id } = await zeitClient.fetchAndThrow(
           `/v1/projects/${deployment.name}`,

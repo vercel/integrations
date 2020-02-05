@@ -29,7 +29,7 @@ export default async function deployment(
 					team ? ` from ${team.name} team` : ``
 					}`,
 				author_icon: avatar,
-				text: `Deployment *<${url}|${url}>* \`CREATED\` :white_circle:`,
+				text: `Deployment *<https://${url}|${url}>* \`CREATED\` :white_circle:`,
 				fallback: `Deployment ${url} CREATED`,
 				fields: [{
 					value: `${name} • <${projectUrl}|Project> • <${deploymentDashboardURL}|Deployment Dashboard>`,

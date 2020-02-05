@@ -13,6 +13,7 @@ export default async function formatDeploymentReadyEvent(
 ) {
 	const name = event.payload.name;
 	const deployment = event.payload.deployment;
+	const url = deployment ? deployment.url : event.payload.url;
 	const user = await getEventUser(zeit, event.userId);
 	const team = zeit.teamId ? await zeit.getTeam() : null;
 	const avatar = getUserAvatar(user, deployment);
@@ -26,12 +27,12 @@ export default async function formatDeploymentReadyEvent(
 			{
 				author_name: `${username}${
 					team ? ` from ${team.name} team` : ``
-				}`,
+					}`,
 				author_icon: avatar,
-				text: `Deployment *<${deploymentDashboardURL}|${deployment.url}>* \`READY\` :white_check_mark:`,
-				fallback: `Deployment ${deployment.url} READY`,
+				text: `Deployment *<${url}|${url}>* \`READY\` :white_check_mark:`,
+				fallback: `Deployment ${url} READY`,
 				fields: [{
-					value: `Project <${projectUrl}|${name}>`,
+					value: `${name} • <${projectUrl}|Project> • <${deploymentDashboardURL}|Deployment Dashboard>`,
 					short: true
 				}],
 				footer: deployContext,

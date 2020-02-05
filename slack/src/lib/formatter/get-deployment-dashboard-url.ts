@@ -15,7 +15,10 @@ export default function getDeploymentDasboardURL(
 	const deploymentHostname = url.split('.')[0];
 	const idx = deploymentHostname.indexOf(name) + name.length;
 	const deploymentHash = deploymentHostname.substring(idx + 1);
+
+	const sanitizedName = name.replace(/[^a-zA-Z0-9\-]+/g, '') // remove non-alphanumeric, non-dashes
+
 	return team
-		? `https://zeit.co/${team.slug}/${name}/${deploymentHash}`
-		: `https://zeit.co/${getUserDisplayName(user)}/${name}/${deploymentHash}`;
+		? `https://zeit.co/${team.slug}/${sanitizedName}/${deploymentHash}`
+		: `https://zeit.co/${getUserDisplayName(user)}/${sanitizedName}/${deploymentHash}`;
 }

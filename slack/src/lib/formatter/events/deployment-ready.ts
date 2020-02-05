@@ -29,7 +29,7 @@ export default async function formatDeploymentReadyEvent(
 					team ? ` from ${team.name} team` : ``
 					}`,
 				author_icon: avatar,
-				text: `Deployment *<${url}|${url}>* \`READY\` :white_check_mark:`,
+				text: `Deployment *<https://${url}|${url}>* \`READY\` :white_check_mark:`,
 				fallback: `Deployment ${url} READY`,
 				fields: [{
 					value: `${name} • <${projectUrl}|Project> • <${deploymentDashboardURL}|Deployment Dashboard>`,

@@ -29,7 +29,7 @@ export default async function formatDeploymentErrorEvent(
 					team ? ` from ${team.name} team` : ``
 					}`,
 				author_icon: avatar,
-				text: `Deployment *<${url}|${url}>* \`ERRORED\` :red_circle:`,
+				text: `Deployment *<https://${url}|${url}>* \`ERRORED\` :red_circle:`,
 				fallback: `Deployment ${url} ERRORED`,
 				fields: [{
 					value: `${name} • <${projectUrl}|Project> • <${deploymentDashboardURL}|Deployment Dashboard>`,

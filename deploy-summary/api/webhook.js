@@ -71,10 +71,22 @@ module.exports = withSentry('webhook', async (req, res) => {
 
   // get package.json content
   const zeitClient = new ZeitClient({ token, teamId })
-  const deploymentFiles = await zeitClient.fetchAndThrow(
+  const deploymentFilesRes = await zeitClient.fetch(
     `/v5/now/deployments/${payload.deploymentId}/files`,
     {}
   )
+
+  if (deploymentFilesRes.status === 403) {
+    console.log(
+      `token for account ${ownerId} is not valid anymore, removing doc and ignoring event`
+    )
+    // remove doc because we can't do anything without a valid token
+    await store.deleteOne({ ownerId })
+    return res.send()
+  }
+
+  const deploymentFiles = await deploymentFilesRes.json()
+
   const srcDir = deploymentFiles.find(
     file => file.name === 'src' && file.type === 'directory'
   )
@@ -132,6 +144,11 @@ module.exports = withSentry('webhook', async (req, res) => {
   }
 
   const diff = await strategy.getDiff(providerClient, { meta, pull })
+
+  if (!diff) {
+    console.log(`ignoring event: diff could not be retrieved (not found)`)
+    return res.send()
+  }
 
   const routes = diff.modified.map(framework.routes).filter(Boolean)
   const deleted = diff.deleted.map(framework.routes).filter(Boolean)

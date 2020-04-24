@@ -68,25 +68,34 @@ module.exports = {
     return pull
   },
   async getDiff(client, { meta, pull }) {
-    const { data: comparison } = await client.repos.compareCommits({
-      owner: meta.githubOrg,
-      repo: meta.githubRepo,
-      base: pull.base.ref,
-      head: `${meta.githubCommitOrg}:${meta.githubCommitSha}`
-    })
+    try {
+      const { data: comparison } = await client.repos.compareCommits({
+        owner: meta.githubOrg,
+        repo: meta.githubRepo,
+        base: pull.base.ref,
+        head: `${meta.githubCommitOrg}:${meta.githubCommitSha}`
+      })
 
-    const deleted = []
-    const modified = []
+      const deleted = []
+      const modified = []
 
-    for (let file of comparison.files) {
-      if (file.status === 'removed') {
-        deleted.push(file.filename)
-      } else {
-        modified.push(file.filename)
+      for (let file of comparison.files) {
+        if (file.status === 'removed') {
+          deleted.push(file.filename)
+        } else {
+          modified.push(file.filename)
+        }
       }
-    }
 
-    return { deleted, modified }
+      return { deleted, modified }
+    } catch (error) {
+      // a commit doesn't exist, so we can't compare anymore
+      if (error.status === 404) {
+        return null
+      }
+
+      throw error
+    }
   },
   async upsertComment(client, { meta, pull, body }) {
     const { data: comments } = await client.issues.listComments({

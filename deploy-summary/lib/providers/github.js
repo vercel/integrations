@@ -57,15 +57,24 @@ module.exports = {
     }
   },
   async getPull(client, { meta }) {
-    const {
-      data: [pull]
-    } = await client.pulls.list({
-      owner: meta.githubOrg,
-      repo: meta.githubRepo,
-      head: `${meta.githubCommitOrg}:${meta.githubCommitRef}`,
-      state: 'open'
-    })
-    return pull
+    try {
+      const {
+        data: [pull]
+      } = await client.pulls.list({
+        owner: meta.githubOrg,
+        repo: meta.githubRepo,
+        head: `${meta.githubCommitOrg}:${meta.githubCommitRef}`,
+        state: 'open'
+      })
+      return pull
+    } catch (error) {
+      // no PRs found
+      if (error.status === 404) {
+        return undefined
+      }
+
+      throw error
+    }
   },
   async getDiff(client, { meta, pull }) {
     try {

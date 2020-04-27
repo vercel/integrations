@@ -1,13 +1,15 @@
 const changeCase = require('change-case')
 
 const fsRoutes = ({
-  baseDir = '',
+  baseDirs = [''],
   fileExtension,
   filter,
   transform
 }) => path => {
   // filter out files out of baseDir
-  if (!path.startsWith(baseDir)) return false
+  const baseDir = baseDirs.find(baseDir => path.startsWith(baseDir))
+
+  if (!baseDir) return false
 
   // filter out wrong extension
   if (fileExtension && path.split('.').slice(-1)[0] !== fileExtension)
@@ -35,23 +37,23 @@ module.exports = [
   {
     dependency: 'next',
     routes: fsRoutes({
-      baseDir: 'pages/',
+      baseDirs: ['pages/', 'src/pages/'],
       filter: ['/_app', '/_document']
     }),
     shouldScreenshot: route => !route.startsWith('/api/')
   },
   {
     dependency: 'gatsby',
-    routes: fsRoutes({ baseDir: 'src/pages/' })
+    routes: fsRoutes({ baseDirs: ['src/pages/'] })
   },
   {
     dependency: 'nuxt',
-    routes: fsRoutes({ baseDir: 'pages/' })
+    routes: fsRoutes({ baseDirs: ['pages/'] })
   },
   {
     dependency: 'gridsome',
     routes: fsRoutes({
-      baseDir: 'src/pages/',
+      baseDirs: ['src/pages/'],
       transform: route =>
         route
           .split('/')
@@ -61,10 +63,10 @@ module.exports = [
   },
   {
     dependency: 'sapper',
-    routes: fsRoutes({ baseDir: 'src/routes/' })
+    routes: fsRoutes({ baseDirs: ['src/routes/'] })
   },
   {
     dependency: 'umi',
-    routes: fsRoutes({ baseDir: 'src/routes/', filter: ['/document'] })
+    routes: fsRoutes({ baseDirs: ['src/routes/'], filter: ['/document'] })
   }
 ]

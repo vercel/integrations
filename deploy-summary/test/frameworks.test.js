@@ -19,6 +19,18 @@ const tests = [
     routes: ['/', '/test', '/doc', '/about', '/about/us', '/blog/[id]']
   },
   {
+    name: 'next',
+    packageJson: { dependencies: { next: '*' } },
+    paths: [
+      'package.json',
+      'src/pages/_app.js',
+      'src/pages/_document.js',
+      'src/pages/index.js',
+      'pages/blog/[id].js'
+    ],
+    routes: ['/', '/blog/[id]']
+  },
+  {
     name: 'gatsby',
     packageJson: { dependencies: { gatsby: '*' } },
     paths: [

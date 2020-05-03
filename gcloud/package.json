@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "now dev -p 5005",
+    "dev": "now dev --listen 5005",
     "lint": "eslint --fix src/**/*.ts",
     "lint-staged": "git diff --diff-filter=ACMRT --cached --name-only '*.ts' | xargs eslint --fix"
   },

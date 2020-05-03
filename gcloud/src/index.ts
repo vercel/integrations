@@ -37,7 +37,7 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
 
       Object.keys(config).forEach((key: string) => {
         const project: ConfigItem = config[key]
-        
+
         if (project.googleCredentials && project.googleCredentials.private_key_id === keyId) {
           googleCredentials = project.googleCredentials
         }
@@ -297,7 +297,7 @@ export default withUiHook(async (handlerOptions: HandlerOptions): Promise<string
           </Select>
         </Box>
       </Box>
-      <$${FS.Scheduler} disabled=${!zeit.projectId} jobs=${scheduler.jobs} error=${schedulerError || scheduler.error} deployments=${scheduler.deployments} apiDisabled=${scheduler.disabled} />
+      <$${FS.Scheduler} disabled=${!zeit.projectId} jobs=${scheduler.jobs} error=${schedulerError || scheduler.error} deployments=${scheduler.deployments} productionAliases=${scheduler.productionAliases} apiDisabled=${scheduler.disabled} />
       <$${FS.Storage} disabled=${!zeit.projectId} buckets=${storage.buckets} error=${storage.error} hasCredentials=${hasCredentials} currentProject=${currentProject} />
       <$${FS.SQL} disabled=${!zeit.projectId} instances=${sql.instances} error=${sqlError || sql.error} apiDisabled=${sql.disabled} credentials=${sqlCredentials} />
       <Box>

@@ -118,6 +118,16 @@ export default class ZEIT {
     return deployments
   }
 
+  productionAliasesOfCurrentProject = async () => {
+    console.log('Fetching production aliases of current project')
+
+    const project: any = await this.request(`/v1/projects/${this.projectId}`, {
+      teamId: this.teamId
+    } as any)
+
+    return 'production' in project.targets ? project.targets.production.alias : []
+  }
+
   listProjects = async () => {
     console.log('Fetching user projects')
 
@@ -189,7 +199,7 @@ export default class ZEIT {
       } as any)
 
       const env = await envVars.json()
-      
+
       if (!Array.isArray(env)) {
         return false
       }

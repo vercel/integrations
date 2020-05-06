@@ -10,13 +10,16 @@ export default async function getSchedulerData(zeit: ZEIT, google: Google, curre
   }
 
   const { jobs, error, disabled } = await google.scheduler(currentProject)
-  const deployments = await zeit.deploymentsInCurrentProject()
+  const [deployments, productionAliases] = await Promise.all([
+    zeit.deploymentsInCurrentProject(),
+    zeit.productionAliasesOfCurrentProject(),
+  ])
 
   if (disabled) {
     return { disabled }
   }
 
-  return { jobs, error, deployments }
+  return { jobs, error, deployments, productionAliases }
 }
 
 export const timezones = [

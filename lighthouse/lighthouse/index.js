@@ -1,7 +1,5 @@
-const chrome = require("chrome-aws-lambda");
+const chromium = require("chrome-aws-lambda");
 const lighthouse = require("lighthouse");
-const puppeteer = require("puppeteer-core");
-const rawBody = require("raw-body");
 const { parse } = require("url");
 const { promisify } = require("util");
 const zlib = require("zlib");
@@ -13,20 +11,20 @@ const gzip = promisify(zlib.gzip);
 let args;
 let executablePath;
 if (process.platform === "darwin") {
-  args = chrome.args.filter(a => a !== "--single-process");
+  args = chromium.args.filter(a => a !== "--single-process");
   executablePath = Promise.resolve(
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
   );
 } else {
-  args = chrome.args;
-  executablePath = chrome.executablePath;
+  args = chromium.args;
+  executablePath = chromium.executablePath;
 }
 
 async function lh(url) {
   let browser;
 
   try {
-    browser = await puppeteer.launch({
+    browser = await chromium.puppeteer.launch({
       args,
       executablePath: await executablePath
     });
@@ -44,13 +42,12 @@ async function lh(url) {
 }
 
 async function handler(req, res) {
-  const body = await rawBody(req);
   let id;
   let url;
   let ownerId;
 
   try {
-    ({ id, url, ownerId } = JSON.parse(body));
+    ({ id, url, ownerId } = req.body);
   } catch (err) {
     res.statusCode = 400;
     res.end("Invalid JSON");

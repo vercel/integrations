@@ -1,5 +1,4 @@
 const { RateLimit } = require("async-sema");
-const rawBody = require("raw-body");
 const auth = require("../lib/auth");
 const {
   AUDIT_DEPLOYMENTS_COUNT,
@@ -8,6 +7,7 @@ const {
 const fetchDeployments = require("../lib/fetch-deployments");
 const mongo = require("../lib/mongo");
 const runAudits = require("../lib/run-audits");
+const sleep = require("../lib/sleep");
 
 const limitUpdate = RateLimit(1);
 const limitLighthouse = RateLimit(5);
@@ -25,12 +25,15 @@ async function update({ accessToken, id }) {
     limit: AUDIT_DEPLOYMENTS_COUNT,
     since: Date.now() - AUDIT_DEPLOYMENTS_CREATED_AFTER,
     teamId: isTeam ? id : null
-  }).catch(err => {
+  }).catch(async err => {
     if (err.res && err.res.status === 403) {
-      // TODO: remove the user from database
       console.log(
         `Ignoring deployments for ${id}. The token is not valid anymore`
       );
+      const db = await mongo();
+      await db
+        .collection(isTeam ? "teams" : "users")
+        .updateOne({ id }, { $set: { accessToken: null } });
       return;
     }
 
@@ -94,23 +97,14 @@ async function update({ accessToken, id }) {
       id: d.id,
       url: d.url,
       ownerId: id
-    });
+    }).catch(console.error);
   }
+
+  await sleep(1000);
 }
 
 async function handler(req, res) {
-  const body = await rawBody(req);
-  let json;
-
-  try {
-    json = JSON.parse(body);
-  } catch (err) {
-    res.statusCode = 400;
-    res.end("Invalid JSON");
-    return;
-  }
-
-  const owners = Array.isArray(json) ? json : [json];
+  const owners = Array.isArray(req.body) ? req.body : [req.body];
 
   for (const o of owners) {
     if (!o || !o.accessToken || !o.id) {

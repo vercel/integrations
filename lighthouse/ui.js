@@ -184,7 +184,9 @@ module.exports = withUiHook(
         parsedUrl.id
       )}`;
       const projectHref = d.project
-        ? `https://zeit.co/${encodeURIComponent(ownerSlug)}/${encodeURIComponent(
+        ? `https://zeit.co/${encodeURIComponent(
+            ownerSlug
+          )}/${encodeURIComponent(
             d.project.name
           )}/integrations/${encodeURIComponent(configurationId)}`
         : null;

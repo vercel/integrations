@@ -12,4 +12,4 @@ if [ -z "${API_SECRET:-}" ]; then
   exit 1
 fi
 
-curl -H "Authorization: Bearer $API_SECRET" -v "${HOST}/update/all.js"
+curl -H "Authorization: Bearer $API_SECRET" -v "${HOST}/update"

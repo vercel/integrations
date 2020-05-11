@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "lighthouse-integration",
   "alias": "lighthouse.zeit.sh",
   "env": {
     "API_SECRET": "@lhi-api-secret",
@@ -13,7 +12,7 @@
   "builds": [
     {
       "src": "lighthouse/index.js",
-      "use": "@now/node@canary",
+      "use": "@now/node",
       "config": {
         "maxLambdaSize": "100mb"
       }

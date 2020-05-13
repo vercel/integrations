@@ -1,4 +1,12 @@
 {
+  "routes": [
+    { "src": "/api/callback", "dest": "/api/callback.js" },
+    { "src": "/api/connect", "dest": "/api/connect.js" },
+    { "src": "/api/delete", "dest": "/api/delete.js" },
+    { "src": "/api/setup", "dest": "/api/setup.js" },
+    { "src": "/api/ui", "dest": "/api/ui.js" },
+    { "src": "/api/webhook", "dest": "/api/webhook.js" }
+  ],
   "env": {
     "CLIENT_ID": "@deploy-summary-integration-client-id",
     "CLIENT_SECRET": "@deploy-summary-integration-client-secret",

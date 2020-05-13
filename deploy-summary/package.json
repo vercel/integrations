@@ -7,7 +7,7 @@
   "dependencies": {
     "@microlink/mql": "0.6.13",
     "@octokit/rest": "16.28.2",
-    "@sentry/node": "^5.6.2",
+    "@sentry/node": "5.15.5",
     "@zeit/fetch": "5.1.0",
     "@zeit/integration-utils": "0.6.4",
     "change-case": "3.1.0",

@@ -13,6 +13,7 @@
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
     "cookie": "0.4.0",
+    "lighthouse": "^5.6.0",
     "mongodb": "3.2.5",
     "ms": "2.1.1",
     "node-fetch": "2.6.0"

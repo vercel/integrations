@@ -1,10 +1,22 @@
 const { promisify } = require("util");
+const mql = require("@microlink/mql");
 const zlib = require("zlib");
-const mql = require("@microlink/mql")
+const path = require("path");
+
 const auth = require("../lib/auth");
 const mongo = require("../lib/mongo");
 
 const gzip = promisify(zlib.gzip);
+
+const ReportGenerator = require(path.resolve(
+  "node_modules/lighthouse/lighthouse-core/report/report-generator"
+));
+
+const getScores = (categories) =>
+  Object.values(categories).reduce(
+    (acc, category) => ({ ...acc, [category.id]: category.score }),
+    {}
+  );
 
 async function handler(req, res) {
   let id;
@@ -29,26 +41,22 @@ async function handler(req, res) {
 
   const { data } = await mql(`https://${url}`, {
     apiKey: process.env.MICROLINK_API_KEY,
-    ttl: '30d',
+    ttl: "30d",
     meta: false,
-    filter: 'insights',
+    filter: "insights",
     insights: {
       technologies: false,
       lighthouse: true
     }
   });
 
-  let report = data.insights.lighthouse;
-
+  const report = data.insights.lighthouse;
+  let reportHtml;
   let scores;
 
   if (report) {
-    scores = Object.values(report.categories).reduce((o, c) => {
-      o[c.id] = c.score;
-      return o;
-    }, {});
-
-    report = await gzip(report);
+    scores = getScores(report.categories);
+    reportHtml = await gzip(ReportGenerator.generateReportHtml(data));
   }
 
   console.log(`saving deployment: ${id}, ${url}`);
@@ -62,7 +70,7 @@ async function handler(req, res) {
         url,
         ownerId,
         scores,
-        report,
+        report: reportHtml,
         auditing: null
       },
       $setOnInsert: {

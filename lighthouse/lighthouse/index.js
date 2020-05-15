@@ -1,16 +1,13 @@
 const { promisify } = require("util");
 const mql = require("@microlink/mql");
 const zlib = require("zlib");
-const path = require("path");
 
 const auth = require("../lib/auth");
 const mongo = require("../lib/mongo");
 
 const gzip = promisify(zlib.gzip);
 
-const ReportGenerator = require(path.resolve(
-  "node_modules/lighthouse/lighthouse-core/report/report-generator"
-));
+const ReportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
 
 const getScores = (categories) =>
   Object.values(categories).reduce(

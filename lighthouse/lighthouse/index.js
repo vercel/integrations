@@ -1,16 +1,13 @@
 const { promisify } = require("util");
 const mql = require("@microlink/mql");
 const zlib = require("zlib");
-const path = require("path");
 
-const auth = require("../lib/auth");
 const mongo = require("../lib/mongo");
+const auth = require("../lib/auth");
 
 const gzip = promisify(zlib.gzip);
 
-const ReportGenerator = require(path.resolve(
-  "node_modules/lighthouse/lighthouse-core/report/report-generator"
-));
+const ReportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
 
 const getScores = (categories) =>
   Object.values(categories).reduce(
@@ -18,7 +15,7 @@ const getScores = (categories) =>
     {}
   );
 
-async function handler(req, res) {
+const createHandler = ({ gzip, mongo }) => async (req, res) => {
   let id;
   let url;
   let ownerId;
@@ -41,7 +38,7 @@ async function handler(req, res) {
 
   const { data } = await mql(`https://${url}`, {
     apiKey: process.env.MICROLINK_API_KEY,
-    ttl: "30d",
+    ttl: process.env.MICROLINK_API_KEY ? '30d' : undefined,
     meta: false,
     retry: 10,
     filter: "insights",
@@ -84,4 +81,5 @@ async function handler(req, res) {
   res.end("ok");
 }
 
-module.exports = mongo.withClose(auth(handler));
+module.exports = mongo.withClose(auth(createHandler({ mongo, gzip })));
+module.exports.createHandler = createHandler

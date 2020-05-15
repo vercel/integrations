@@ -43,6 +43,7 @@ async function handler(req, res) {
     apiKey: process.env.MICROLINK_API_KEY,
     ttl: "30d",
     meta: false,
+    retry: 10,
     filter: "insights",
     insights: {
       technologies: false,

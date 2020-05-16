@@ -9,9 +9,14 @@ const gzip = promisify(zlib.gzip);
 
 const ReportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
 
+const WHITELIST_ERRORS = ["EBRWSRTIMEOUT", "EMAXREDIRECTS"];
+
 const getScores = (categories) =>
   Object.values(categories).reduce(
-    (acc, category) => ({ ...acc, [category.id]: category.score }),
+    (acc, category) => ({
+      ...acc,
+      [category.id]: category.score,
+    }),
     {}
   );
 
@@ -36,32 +41,47 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
 
   console.log(`generating report: ${id}, ${url}`);
 
-  const { data } = await mql(`https://${url}`, {
-    apiKey: process.env.MICROLINK_API_KEY,
-    ttl: process.env.MICROLINK_API_KEY ? '30d' : undefined,
-    meta: false,
-    retry: 10,
-    filter: "insights",
-    insights: {
-      technologies: false,
-      lighthouse: true
-    }
-  });
+  let lhError;
+  let report;
 
-  const report = data.insights.lighthouse;
+  try {
+    const { data } = await mql(`https://${url}`, {
+      apiKey: process.env.MICROLINK_API_KEY,
+      ttl: process.env.MICROLINK_API_KEY ? "30d" : undefined,
+      meta: false,
+      retry: 10,
+      filter: "insights",
+      insights: {
+        technologies: false,
+        lighthouse: true,
+      },
+    });
+
+    report = data.insights.lighthouse;
+  } catch (err) {
+    if (WHITELIST_ERRORS.includes(err.code)) {
+      console.log(`error: ${err.code} ${id}, ${url}`);
+      lhError = err.code;
+    } else {
+      throw err;
+    }
+  }
+
   let reportHtml;
   let scores;
 
   if (report) {
     scores = getScores(report.categories);
-    reportHtml = await gzip(ReportGenerator.generateReportHtml(data));
+    reportHtml = await gzip(ReportGenerator.generateReportHtml(report));
   }
 
   console.log(`saving deployment: ${id}, ${url}`);
 
   const db = await mongo();
   await db.collection("deployments").updateOne(
-    { id },
+    {
+      id,
+    },
     {
       $set: {
         id,
@@ -69,17 +89,27 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
         ownerId,
         scores,
         report: reportHtml,
-        auditing: null
+        lhError,
+        auditing: null,
       },
       $setOnInsert: {
-        createdAt: Date.now()
-      }
+        createdAt: Date.now(),
+      },
     },
-    { upsert: true }
+    {
+      upsert: true,
+    }
   );
 
   res.end("ok");
-}
+};
 
-module.exports = mongo.withClose(auth(createHandler({ mongo, gzip })));
-module.exports.createHandler = createHandler
+module.exports = mongo.withClose(
+  auth(
+    createHandler({
+      mongo,
+      gzip,
+    })
+  )
+);
+module.exports.createHandler = createHandler;

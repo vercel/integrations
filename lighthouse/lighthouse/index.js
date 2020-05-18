@@ -1,47 +1,26 @@
-const chromium = require("chrome-aws-lambda");
-const lighthouse = require("lighthouse");
-const { parse } = require("url");
 const { promisify } = require("util");
+const mql = require("@microlink/mql");
 const zlib = require("zlib");
-const auth = require("../lib/auth");
+
 const mongo = require("../lib/mongo");
+const auth = require("../lib/auth");
 
 const gzip = promisify(zlib.gzip);
 
-let args;
-let executablePath;
-if (process.platform === "darwin") {
-  args = chromium.args.filter(a => a !== "--single-process");
-  executablePath = Promise.resolve(
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+const ReportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
+
+const WHITELIST_ERRORS = ["EBRWSRTIMEOUT", "EMAXREDIRECTS"];
+
+const getScores = (categories) =>
+  Object.values(categories).reduce(
+    (acc, category) => ({
+      ...acc,
+      [category.id]: category.score,
+    }),
+    {}
   );
-} else {
-  args = chromium.args;
-  executablePath = chromium.executablePath;
-}
 
-async function lh(url) {
-  let browser;
-
-  try {
-    browser = await chromium.puppeteer.launch({
-      args,
-      executablePath: await executablePath
-    });
-    const { port } = parse(browser.wsEndpoint());
-    return await lighthouse(url, {
-      port,
-      output: "html",
-      logLevel: "error"
-    });
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
-  }
-}
-
-async function handler(req, res) {
+const createHandler = ({ gzip, mongo }) => async (req, res) => {
   let id;
   let url;
   let ownerId;
@@ -60,60 +39,77 @@ async function handler(req, res) {
     return;
   }
 
-  let result;
-  let lhError;
-
   console.log(`generating report: ${id}, ${url}`);
+
+  let lhError;
+  let report;
+
   try {
-    result = await lh(`https://${url}`);
+    const { data } = await mql(`https://${url}`, {
+      apiKey: process.env.MICROLINK_API_KEY,
+      ttl: process.env.MICROLINK_API_KEY ? "30d" : undefined,
+      meta: false,
+      retry: 10,
+      filter: "insights",
+      insights: {
+        technologies: false,
+        lighthouse: true,
+      },
+    });
+
+    report = data.insights.lighthouse;
   } catch (err) {
-    if (err.code === "NO_FCP") {
-      console.warn(err);
-      lhError = err.friendlyMessage || err.message;
+    if (WHITELIST_ERRORS.includes(err.code)) {
+      console.log(`error: ${err.code} ${id}, ${url}`);
+      lhError = err.code;
     } else {
       throw err;
     }
   }
 
+  let reportHtml;
   let scores;
-  let report;
-  if (result) {
-    scores = Object.values(result.lhr.categories).reduce((o, c) => {
-      o[c.id] = c.score;
-      return o;
-    }, {});
 
-    report = await gzip(result.report);
+  if (report) {
+    scores = getScores(report.categories);
+    reportHtml = await gzip(ReportGenerator.generateReportHtml(report));
   }
 
   console.log(`saving deployment: ${id}, ${url}`);
-  // don't pre-connect mongo since lighthouse audits can take a long time
+
   const db = await mongo();
   await db.collection("deployments").updateOne(
-    { id },
+    {
+      id,
+    },
     {
       $set: {
         id,
         url,
         ownerId,
         scores,
-        report,
+        report: reportHtml,
         lhError,
-        auditing: null
+        auditing: null,
       },
       $setOnInsert: {
-        createdAt: Date.now()
-      }
+        createdAt: Date.now(),
+      },
     },
-    { upsert: true }
+    {
+      upsert: true,
+    }
   );
 
   res.end("ok");
-}
+};
 
-// FIXME: hack not to exit on errors of lighthouse
-process.on("uncaughtException", err => {
-  console.error("uncaughtException:", err);
-});
-
-module.exports = mongo.withClose(auth(handler));
+module.exports = mongo.withClose(
+  auth(
+    createHandler({
+      mongo,
+      gzip,
+    })
+  )
+);
+module.exports.createHandler = createHandler;

@@ -7,7 +7,8 @@
     "CLIENT_SECRET": "@lhi-client-secret",
     "MONGO_DB": "@lhi-mongo-db",
     "MONGO_URI": "@lhi-mongo-uri",
-    "HOST": "@lhi-host"
+    "HOST": "@lhi-host",
+    "MICROLINK_API_KEY": "@microlink-api-key"
   },
   "builds": [
     {

@@ -3,23 +3,24 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "now-build": "cp lighthouse/cri.js node_modules/lighthouse/lighthouse-core/gather/connections/cri.js",
     "dev": "now dev",
     "format": "prettier --write '**/*.js'",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test ava",
+    "pretest": "npm run lint"
   },
   "dependencies": {
+    "@microlink/mql": "^0.6.13",
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
-    "chrome-aws-lambda": "3.0.4",
     "cookie": "0.4.0",
-    "lighthouse": "4.3.1",
+    "lighthouse": "~5.6.0",
     "mongodb": "3.2.5",
     "ms": "2.1.1",
-    "node-fetch": "2.6.0",
-    "puppeteer-core": "3.0.4"
+    "node-fetch": "2.6.0"
   },
   "devDependencies": {
+    "ava": "^3.8.2",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.3.0",
     "prettier": "1.17.1"

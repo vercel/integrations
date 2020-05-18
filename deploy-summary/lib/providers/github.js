@@ -135,5 +135,24 @@ module.exports = {
   },
   getCommitShaFromMeta(meta) {
     return meta.githubCommitSha
+  },
+  async getFileContent(client, { meta, filePath }) {
+    try {
+      const { data: content } = await client.repos.getContents({
+        owner: meta.githubOrg,
+        repo: meta.githubRepo,
+        ref: meta.githubCommitRef,
+        path: filePath,
+        headers: { accept: 'application/vnd.github.VERSION.raw' }
+      })
+      return content
+    } catch (error) {
+      // no file found
+      if (error.status === 404) {
+        return undefined
+      }
+
+      throw error
+    }
   }
 }

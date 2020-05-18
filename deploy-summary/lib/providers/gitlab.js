@@ -124,5 +124,22 @@ module.exports = {
   },
   getCommitShaFromMeta(meta) {
     return meta.gitlabCommitSha
+  },
+  async getFileContent(client, { meta, filePath }) {
+    try {
+      const content = await client.RepositoryFiles.showRaw(
+        meta.gitlabProjectId,
+        filePath,
+        meta.gitlabCommitRef
+      )
+      return content
+    } catch (error) {
+      // no file found
+      if (error.status === 404) {
+        return undefined
+      }
+
+      throw error
+    }
   }
 }

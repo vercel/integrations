@@ -76,43 +76,27 @@ module.exports = withSentry('webhook', async (req, res) => {
     return res.send()
   }
 
+  // get pull request associated to commit
+  const strategy = getStrategy(provider)
+  const providerClient = await strategy.createClient(providerToken)
+
+  // client is null if the token has been revoked or is not valid
+  if (!providerClient) {
+    await store.updateOne({ ownerId }, { $unset: { [`${provider}Token`]: '' } })
+    console.log(`ignoring event: ${provider}Token revoked by user or not valid`)
+    return res.send()
+  }
+
   // get package.json content
-  const zeitClient = new ZeitClient({ token, teamId })
-  const deploymentFilesRes = await zeitClient.fetch(
-    `/v5/now/deployments/${payload.deploymentId}/files`,
-    {}
-  )
+  const packageJsonContent = await strategy.getFileContent(providerClient, {
+    meta,
+    filePath: 'package.json'
+  })
 
-  if (deploymentFilesRes.status === 403) {
-    console.log(
-      `token for account ${ownerId} is not valid anymore, removing doc and ignoring event`
-    )
-    // remove doc because we can't do anything without a valid token
-    await store.deleteOne({ ownerId })
+  if (!packageJsonContent) {
+    console.log('no package.json content found')
     return res.send()
   }
-
-  const deploymentFiles = await deploymentFilesRes.json()
-
-  const srcDir = deploymentFiles.find(
-    file => file.name === 'src' && file.type === 'directory'
-  )
-  const packageJsonFile = (srcDir ? srcDir.children : []).find(
-    file => file.name === 'package.json' && file.type === 'file'
-  )
-  if (!packageJsonFile) {
-    console.log('ignoring event: no package.json found in the root folder')
-    return res.send()
-  }
-  const packageJsonRes = await zeitClient.fetch(
-    `/v5/now/deployments/${payload.deploymentId}/files/${packageJsonFile.uid}`,
-    {}
-  )
-  if (!packageJsonRes.ok) {
-    console.log('error: could not retrieve package.json content')
-    return res.send()
-  }
-  const packageJsonContent = await packageJsonRes.text()
 
   // parse package.json
   let pkg = {}
@@ -133,16 +117,6 @@ module.exports = withSentry('webhook', async (req, res) => {
   }
 
   // get pull request associated to commit
-  const strategy = getStrategy(provider)
-  const providerClient = await strategy.createClient(providerToken)
-
-  // client is null if the token has been revoked or is not valid
-  if (!providerClient) {
-    await store.updateOne({ ownerId }, { $unset: { [`${provider}Token`]: '' } })
-    console.log(`ignoring event: ${provider}Token revoked by user or not valid`)
-    return res.send()
-  }
-
   const pull = await strategy.getPull(providerClient, { meta })
 
   if (!pull) {
@@ -170,6 +144,7 @@ module.exports = withSentry('webhook', async (req, res) => {
 
   // if there's an alias, use alias url instead
   try {
+    const zeitClient = new ZeitClient({ token, teamId })
     const { alias } = await zeitClient.fetchAndThrow(
       `/v9/now/deployments/${payload.deploymentId}`,
       {}

@@ -6,7 +6,7 @@ const sleep = require("./sleep");
 const BATCH_SIZE = 20;
 const LIMIT = 1000;
 
-const rateLimit = RateLimit(10);
+const rateLimit = RateLimit(5);
 
 async function fetchUpdateOwner(buf) {
   await rateLimit();

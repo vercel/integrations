@@ -1,5 +1,5 @@
 const { parse } = require("url");
-const mongo = require("./lib/mongo");
+const mongo = require("../lib/mongo");
 
 module.exports = mongo.withClose(async (req, res) => {
   const {

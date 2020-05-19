@@ -1,16 +1,15 @@
 const { RateLimit } = require("async-sema");
-const auth = require("../lib/auth");
+const auth = require("../../lib/auth");
 const {
   AUDIT_DEPLOYMENTS_COUNT,
   AUDIT_DEPLOYMENTS_CREATED_AFTER
-} = require("../lib/constants");
-const fetchDeployments = require("../lib/fetch-deployments");
-const mongo = require("../lib/mongo");
-const runAudits = require("../lib/run-audits");
-const sleep = require("../lib/sleep");
+} = require("../../lib/constants");
+const fetchDeployments = require("../../lib/fetch-deployments");
+const mongo = require("../../lib/mongo");
+const runAudits = require("../../lib/run-audits");
+const sleep = require("../../lib/sleep");
 
 const limitUpdate = RateLimit(1);
-const limitLighthouse = RateLimit(5);
 
 async function update({ accessToken, id }) {
   const isTeam = id.startsWith("team_");
@@ -82,25 +81,15 @@ async function update({ accessToken, id }) {
   deployments = deployments.filter(d => !existingIds.has(d.uid));
 
   const deploymentsToAudit = new Map([
-    ...deployments.map(d => [d.uid, { id: d.uid, url: d.url }]),
-    ...deploymentDocs.map(d => [d.id, { id: d.id, url: d.url }])
+    ...deployments.map(d => [d.uid, { id: d.uid, url: d.url, ownerId: id }]),
+    ...deploymentDocs.map(d => [d.id, { id: d.id, url: d.url, ownerId: id }])
   ]);
 
   console.log(`auditing deployments: ${deploymentsToAudit.size}`);
 
-  for (const d of deploymentsToAudit.values()) {
-    await limitLighthouse();
+  runAudits([...deploymentsToAudit.values()]).catch(console.error);
 
-    console.log(`requesting lighthouse: ${d.id}, ${d.url}`);
-
-    runAudits({
-      id: d.id,
-      url: d.url,
-      ownerId: id
-    }).catch(console.error);
-  }
-
-  await sleep(1000);
+  await sleep(500);
 }
 
 async function handler(req, res) {

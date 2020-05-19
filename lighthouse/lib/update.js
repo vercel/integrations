@@ -15,13 +15,13 @@ async function fetchUpdateOwner(buf) {
 
   // don't wait for response
   fetchApi("/update/owner.js", buf).catch(console.error);
-  await sleep(1000);
+  await sleep(500);
 }
 
 async function fetchNext(name, from) {
   await rateLimit();
   fetchApi(`/update/${name}.js`, { from }).catch(console.error);
-  await sleep(1000);
+  await sleep(500);
 }
 
 module.exports = async function update(name, { from } = {}) {

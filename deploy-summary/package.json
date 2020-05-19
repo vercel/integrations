@@ -5,7 +5,7 @@
     "build": "mkdir -p public && touch public/index.html"
   },
   "dependencies": {
-    "@microlink/mql": "0.6.13",
+    "@microlink/mql": "0.6.15",
     "@octokit/rest": "16.28.2",
     "@sentry/node": "5.15.5",
     "@zeit/fetch": "5.1.0",

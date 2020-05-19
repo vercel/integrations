@@ -10,7 +10,7 @@
     "pretest": "npm run lint"
   },
   "dependencies": {
-    "@microlink/mql": "^0.6.13",
+    "@microlink/mql": "0.6.15",
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
     "cookie": "0.4.0",

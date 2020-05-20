@@ -49,7 +49,9 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
           filter: "insights",
           insights: {
             technologies: false,
-            lighthouse: true
+            lighthouse: {
+              maxWaitForload: 10000
+            }
           }
         });
 

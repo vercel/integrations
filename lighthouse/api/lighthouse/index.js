@@ -39,6 +39,7 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
   const deployments = req.body;
   const results = await Promise.all(
     deployments.map(async ({ id, url }) => {
+      const staredAt = Date.now();
       console.log(`generating report: ${id}, ${url}`);
       try {
         const { data } = await mql(`https://${url}`, {
@@ -54,10 +55,12 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
             }
           }
         });
+        console.log(`finished to generate report after ${Date.now() - staredAt}ms: ${id}, ${url}`);
 
         const report = data.insights.lighthouse;
         return { report };
       } catch (err) {
+        console.error(`errored to generate report after ${Date.now() - staredAt}ms: ${id}, ${url} (${err.headers ? err.headers['x-request-id'] : 'none'})`);
         if (WHITELIST_ERRORS.includes(err.code)) {
           console.log(`error: ${err.code} ${id}, ${url}`);
           const lhError = err.code;
@@ -110,8 +113,10 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
     })
   );
 
-  const db = await timeout(mongo(), 5000);
-  await db.collection("deployments").bulkWrite(operations.filter(Boolean));
+  if (operations.length) {
+    const db = await timeout(mongo(), 5000);
+    await db.collection("deployments").bulkWrite(operations.filter(Boolean));
+  }
   res.end("ok");
 };
 

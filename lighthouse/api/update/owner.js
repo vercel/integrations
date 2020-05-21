@@ -84,6 +84,9 @@ async function update({ accessToken, id }) {
     ...deployments.map(d => [d.uid, { id: d.uid, url: d.url, ownerId: id }]),
     ...deploymentDocs.map(d => [d.id, { id: d.id, url: d.url, ownerId: id }])
   ]);
+  if (!deploymentsToAudit.size) {
+    return;
+  }
 
   console.log(`auditing deployments: ${deploymentsToAudit.size}`);
 

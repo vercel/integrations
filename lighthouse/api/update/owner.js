@@ -41,7 +41,6 @@ async function update({ accessToken, id }) {
   if (!deployments) return;
 
   deployments = deployments.filter(d => d.state === "READY");
-  if (!deployments.length) return;
 
   const deploymentIds = deployments.map(d => d.uid);
 
@@ -54,7 +53,7 @@ async function update({ accessToken, id }) {
 
   // deployment docs to audit
   const [existingDeploymentDocs, deploymentDocs] = await Promise.all([
-    deploymentsCollection
+    deploymentIds.length ? deploymentsCollection
       .find(
         {
           id: { $in: deploymentIds }
@@ -63,7 +62,7 @@ async function update({ accessToken, id }) {
           projection: { id: 1 }
         }
       )
-      .toArray(),
+      .toArray() : [],
     deploymentsCollection
       .find(
         {

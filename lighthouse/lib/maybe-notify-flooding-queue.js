@@ -1,5 +1,4 @@
 const { WebClient } = require("@slack/web-api");
-const { AUDIT_QUEUE_WARN_THRESHOLD } = require("./constants");
 const countAuditing = require("./count-auditing");
 
 module.exports = async db => {
@@ -8,13 +7,14 @@ module.exports = async db => {
   }
 
   const count = await countAuditing(db);
-  if (count < AUDIT_QUEUE_WARN_THRESHOLD) {
+  if (count < 100) {
     return;
   }
 
+  const msg = count > 200 ? `*CRITICAL*: audit queue is flooding` : `WARNING: audit queue is increasing`;
   const web = new WebClient(process.env.SLACK_TOKEN);
   await web.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,
-    text: `Lighthouse integration: audit queue is flooding (${count})`
+    text: `[Lighthouse integration] ${msg} (${count})`
   });
 };

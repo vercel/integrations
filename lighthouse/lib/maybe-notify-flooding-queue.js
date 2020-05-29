@@ -11,7 +11,10 @@ module.exports = async db => {
     return;
   }
 
-  const msg = count > 200 ? `*CRITICAL*: audit queue is flooding` : `WARNING: audit queue is increasing`;
+  const msg =
+    count > 200
+      ? `*CRITICAL*: audit queue is flooding`
+      : `WARNING: audit queue is increasing`;
   const web = new WebClient(process.env.SLACK_TOKEN);
   await web.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,

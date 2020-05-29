@@ -43,7 +43,7 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
   const results = await Promise.all(
     deployments.map(async ({ id, url }) => {
       const startedAt = Date.now();
-      console.log(`generating report: ${id}, ${url}`);
+      console.log(`generating report: ${url}`);
       try {
         const { data } = await mql(`https://${url}`, {
           apiKey: process.env.MICROLINK_API_KEY,
@@ -60,7 +60,7 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
         });
         console.log(
           `finished to generate report after ${Date.now() -
-            startedAt}ms: ${id}, ${url}`
+            startedAt}ms: ${url}`
         );
 
         const report = data.insights.lighthouse;
@@ -68,28 +68,26 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
       } catch (err) {
         console.error(
           `errored to generate report after ${Date.now() -
-            startedAt}ms: ${id}, ${url} (${
+            startedAt}ms: ${url} (${
             err.headers ? err.headers["x-request-id"] : "none"
           })`
         );
         if (WHITELIST_ERRORS.includes(err.code)) {
-          console.log(`error: ${err.code} ${id}, ${url}`);
+          console.log(`error: ${err.code} ${url}`);
           const lhError = err.code;
           return { lhError };
         } else {
-          console.error(`fatal: ${id}, ${url}`, err);
+          console.error(`fatal: ${url}`, err);
           return;
         }
       }
     })
   );
 
-  const operations = await Promise.all(
+  let operations = await Promise.all(
     deployments.map(async ({ id, url, ownerId }, i) => {
       const result = results[i];
       if (!result) return;
-
-      console.log(`saving deployment: ${id}, ${url}`);
 
       let report;
       let scores;
@@ -123,10 +121,12 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
       };
     })
   );
+  operations = operations.filter(Boolean);
 
   const db = await timeout(mongo(), 5000);
   if (operations.length) {
-    await db.collection("deployments").bulkWrite(operations.filter(Boolean));
+    console.log(`saving deployments: ${operations.length}`);
+    await db.collection("deployments").bulkWrite(operations);
   }
 
   if (Date.now() - startAt < 50 * 1000) {

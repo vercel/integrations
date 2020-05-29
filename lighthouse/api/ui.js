@@ -27,6 +27,12 @@ function parseDeploymentURL(url) {
   };
 }
 
+const MICROLINK_ERRORS = new Set([
+  "EBRWSRTIMEOUT",
+  "EMAXREDIRECTS",
+  "EINVALURLCLIENT"
+]);
+
 const Score = ({ score, title }) => {
   let color;
   if (!score || score < 0.5) {
@@ -225,9 +231,13 @@ module.exports = withUiHook(
           </Link>
         `;
       } else if (doc && doc.lhError) {
-        contentView = htm`<Box color="#c7221f">Something went wrong with recording the trace over your page load. Please run audit again. (${
-          doc.lhError
-        })</Box>`;
+        if (MICROLINK_ERRORS.has(doc.lhError)) {
+          contentView = htm`<Box color="#c7221f">Something went wrong with recording the trace over your page load. Please run audit again. (${
+            doc.lhError
+          })</Box>`;
+        } else {
+          contentView = htm`<Box color="#c7221f">${doc.lhError}</Box>`;
+        }
         auditable = true;
       } else {
         contentView = htm`<P>No report available</P>`;

@@ -41,7 +41,7 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
   }
 
   const results = await Promise.all(
-    deployments.map(async ({ id, url }) => {
+    deployments.map(async ({ url }) => {
       const startedAt = Date.now();
       console.log(`generating report: ${url}`);
       try {

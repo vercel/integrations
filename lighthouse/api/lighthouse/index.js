@@ -5,12 +5,15 @@ const zlib = require("zlib");
 
 const mongo = require("../../lib/mongo");
 const auth = require("../../lib/auth");
+const fetchApi = require("../../lib/fetch-api");
+const findDeploymentsToAudit = require("../../lib/find-deployments-to-audit");
+const sleep = require("../../lib/sleep");
 
 const gzip = promisify(zlib.gzip);
 
 const ReportGenerator = require("lighthouse/lighthouse-core/report/report-generator");
 
-const WHITELIST_ERRORS = ["EBRWSRTIMEOUT", "EMAXREDIRECTS"];
+const WHITELIST_ERRORS = ["EBRWSRTIMEOUT", "EMAXREDIRECTS", "EINVALURLCLIENT"];
 
 const getScores = categories =>
   Object.values(categories).reduce(
@@ -22,24 +25,24 @@ const getScores = categories =>
   );
 
 const createHandler = ({ gzip, mongo }) => async (req, res) => {
-  if (!Array.isArray(req.body)) {
+  const { deployments, startAt } = req.body || {};
+  if (!Array.isArray(deployments) || typeof startAt !== "number") {
     res.statusCode = 400;
     res.end("Invalid JSON");
     return;
   }
 
-  for (const data of req.body) {
-    if (!data || !data.id || !data.url || !data.ownerId) {
+  for (const d of deployments) {
+    if (!d || !d.id || !d.url || !d.ownerId) {
       res.statusCode = 400;
-      res.end("Missing required properties: id, url or ownerId");
+      res.end("Missing required properties on deployment: id, url or ownerId");
       return;
     }
   }
 
-  const deployments = req.body;
   const results = await Promise.all(
     deployments.map(async ({ id, url }) => {
-      const staredAt = Date.now();
+      const startedAt = Date.now();
       console.log(`generating report: ${id}, ${url}`);
       try {
         const { data } = await mql(`https://${url}`, {
@@ -55,12 +58,20 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
             }
           }
         });
-        console.log(`finished to generate report after ${Date.now() - staredAt}ms: ${id}, ${url}`);
+        console.log(
+          `finished to generate report after ${Date.now() -
+            startedAt}ms: ${id}, ${url}`
+        );
 
         const report = data.insights.lighthouse;
         return { report };
       } catch (err) {
-        console.error(`errored to generate report after ${Date.now() - staredAt}ms: ${id}, ${url} (${err.headers ? err.headers['x-request-id'] : 'none'})`);
+        console.error(
+          `errored to generate report after ${Date.now() -
+            startedAt}ms: ${id}, ${url} (${
+            err.headers ? err.headers["x-request-id"] : "none"
+          })`
+        );
         if (WHITELIST_ERRORS.includes(err.code)) {
           console.log(`error: ${err.code} ${id}, ${url}`);
           const lhError = err.code;
@@ -113,19 +124,43 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
     })
   );
 
+  const db = await timeout(mongo(), 5000);
   if (operations.length) {
-    const db = await timeout(mongo(), 5000);
     await db.collection("deployments").bulkWrite(operations.filter(Boolean));
   }
+
+  if (Date.now() - startAt < 50 * 1000) {
+    const nextDeployments = await findDeploymentsToAudit(db);
+    if (nextDeployments.length) {
+      fetchApi("/lighthouse", { deployments: nextDeployments, startAt }).catch(
+        console.error
+      );
+      await sleep(500);
+    }
+  }
+
   res.end("ok");
+};
+
+const withTime = fn => {
+  return async function(req, res) {
+    console.time(req.url);
+    try {
+      return await fn.call(this, req, res);
+    } finally {
+      console.timeEnd(req.url);
+    }
+  };
 };
 
 module.exports = mongo.withClose(
   auth(
-    createHandler({
-      mongo,
-      gzip
-    })
+    withTime(
+      createHandler({
+        mongo,
+        gzip
+      })
+    )
   )
 );
 module.exports.createHandler = createHandler;

@@ -1,22 +1,24 @@
+const { timeout } = require("promise-timeout");
 const auth = require("../../lib/auth");
 const fetchApi = require("../../lib/fetch-api");
+const mongo = require("../../lib/mongo");
 const sleep = require("../../lib/sleep");
+const findDeploymentsToAudit = require("../../lib/find-deployments-to-audit");
 
-const PER_SECONDS = 60;
-const COUNTS = Math.floor(60 / PER_SECONDS);
+const handler = async (req, res) => {
+  console.log(`invoking update`);
 
-module.exports = auth(async (req, res) => {
-  for (let i = 0; i < COUNTS; i++) {
-    console.log(`invoking update: ${i}`);
-    Promise.all([
-      fetchApi("/update/users.js"),
-      fetchApi("/update/teams.js")
-    ]).catch(console.error);
+  const db = await timeout(mongo(), 5000);
+  const deployments = await findDeploymentsToAudit(db);
 
-    const isLast = i === COUNTS - 1;
-    if (!isLast) await sleep(PER_SECONDS * 1000);
-  }
+  Promise.all([
+    fetchApi("/update/users.js"),
+    fetchApi("/update/teams.js"),
+    fetchApi("/lighthouse", { deployments, startAt: Date.now() })
+  ]).catch(console.error);
 
   await sleep(500);
   res.end("ok");
-});
+};
+
+module.exports = mongo.withClose(auth(handler));

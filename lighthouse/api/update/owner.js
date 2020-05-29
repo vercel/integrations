@@ -1,4 +1,5 @@
 const { RateLimit } = require("async-sema");
+const { timeout } = require("promise-timeout");
 const auth = require("../../lib/auth");
 const {
   AUDIT_DEPLOYMENTS_COUNT,
@@ -6,10 +7,8 @@ const {
 } = require("../../lib/constants");
 const fetchDeployments = require("../../lib/fetch-deployments");
 const mongo = require("../../lib/mongo");
-const runAudits = require("../../lib/run-audits");
-const sleep = require("../../lib/sleep");
 
-const limitUpdate = RateLimit(1);
+const limitUpdate = RateLimit(5);
 
 async function update({ accessToken, id }) {
   const isTeam = id.startsWith("team_");
@@ -41,57 +40,34 @@ async function update({ accessToken, id }) {
   if (!deployments) return;
 
   deployments = deployments.filter(d => d.state === "READY");
+  if (!deployments.length) return;
 
-  const deploymentIds = deployments.map(d => d.uid);
-
-  console.log(
-    `getting existing deployment docs for ${id}: ${deploymentIds.length}`
+  const ownerId = id;
+  const operations = await Promise.all(
+    deployments.map(async deployment => {
+      return {
+        updateOne: {
+          filter: { id: deployment.uid },
+          update: {
+            $setOnInsert: {
+              id: deployment.uid,
+              url: deployment.url,
+              ownerId,
+              scores: null,
+              report: null,
+              lhError: null,
+              auditing: Date.now(),
+              createdAt: Date.now()
+            }
+          },
+          upsert: true
+        }
+      };
+    })
   );
 
-  const db = await mongo();
-  const deploymentsCollection = db.collection("deployments");
-
-  // deployment docs to audit
-  const [existingDeploymentDocs, deploymentDocs] = await Promise.all([
-    deploymentIds.length ? deploymentsCollection
-      .find(
-        {
-          id: { $in: deploymentIds }
-        },
-        {
-          projection: { id: 1 }
-        }
-      )
-      .toArray() : [],
-    deploymentsCollection
-      .find(
-        {
-          ownerId: id,
-          auditing: { $ne: null }
-        },
-        {
-          projection: { id: 1, url: 1 }
-        }
-      )
-      .toArray()
-  ]);
-
-  const existingIds = new Set(existingDeploymentDocs.map(d => d.id));
-  deployments = deployments.filter(d => !existingIds.has(d.uid));
-
-  const deploymentsToAudit = new Map([
-    ...deployments.map(d => [d.uid, { id: d.uid, url: d.url, ownerId: id }]),
-    ...deploymentDocs.map(d => [d.id, { id: d.id, url: d.url, ownerId: id }])
-  ]);
-  if (!deploymentsToAudit.size) {
-    return;
-  }
-
-  console.log(`auditing deployments: ${deploymentsToAudit.size}`);
-
-  runAudits([...deploymentsToAudit.values()]).catch(console.error);
-
-  await sleep(500);
+  const db = await timeout(mongo(), 5000);
+  await db.collection("deployments").bulkWrite(operations);
 }
 
 async function handler(req, res) {

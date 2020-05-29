@@ -225,7 +225,9 @@ module.exports = withUiHook(
           </Link>
         `;
       } else if (doc && doc.lhError) {
-        contentView = htm`<Box color="#c7221f">Something went wrong with recording the trace over your page load. Please run audit again. (${doc.lhError})</Box>`;
+        contentView = htm`<Box color="#c7221f">Something went wrong with recording the trace over your page load. Please run audit again. (${
+          doc.lhError
+        })</Box>`;
         auditable = true;
       } else {
         contentView = htm`<P>No report available</P>`;

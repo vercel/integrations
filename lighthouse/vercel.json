@@ -4,10 +4,12 @@
     "API_SECRET": "@lhi-api-secret",
     "CLIENT_ID": "@lhi-client-id",
     "CLIENT_SECRET": "@lhi-client-secret",
+    "HOST": "@lhi-host",
+    "MICROLINK_API_KEY": "@microlink-api-key",
     "MONGO_DB": "@lhi-mongo-db",
     "MONGO_URI": "@lhi-mongo-uri",
-    "HOST": "@lhi-host",
-    "MICROLINK_API_KEY": "@microlink-api-key"
+    "SLACK_CHANNEL": "@lhi-slack-channel",
+    "SLACK_TOKEN": "@lhi-slack-token"
   },
   "functions": {
     "api/**/*.js": {

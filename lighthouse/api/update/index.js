@@ -4,6 +4,7 @@ const fetchApi = require("../../lib/fetch-api");
 const mongo = require("../../lib/mongo");
 const sleep = require("../../lib/sleep");
 const findDeploymentsToAudit = require("../../lib/find-deployments-to-audit");
+const maybeNotifyFloogingQueue = require("../../lib/maybe-notify-flooding-queue");
 
 const handler = async (req, res) => {
   console.log(`invoking update`);
@@ -17,7 +18,8 @@ const handler = async (req, res) => {
     fetchApi("/lighthouse", { deployments, startAt: Date.now() })
   ]).catch(console.error);
 
-  await sleep(500);
+  await Promise.all([maybeNotifyFloogingQueue(db), sleep(500)]);
+
   res.end("ok");
 };
 

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@microlink/mql": "0.6.15",
+    "@slack/web-api": "5.9.0",
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
     "cookie": "0.4.0",

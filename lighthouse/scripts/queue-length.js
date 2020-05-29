@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { MongoClient } = require("mongodb");
+const countAuditing = require("../lib/count-auditing");
 
 const { MONGO_DB, MONGO_URI } = process.env;
 if (!MONGO_DB) {
@@ -27,11 +28,7 @@ function withMongo(fn) {
 
 const main = withMongo(async function(client) {
   const db = client.db(MONGO_DB);
-
-  const count = await db
-    .collection("deployments")
-    .countDocuments({ auditing: { $ne: null } });
-
+  const count = await countAuditing(db);
   console.log(count);
 });
 

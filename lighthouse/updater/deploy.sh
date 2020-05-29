@@ -6,6 +6,11 @@ if [ -z "${API_SECRET:-}" ]; then
   exit 1
 fi
 
+if [ -z "${HOST:-}" ]; then
+  echo "missing environment variable: HOST" >&2
+  exit 1
+fi
+
 region=us-west-1
 role_name=lhi-updater
 function_name=lhi-updater
@@ -14,7 +19,7 @@ permission_id=lhi-updater-event
 handler="index.handler" \
 timeout=120
 schedule="rate(1 minute)"
-endpoint="https://lighthouse.zeit.sh/update"
+endpoint="${HOST}/update"
 environment="Variables={API_SECRET=$API_SECRET,ENDPOINT=$endpoint}"
 zipfile="${TMPDIR}${function_name}-$(date +%s).zip"
 

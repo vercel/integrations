@@ -5,12 +5,12 @@ const {
   COOKIE_MAX_AGE,
   AUDIT_DEPLOYMENTS_COUNT,
   AUDIT_DEPLOYMENTS_CREATED_AFTER
-} = require("./lib/constants");
-const { HOST } = require("./lib/env");
-const fetchAccessToken = require("./lib/fetch-access-token");
-const fetchDeployments = require("./lib/fetch-deployments");
-const fetchUser = require("./lib/fetch-user");
-const mongo = require("./lib/mongo");
+} = require("../lib/constants");
+const { HOST } = require("../lib/env");
+const fetchAccessToken = require("../lib/fetch-access-token");
+const fetchDeployments = require("../lib/fetch-deployments");
+const fetchUser = require("../lib/fetch-user");
+const mongo = require("../lib/mongo");
 
 module.exports = mongo.withClose(async (req, res) => {
   const {

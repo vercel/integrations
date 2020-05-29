@@ -1,8 +1,8 @@
 const { withUiHook, htm } = require("@zeit/integration-utils");
 const ms = require("ms");
 const { stringify } = require("querystring");
-const { HOST } = require("./lib/env");
-const mongo = require("./lib/mongo");
+const { HOST } = require("../lib/env");
+const mongo = require("../lib/mongo");
 
 const PROJECTS_LIMIT = 5;
 const DEPLOYMENTS_LIMIT = 10;
@@ -26,6 +26,12 @@ function parseDeploymentURL(url) {
     id
   };
 }
+
+const MICROLINK_ERRORS = new Set([
+  "EBRWSRTIMEOUT",
+  "EMAXREDIRECTS",
+  "EINVALURLCLIENT"
+]);
 
 const Score = ({ score, title }) => {
   let color;
@@ -225,7 +231,13 @@ module.exports = withUiHook(
           </Link>
         `;
       } else if (doc && doc.lhError) {
-        contentView = htm`<Box color="#c7221f">${doc.lhError}</Box>`;
+        if (MICROLINK_ERRORS.has(doc.lhError)) {
+          contentView = htm`<Box color="#c7221f">Something went wrong with recording the trace over your page load. Please run audit again. (${
+            doc.lhError
+          })</Box>`;
+        } else {
+          contentView = htm`<Box color="#c7221f">${doc.lhError}</Box>`;
+        }
         auditable = true;
       } else {
         contentView = htm`<P>No report available</P>`;

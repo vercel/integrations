@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "env": {
+    "API_SECRET": "@lhi-api-secret",
+    "CLIENT_ID": "@lhi-client-id",
+    "CLIENT_SECRET": "@lhi-client-secret",
+    "HOST": "@lhi-host",
+    "MICROLINK_API_KEY": "@microlink-api-key",
+    "MONGO_DB": "@lhi-mongo-db",
+    "MONGO_URI": "@lhi-mongo-uri",
+    "SLACK_CHANNEL": "@lhi-slack-channel",
+    "SLACK_TOKEN": "@lhi-slack-token"
+  },
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    { "src": "/gauge.svg", "dest": "/api/gauge.js" },
+    { "src": "/reports/(?<url>[^/]+)", "dest": "/api/report.js?url=$url" },
+    { "src": "/(.*)", "dest": "/api/$1" }
+  ]
+}

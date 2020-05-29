@@ -1,6 +1,6 @@
-const auth = require("../lib/auth");
-const mongo = require("../lib/mongo");
-const update = require("../lib/update");
+const auth = require("../../lib/auth");
+const mongo = require("../../lib/mongo");
+const update = require("../../lib/update");
 
 module.exports = mongo.withClose(
   auth(async (req, res) => {
@@ -10,7 +10,7 @@ module.exports = mongo.withClose(
       return;
     }
 
-    await update("teams", req.body);
+    await update("users", req.body);
     res.end("ok");
   })
 );

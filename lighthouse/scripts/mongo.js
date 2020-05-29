@@ -61,6 +61,7 @@ const main = withMongo(async function(client) {
   await deploymentsCollection.createIndex({ id: 1 }, { unique: true });
   await deploymentsCollection.createIndex({ url: 1 }, { unique: true });
   await deploymentsCollection.createIndex({ ownerId: 1, auditing: 1 });
+  await deploymentsCollection.createIndex({ auditing: 1 });
 });
 
 main().catch(console.error);

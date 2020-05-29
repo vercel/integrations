@@ -11,18 +11,23 @@
   },
   "dependencies": {
     "@microlink/mql": "0.6.15",
+    "@slack/web-api": "5.9.0",
     "@zeit/integration-utils": "0.4.0",
     "async-sema": "3.0.0",
     "cookie": "0.4.0",
     "lighthouse": "~5.6.0",
     "mongodb": "3.2.5",
     "ms": "2.1.1",
-    "node-fetch": "2.6.0"
+    "node-fetch": "2.6.0",
+    "promise-timeout": "1.3.0"
   },
   "devDependencies": {
     "ava": "^3.8.2",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.3.0",
     "prettier": "1.17.1"
+  },
+  "ava": {
+    "timeout": "30s"
   }
 }

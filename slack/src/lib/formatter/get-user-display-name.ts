@@ -7,9 +7,7 @@ export default function getUserDisplayName(
 	deployment?: Components.Schemas.Deployment
 ) {
 	if (deployment && path(deployment, 'meta.githubDeployment')) {
-
-		// Authors don't always have a githubCommitAuthorLogin if they're using an old git configuration
-		return deployment.meta.githubCommitAuthorLogin ? deployment.meta.githubCommitAuthorLogin : deployment.meta.githubCommitAuthorName;
+		return deployment.meta.githubCommitAuthorLogin;
 	}
 
 	return user ? user.username : null;

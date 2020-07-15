@@ -135,7 +135,7 @@ module.exports = {
       return content
     } catch (error) {
       // no file found
-      if (error.status === 404) {
+      if (error.response && error.response.status === 404) {
         return undefined
       }
 

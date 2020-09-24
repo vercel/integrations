@@ -3,7 +3,7 @@ const { getStore } = require('../lib/mongo')
 const { withSentry, sendToSentry } = require('../lib/sentry')
 
 module.exports = withSentry('setup', async (req, res) => {
-  const resAuth = await fetch('https://api.zeit.co/v2/oauth/access_token', {
+  const resAuth = await fetch('https://api.vercel.com/v2/oauth/access_token', {
     method: 'POST',
     headers: {
       'content-type': 'application/x-www-form-urlencoded'
@@ -31,7 +31,7 @@ module.exports = withSentry('setup', async (req, res) => {
   const token = jsonAuth.access_token
 
   const resWebhook = await fetch(
-    `https://api.zeit.co/v1/integrations/webhooks${
+    `https://api.vercel.com/v1/integrations/webhooks${
       req.query.teamId ? `?teamId=${req.query.teamId}` : ''
     }`,
     {

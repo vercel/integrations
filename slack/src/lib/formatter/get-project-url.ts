@@ -7,6 +7,6 @@ export default function getProjectURL(
 	team?: Team | null
 ) {
 	return team
-		? `https://zeit.co/${team.slug}/${encodeURIComponent(name)}`
-		: `https://zeit.co/${getUserDisplayName(user)}/${name}`;
+		? `https://vercel.com/${team.slug}/${encodeURIComponent(name)}`
+		: `https://vercel.com/${getUserDisplayName(user)}/${name}`;
 }

@@ -14,7 +14,7 @@ const {
  * token type for ZEIT.
  */
 export default async function getAccessToken(code: string) {
-	const res = await fetch(`https://api.zeit.co/v2/oauth/access_token`, {
+	const res = await fetch(`https://api.vercel.com/v2/oauth/access_token`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'

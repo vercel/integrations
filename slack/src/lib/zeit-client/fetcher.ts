@@ -21,7 +21,7 @@ export default function buildFetcher({ zeitToken, teamId }: Params) {
 		const queryStr = teamId
 			? stringify({ ...query, teamId })
 			: stringify({ ...query });
-		const url = `https://api.zeit.co${path}?${queryStr}`;
+		const url = `https://api.vercel.com${path}?${queryStr}`;
 		const method = options.method || 'GET';
 
 		console.log(`[${options.method || 'GET'}] ${url}`);

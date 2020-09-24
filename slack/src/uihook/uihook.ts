@@ -65,7 +65,7 @@ export default withUiHook(async ({ payload }) => {
 					? creator.username
 					: `user deleted from team`;
 				const avatar = creator
-					? `https://zeit.co/api/www/avatar/?u=${creatorUsername}&s=150`
+					? `https://vercel.com/api/www/avatar/?u=${creatorUsername}&s=150`
 					: null;
 
 				return htm`

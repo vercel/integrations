@@ -15,7 +15,7 @@ export default function getUserAvatar(
 	}
 
 	if (user && user.username) {
-		return `https://zeit.co/api/www/avatar/?u=${user.username}&s=50`;
+		return `https://vercel.com/api/www/avatar/?u=${user.username}&s=50`;
 	}
 
 	return null;

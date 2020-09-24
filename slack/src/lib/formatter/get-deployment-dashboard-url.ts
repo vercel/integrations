@@ -19,6 +19,6 @@ export default function getDeploymentDasboardURL(
 	const sanitizedName = name.replace(/[^a-zA-Z0-9\-]+/g, '') // remove non-alphanumeric, non-dashes
 
 	return team
-		? `https://zeit.co/${team.slug}/${sanitizedName}/${deploymentHash}`
-		: `https://zeit.co/${getUserDisplayName(user)}/${sanitizedName}/${deploymentHash}`;
+		? `https://vercel.com/${team.slug}/${sanitizedName}/${deploymentHash}`
+		: `https://vercel.com/${getUserDisplayName(user)}/${sanitizedName}/${deploymentHash}`;
 }

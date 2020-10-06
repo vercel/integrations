@@ -15,7 +15,7 @@
     "cookie": "0.4.0",
     "micro": "9.3.4",
     "mongodb": "3.2.7",
-    "node-fetch": "2.6.0"
+    "node-fetch": "2.6.1"
   },
   "devDependencies": {
     "@types/cookie": "0.3.3",

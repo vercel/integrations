@@ -15,9 +15,9 @@ module.exports = {
       .collection('build-summary-store')
   },
   closeStore: async () => {
-    client = null
     if (client) {
       await client.close()
     }
+    client = null
   }
 }

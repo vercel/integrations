@@ -6,7 +6,7 @@ module.exports = async ({ accessToken, teamId, webhookUrl }) => {
   const res = await fetch(`https://api.zeit.co/v1/integrations/webhooks?${query}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({

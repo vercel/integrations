@@ -35,4 +35,5 @@ module.exports = mongo.withClose(async (req, res) => {
     },
     { upsert: true }
   );
+  res.end('ok');
 });

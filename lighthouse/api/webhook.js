@@ -11,27 +11,21 @@ function verifySignature(req, payload) {
 }
 
 module.exports = mongo.withClose(async (req, res) => {
-  const payload = req.body || '';
-  if (!verifySignature(req, JSON.stringify(payload))) {
+  const body = req.body || '';
+  if (!verifySignature(req, JSON.stringify(body))) {
     res.statusCode = 403;
     res.end('Invalid signature');
     return;
   }
 
-  if (!req.query.ownerId) {
-    res.statusCode = 400;
-    res.end('Missing query: ownerId');
-    return;
-  }
-
   const db = await timeout(mongo(), 5000);
   await db.collection("deployments").updateOne(
-    { id: payload.deploymentId },
+    { id: body.payload.deploymentId },
     {
       $setOnInsert: {
-        id: payload.deploymentId,
-        url: payload.url,
-        ownerId: req.query.ownerId,
+        id: body.payload.deploymentId,
+        url: body.payload.url,
+        ownerId: body.ownerId,
         scores: null,
         report: null,
         lhError: null,

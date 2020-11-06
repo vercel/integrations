@@ -41,7 +41,7 @@ module.exports = mongo.withClose(async (req, res) => {
     })
   ]);
 
-  console.log('creating webhook');
+  console.log(`creating webhook: ${teamId || user.uid}`);
   const webhookUrl = `https://${HOST}/api/webhooks/${encodeURIComponent(teamId || user.uid)}`;
   await createWebhook({ accessToken, teamId, webhookUrl });
 

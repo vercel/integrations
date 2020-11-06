@@ -11,7 +11,7 @@ function verifySignature(req, payload) {
 }
 
 module.exports = mongo.withClose(async (req, res) => {
-  const payload = req.body;
+  const payload = req.body || '';
   if (!verifySignature(req, JSON.stringify(payload))) {
     res.statusCode = 403;
     res.end('Invalid signature');
@@ -26,7 +26,7 @@ module.exports = mongo.withClose(async (req, res) => {
 
   const db = await timeout(mongo(), 5000);
   await db.collection("deployments").updateOne(
-    { id: payload.deployment },
+    { id: payload.deploymentId },
     {
       $setOnInsert: {
         id: payload.deploymentId,

@@ -19,7 +19,7 @@
   "routes": [
     { "src": "/gauge.svg", "dest": "/api/gauge.js" },
     { "src": "/reports/(?<url>[^/]+)", "dest": "/api/report.js?url=$url" },
-    { "src": "/api/webhooks/:ownerId", "dest": "/api/webhook.js?ownerId=$ownerId" },
+    { "src": "/api/webhooks/(?<ownerId>[^/]+)", "dest": "/api/webhook.js?ownerId=$ownerId" },
     { "src": "/(.*)", "dest": "/api/$1" }
   ]
 }

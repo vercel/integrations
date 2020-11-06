@@ -1,4 +1,4 @@
-const crtpto = require("crypto");
+const crypto = require("crypto");
 const { timeout } = require("promise-timeout");
 const mongo = require("../lib/mongo");
 const { CLIENT_SECRET } = require("../lib/env");

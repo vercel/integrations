@@ -7,6 +7,7 @@ const {
   AUDIT_DEPLOYMENTS_CREATED_AFTER
 } = require("../lib/constants");
 const { HOST } = require("../lib/env");
+const createWebhook = require("../lib/create-webhook");
 const fetchAccessToken = require("../lib/fetch-access-token");
 const fetchDeployments = require("../lib/fetch-deployments");
 const fetchUser = require("../lib/fetch-user");
@@ -39,6 +40,10 @@ module.exports = mongo.withClose(async (req, res) => {
       teamId
     })
   ]);
+
+  console.log(`creating webhook: ${teamId || user.uid}`);
+  const webhookUrl = `${HOST}/api/webhook`;
+  await createWebhook({ accessToken, teamId, webhookUrl });
 
   deployments = deployments.filter(d => d.state === "READY");
 

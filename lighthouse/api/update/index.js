@@ -12,11 +12,7 @@ const handler = async (req, res) => {
   const db = await timeout(mongo(), 5000);
   const deployments = await findDeploymentsToAudit(db);
 
-  Promise.all([
-    fetchApi("/update/users.js"),
-    fetchApi("/update/teams.js"),
-    fetchApi("/lighthouse", { deployments, startAt: Date.now() })
-  ]).catch(console.error);
+  fetchApi("/lighthouse", { deployments, startAt: Date.now() }).catch(console.error);
 
   await Promise.all([maybeNotifyFloogingQueue(db), sleep(500)]);
 

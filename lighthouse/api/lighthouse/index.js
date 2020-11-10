@@ -129,7 +129,7 @@ const createHandler = ({ gzip, mongo }) => async (req, res) => {
     await db.collection("deployments").bulkWrite(operations);
   }
 
-  if (Date.now() - startAt < 290 * 1000) {
+  if (Date.now() - startAt < 50 * 1000) {
     const nextDeployments = await findDeploymentsToAudit(db);
     if (nextDeployments.length) {
       fetchApi("/lighthouse", { deployments: nextDeployments, startAt }).catch(

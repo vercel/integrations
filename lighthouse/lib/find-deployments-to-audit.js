@@ -4,7 +4,7 @@ module.exports = db => {
     .find(
       { auditing: { $ne: null } },
       {
-        limit: 5,
+        limit: 10,
         projection: { id: 1, url: 1, ownerId: 1 },
         sort: [["auditing", 1]]
       }

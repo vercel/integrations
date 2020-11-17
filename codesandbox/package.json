@@ -15,7 +15,7 @@
     "codesandbox-import-utils": "^2.1.5",
     "datauri": "^2.0.0",
     "humps": "^2.0.1",
-    "node-fetch": "^2.5.0",
+    "node-fetch": "^2.6.1",
     "shortid": "^2.2.14"
   },
   "devDependencies": {

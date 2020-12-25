@@ -128,22 +128,6 @@ export default class ZEIT {
     return 'production' in project.targets ? project.targets.production.alias : []
   }
 
-  listProjects = async () => {
-    console.log('Fetching user projects')
-
-    const res = await this.client.fetch(`/projects/list?limit=500`, {
-      teamId: this.teamId
-    } as any)
-
-    const projects = await res.json()
-
-    if (projects.error) {
-      throw new ZEITError(JSON.stringify(projects.error))
-    }
-
-    return projects
-  }
-
   // Extract fields from the `clientState`
   get = (field: string) => this.payload.clientState[field]
 

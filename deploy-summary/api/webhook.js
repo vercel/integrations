@@ -36,6 +36,29 @@ const wrapWithWeServ = (url, isThumbnail = false) => {
   }`
 }
 
+const getBestAliasUrl = alias => {
+  const filteredAlias = alias
+    .filter(a => a.startsWith('*.')) // no wildcard aliases
+    .sort((a, b) => {
+      // put .now.sh aliases at the end of the list, only use as last resort
+      if (a.endsWith('.now.sh') && !b.endsWith('.now.sh')) return 1
+      if (!a.endsWith('.now.sh') && b.endsWith('.now.sh')) return -1
+
+      // use the "smallest" alias first
+      const lengthDiff = a.length - b.length
+      if (lengthDiff !== 0) return lengthDiff
+
+      // compare alphabetically
+      return a.localeCompare(b)
+    })
+
+  if (filteredAlias.length > 0) {
+    return `https://${filteredAlias.shift()}`
+  }
+
+  return null
+}
+
 module.exports = withSentry('webhook', async (req, res) => {
   const event = req.body
   const { type, ownerId, teamId, payload } = event
@@ -149,9 +172,7 @@ module.exports = withSentry('webhook', async (req, res) => {
       `/v9/now/deployments/${payload.deploymentId}`,
       {}
     )
-    if (alias.length > 0) {
-      aliasUrl = `https://${alias.pop()}`
-    }
+    aliasUrl = getBestAliasUrl(alias)
   } catch (err) {
     console.warn('warning, error while fetching alias', err)
   }

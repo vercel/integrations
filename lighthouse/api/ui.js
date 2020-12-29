@@ -125,16 +125,16 @@ module.exports = withUiHook(
       }
     } else {
       console.log(`fetching projects: from=${from || ""}`);
-      let projects = await zeitClient.fetchAndThrow(
-        `/v1/projects/list?${stringify({
-          from,
-          limit: PROJECTS_LIMIT + 1
+      let { projects, pagination } = await zeitClient.fetchAndThrow(
+        `/v4/projects?${stringify({
+          until: from,
+          limit: PROJECTS_LIMIT
         })}`,
         {}
       );
-      if (projects.length > PROJECTS_LIMIT) {
+      if (projects.length >= PROJECTS_LIMIT) {
         projects = projects.slice(0, PROJECTS_LIMIT);
-        next = projects[projects.length - 1].createdAt - 1;
+        next = pagination.next;
       }
 
       console.log(`fetching deployments of projects`);

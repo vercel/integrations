@@ -4,7 +4,7 @@
   "version": 2,
   "builds": [
     { "src": "src/index.ts", "use": "@now/node@canary" },
-    { "src": "static/*.png", "use": "@now/optipng" },
+    { "src": "static/*.png", "use": "@now/static" },
     { "src": "static/*.svg", "use": "@now/static" }
   ],
   "routes": [

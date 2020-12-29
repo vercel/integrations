@@ -61,7 +61,7 @@ const Job = ({ job }: { job: cloudscheduler_v1beta1.Schema$Job }) => {
 const methods = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'HEAD', 'OPTIONS']
 
 const SchedulerFieldset = ({ jobs, error, deployments, productionAliases, disabled, apiDisabled }: SchedulerFieldsetProps) => {
-  const targetUrls = [...productionAliases, ...(deployments || []).map(deployment => deployment.url)]
+  const targetUrls = [...(productionAliases || []), ...(deployments || []).map(deployment => deployment.url)]
 
   return html`
     <Fieldset>

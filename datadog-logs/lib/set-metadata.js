@@ -17,10 +17,9 @@ module.exports = async ({ configurationId, teamId, token }, data) => {
     }
   );
 
-  const body = await res.json();
   if (!res.ok) {
     throw await responseError(res);
   }
 
-  return body;
+  return await res.json();
 };

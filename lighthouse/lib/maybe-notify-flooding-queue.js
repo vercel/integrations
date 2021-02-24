@@ -7,7 +7,7 @@ module.exports = async db => {
   const count = await countAuditing(db);
   if (count < 100) return;
   
-  const level = msg < 200 ? 'WARNING' : '*CRITICAL*';
+  const level = count < 200 ? 'WARNING' : '*CRITICAL*';
   const msg = `${level}: queue is increasing`;
   const web = new WebClient(process.env.SLACK_TOKEN);
   

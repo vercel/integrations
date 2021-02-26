@@ -32,7 +32,7 @@ module.exports = async function setup({
         type: "json",
         url: `https://http-intake.logs.${host}/v1/input/${encodeURIComponent(
           key
-        )}`,
+        )}?ddsource=vercel`,
         projectId: project ? project.id : null
       }
     );

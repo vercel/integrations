@@ -147,8 +147,10 @@ module.exports = {
       })
       return content
     } catch (error) {
-      // no file found
-      if (error.status === 404) {
+      if (
+        error.status === 404 || // file not found
+        error.status === 403 // access is restricted
+      ) {
         return undefined
       }
 

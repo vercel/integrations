@@ -1,0 +1,9 @@
+{
+  "alias": "airform.now.sh",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "api/index"
+    }
+  ]
+}

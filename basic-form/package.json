@@ -1,6 +1,6 @@
 {
-	"name": "zeit-addon-basic-form",
+	"name": "vercel-addon-basic-form",
 	"dependencies": {
-		"@zeit/integration-utils": "latest"
+		"@vercel/integration-utils": "latest"
 	}
 }

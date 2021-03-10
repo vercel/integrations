@@ -1,6 +1,6 @@
 const { withUiHook } = require('@zeit/integration-utils')
-const formBuilder = require('./form-builder')
-const deploy = require('./deploy')
+const formBuilder = require('./_utils/form-builder')
+const deploy = require('./_utils/deploy')
 module.exports = withUiHook(async ({ payload, zeitClient }) => {
   const { clientState, project, team, action, configurationId } = payload
   let metadata = await zeitClient.getMetadata()

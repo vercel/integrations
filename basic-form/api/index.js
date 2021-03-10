@@ -1,4 +1,4 @@
-const {withUiHook, htm} = require('@zeit/integration-utils');
+const {withUiHook, htm} = require('@vercel/integration-utils');
 
 const store = {
 	secretId: '',

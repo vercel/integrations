@@ -30,7 +30,7 @@
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
     "ms": "^2.1.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "querystring": "^0.2.0",
     "uid-promise": "^1.1.0"
   },

@@ -10,7 +10,7 @@
     "date-fns-tz": "^1.0.7",
     "lodash.uniq": "^4.5.0",
     "ms": "^2.1.1",
-    "node-fetch": "^2.5.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@types/lodash.uniq": "^4.5.6",

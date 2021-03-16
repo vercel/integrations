@@ -1,6 +1,0 @@
-{
-	"name": "zeit-addon-counter",
-	"dependencies": {
-		"@zeit/integration-utils": "latest"
-	}
-}

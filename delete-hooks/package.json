@@ -1,7 +1,0 @@
-{
-  "name": "delete-hooks",
-  "dependencies": {
-    "@zeit/integration-utils": "latest",
-    "micro": "9.3.4"
-  }
-}

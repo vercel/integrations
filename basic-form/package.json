@@ -1,6 +1,0 @@
-{
-	"name": "vercel-addon-basic-form",
-	"dependencies": {
-		"@vercel/integration-utils": "latest"
-	}
-}

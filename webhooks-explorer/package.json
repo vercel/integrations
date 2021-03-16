@@ -1,9 +1,0 @@
-{
-	"name": "zeit-integration-webhooks-explorer",
-	"dependencies": {
-		"@zeit/fetch": "^5.1.0",
-		"@zeit/integration-utils": "latest",
-		"micro": "^9.3.4",
-		"node-fetch": "^2.6.0"
-	}
-}

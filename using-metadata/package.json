@@ -1,6 +1,0 @@
-{
-	"name": "zeit-addon-using-metadata",
-	"dependencies": {
-		"@zeit/integration-utils": "latest"
-	}
-}

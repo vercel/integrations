@@ -9,7 +9,7 @@
   "dependencies": {
     "@zeit/integration-utils": "0.6.4",
     "ms": "2.1.2",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "raw-body": "2.4.1"
   },
   "devDependencies": {
